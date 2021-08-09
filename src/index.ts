@@ -1,6 +1,6 @@
 import {LogLevel, SapphireClient} from '@sapphire/framework';
 
-require('dotenv').config();
+require('dotenv').config({path: '../.env'});
 
 const client = new SapphireClient({
   defaultPrefix: '$',
