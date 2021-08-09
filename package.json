@@ -1,0 +1,29 @@
+{
+  "name": "bedibot-rewrite",
+  "version": "1.0.0",
+  "description": "This is a rewrite of the BediBot Discord Bot in Typescript using the discord-js-commando framework.",
+  "main": "./prod/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./prod/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BediBot/BediBot-Rewrite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BediBot/BediBot-Rewrite/issues"
+  },
+  "homepage": "https://github.com/BediBot/BediBot-Rewrite#readme",
+  "devDependencies": {
+    "@types/node": "^16.4.13",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@sapphire/framework": "^1.0.2",
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0"
+  }
+}
