@@ -1,8 +1,10 @@
 import {LogLevel, SapphireClient} from '@sapphire/framework';
+import {Intents} from 'discord.js';
 
 require('dotenv').config({path: '../.env'});
 
 const client = new SapphireClient({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
   defaultPrefix: '$',
   caseInsensitiveCommands: true,
   logger: {
