@@ -1,0 +1,6 @@
+# Intellij IDEA Files
+.idea/
+
+node_modules/
+
+prod/
