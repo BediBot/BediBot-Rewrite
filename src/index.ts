@@ -6,7 +6,7 @@ const client = new SapphireClient({
   defaultPrefix: '$',
   caseInsensitiveCommands: true,
   logger: {
-    level: LogLevel.Trace,
+    level: LogLevel.Info,
   },
 });
 
