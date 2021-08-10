@@ -6,4 +6,4 @@ export const Quote = new Schema({
   author: String,
 });
 
-export default model('quote', Quote);
+export default model('Quote', Quote, 'Quotes');

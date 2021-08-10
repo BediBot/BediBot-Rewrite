@@ -5,4 +5,4 @@ export const Birthday = new Schema({
   birthdate: Date,
 });
 
-export default model('birthday', Birthday);
+export default model('Birthday', Birthday, 'Birthdays');

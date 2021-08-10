@@ -1,9 +1,9 @@
 import {model, Schema} from 'mongoose';
 
 export const VerifiedUser = new Schema({
-  guildID: String,
+  guildId: String,
   userID: Number,
   emailHash: String,
 });
 
-export default model('verifiedUser', VerifiedUser);
+export default model('VerifiedUser', VerifiedUser, 'VerifiedUsers');
