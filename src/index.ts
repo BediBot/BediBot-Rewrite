@@ -12,6 +12,7 @@ const client = new SapphireClient({
   logger: {
     level: LogLevel.Info,
   },
+  partials: ['CHANNEL'],
 });
 
 const main = async () => {
