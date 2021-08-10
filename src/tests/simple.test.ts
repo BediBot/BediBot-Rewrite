@@ -5,3 +5,7 @@ test('Simple True Test', () => {
 test('Simple False Test', () => {
   expect(false).toBe(false);
 });
+
+test('Expect Fail Test', () => {
+  expect(true).toBe(false);
+});
