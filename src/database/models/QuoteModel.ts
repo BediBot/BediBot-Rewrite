@@ -1,7 +1,7 @@
 import {model, Schema} from 'mongoose';
 
 export const Quote = new Schema({
-  guildId: Number,
+  guildId: String,
   quote: String,
   author: String,
 });

@@ -1,7 +1,7 @@
 import {model, Schema} from 'mongoose';
 
 export const Birthday = new Schema({
-  userID: Number,
+  _id: String,
   birthdate: Date,
 });
 
