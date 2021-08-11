@@ -1,7 +1,7 @@
 import {model, Schema} from 'mongoose';
 
 export const Settings = new Schema({
-  _id: String,
+  _id: String, // Guild ID
   prefix: String,
   timezone: String,
   verificationEnabled: Boolean,
