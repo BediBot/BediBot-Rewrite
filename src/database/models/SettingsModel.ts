@@ -5,22 +5,24 @@ export const Settings = new Schema({
   prefix: String,
   timezone: String,
   verificationEnabled: Boolean,
+  pinsEnabled: Boolean,
+  quotesEnabled: false,
   birthdayAnnouncementsEnabled: Boolean,
   morningAnnouncementsEnabled: Boolean,
   dueDatesEnabled: Boolean,
-  pinsEnabled: Boolean,
 });
 
 export const defaultSettings = (guildID: string) => {
   return {
-    guildId: guildID,
+    _id: guildID,
     prefix: '$',
     timezone: 'America/Toronto',
+    pinsEnabled: false,
+    quotesEnabled: false,
     verificationEnabled: false,
-    birthdayAnnouncementEnabled: false,
+    birthdayAnnouncementsEnabled: false,
     morningAnnouncementsEnabled: false,
     dueDatesEnabled: false,
-    pinsEnabled: false,
   };
 };
 
