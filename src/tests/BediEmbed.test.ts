@@ -1,10 +1,17 @@
 import {BediEmbed} from '../lib/BediEmbed';
 
-test('BediEmbed has Correct Properties', () => {
-  const {footer, timestamp} = new BediEmbed();
+test('BediEmbed has Correct Footer', () => {
+  const {footer} = new BediEmbed();
+  const now = Date.now();
+
+  expect(typeof footer).toBe('string');
+  expect(footer!.text).toBe('For any concerns, contact a BediBot dev: Aadi, Carson, Joe, Sahil, & Zayd');
+});
+
+test('BediEmbed has Correct Timestamp', () => {
+  const {timestamp} = new BediEmbed();
 
   const now = Date.now();
 
-  expect(footer?.text).toBe('For any concerns, contact a BediBot dev: Aadi, Carson, Joe, Sahil, & Zayd');
   expect(timestamp).toBe(now);
 });
