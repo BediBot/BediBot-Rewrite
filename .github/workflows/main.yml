@@ -21,6 +21,6 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: JEST Tests
-          path: '**/junit.xml'
+          name: Report
+          path: '**/test-report.xml'
           reporter: jest-junit
