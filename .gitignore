@@ -8,3 +8,5 @@ prod/
 .env
 
 junit.xml
+
+reports/
