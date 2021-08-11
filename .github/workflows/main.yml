@@ -19,8 +19,8 @@ jobs:
       - run: npm run test:ci
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: always()    # run this step even if previous step failed
+        if: always()
         with:
-          name: JEST Tests            # Name of the check run which will be created
-          path: '**/junit.xml'    # Path to test results
-          reporter: jest-junit        # Format of test results
+          name: JEST Tests
+          path: '**/junit.xml'
+          reporter: jest-junit

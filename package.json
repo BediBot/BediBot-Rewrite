@@ -6,8 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./prod/index.js",
-    "test": "jest ./prod --reporters=default --reporters=jest-junit",
-    "test:ci": "jest --ci ./prod --reporters=default --reporters=jest-junit"
+    "test": "jest ./prod --testResultsProcessor=\"jest-junit\"",
+    "test:ci": "jest --ci ./prod --testResultsProcessor=\"jest-junit\""
   },
   "repository": {
     "type": "git",
