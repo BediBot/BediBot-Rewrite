@@ -8,3 +8,5 @@ prod/
 .env
 
 reports/
+
+globalConfig.json

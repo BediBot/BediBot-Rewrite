@@ -1,6 +1,6 @@
 import {LogLevel, SapphireClient} from '@sapphire/framework';
 import {Intents} from 'discord.js';
-import {validateEnv} from './utils/validateEnv';
+import {validateEnv} from './utils/envUtil';
 
 require('dotenv').config({path: '../.env'});
 

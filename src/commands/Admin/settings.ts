@@ -1,7 +1,9 @@
-import {PieceContext} from '@sapphire/framework';
+import {Args, PieceContext} from '@sapphire/framework';
 import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import SettingsModel, {defaultSettings} from '../../database/models/SettingsModel';
+import {getSettings} from '../../database/settingsDB';
+import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
+import {listModulesString, validModule} from '../../utils/settingsUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -14,7 +16,7 @@ module.exports = class SettingsCommand extends Command {
     });
   }
 
-  async run(message: Message) {
+  async run(message: Message, args: Args) {
     const {guild, guildId} = message;
 
     if (!guild) {
@@ -28,26 +30,44 @@ module.exports = class SettingsCommand extends Command {
       });
     }
 
-    let settingsData = await SettingsModel.findOne({_id: guildId});
+    let settingsData = await getSettings(guildId as string);
 
-    if (!settingsData) settingsData = await SettingsModel.create(defaultSettings(guildId as string));
-    settingsData.save();
+    const module = await args.restResult('string');
 
     const embed = new BediEmbed()
         .setColor('BLUE')
-        .setTitle('Settings Reply')
-        .setDescription('Here are the settings for `' + guild.name + '`. \n\nRun `' + settingsData.prefix + 'settings <module>' + '` to see ' +
-            'more detailed settings. \nModules: `Verification`, `Birthdays`, `Announcements`, `Due Dates`, `Quotes`')
-        .addField('Prefix', '`' + settingsData.prefix + '`', false)
-        .addField('Timezone', '`' + settingsData.timezone + '`', false)
-        .addField('Quotes Enabled', '`' + settingsData.quotesEnabled + '`', false)
-        .addField('Pins Enabled', '`' + settingsData.pinsEnabled + '`', false)
-        .addField('Verification Enabled', '`' + settingsData.verificationEnabled + '`', false)
-        .addField('Birthday Announcements Enabled', '`' + settingsData.birthdayAnnouncementsEnabled + '`', false)
-        .addField('Morning Announcements Enabled', '`' + settingsData.morningAnnouncementsEnabled + '`', false)
-        .addField('Due Dates Enabled', '`' + settingsData.dueDatesEnabled + '`', false);
+        .setTitle('Settings Reply');
 
-    // TODO: When settings in the various categories are implemented, settings embeds to display those settings will be added here.
+    if (!module.success || !validModule(module.value)) {
+      embed.setDescription('Run `' + settingsData.prefix + 'settings <module>' + '` to see more detailed settings' +
+          '\nModules: ' + listModulesString() +
+          '\n\nHere are the settings for `' + guild.name + '`')
+           .addField('Prefix', '`' + settingsData.prefix + '`', false)
+           .addField('Timezone', '`' + settingsData.timezone + '`', false)
+           .addField('Pins Enabled', '`' + settingsData.pinsEnabled + '`', false);
+
+    } else {
+      embed.setDescription('Here are the settings for the `' + capFirstLetterEveryWord(module.value) + '` module');
+
+      // Add settings to the cases below as they are implemented
+      switch (module.value.toLowerCase()) {
+        case 'verification':
+          embed.addField('Verification Enabled', '`' + settingsData.verificationEnabled + '`', false);
+          break;
+        case 'birthdays':
+          embed.addField('Birthday Announcements Enabled', '`' + settingsData.birthdayAnnouncementsEnabled + '`', false);
+          break;
+        case 'announcements':
+          embed.addField('Morning Announcements Enabled', '`' + settingsData.morningAnnouncementsEnabled + '`', false);
+          break;
+        case 'due dates':
+          embed.addField('Due Dates Enabled', '`' + settingsData.dueDatesEnabled + '`', false);
+          break;
+        case 'quotes':
+          embed.addField('Quotes Enabled', '`' + settingsData.quotesEnabled + '`', false);
+          break;
+      }
+    }
 
     return message.reply({
       embeds: [embed],

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./prod/index.js",
-    "test": "jest ./prod --reporters=default --reporters=jest-junit",
+    "test": "jest ./prod --reporters=default --reporters=jest-junit --detectOpenHandles",
     "test:ci": "jest --ci ./prod --reporters=default --reporters=jest-junit"
   },
   "repository": {
@@ -20,10 +20,12 @@
   },
   "homepage": "https://github.com/BediBot/BediBot-Rewrite#readme",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^2.0.1",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.4.13",
     "jest": "^27.0.6",
     "jest-junit": "^12.2.0",
+    "mongodb": "^3.6.11",
     "typescript": "^4.3.5"
   },
   "dependencies": {
@@ -33,6 +35,9 @@
     "jest-junit-reporter": "^1.1.0",
     "mongoose": "^5.13.6"
   },
+  "jest": {
+    "preset": "@shelf/jest-mongodb"
+  },
   "jest-junit": {
     "outputDirectory": "reports",
     "outputName": "jest-junit.xml",
@@ -41,5 +46,15 @@
     "suiteNameTemplate": "{filepath}",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}"
+  },
+  "config": {
+    "mongodbMemoryServer": {
+      "binary": {
+        "version": "4.0.3",
+        "skipMD5": true
+      },
+      "autoStart": false,
+      "instance": {}
+    }
   }
 }
