@@ -1,11 +1,7 @@
-test('Simple True Test', () => {
+test('Jest Working Correctly True Test', () => {
   expect(true).toBe(true);
 });
 
-test('Simple False Test', () => {
+test('Jest Working Correctly False Test', () => {
   expect(false).toBe(false);
-});
-
-test('Expect Fail Test', () => {
-  expect(true).toBe(false);
 });
