@@ -4,7 +4,7 @@ test('BediEmbed has Correct Footer', () => {
   const {footer} = new BediEmbed();
   const now = Date.now();
 
-  expect(typeof footer).toBe('string');
+  expect(typeof footer).toBe('object');
   expect(footer!.text).toBe('For any concerns, contact a BediBot dev: Aadi, Carson, Joe, Sahil, & Zayd');
 });
 
