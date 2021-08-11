@@ -17,11 +17,6 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run test:ci
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v2
-        if: always() # always run even if the previous step fails
-        with:
-          report_paths: '**/junit.xml'
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
         if: always()
