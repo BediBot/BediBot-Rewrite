@@ -5,3 +5,7 @@ test('Jest Working Correctly True Test', () => {
 test('Jest Working Correctly False Test', () => {
   expect(false).toBe(false);
 });
+
+test('This should fail', () => {
+  expect(false).toBe(true);
+});
