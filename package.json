@@ -5,7 +5,9 @@
   "main": "./prod/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./prod/index.js"
+    "start": "node ./prod/index.js",
+    "test": "jest ./prod",
+    "test:ci": "jest --ci ./prod "
   },
   "repository": {
     "type": "git",
@@ -18,7 +20,9 @@
   },
   "homepage": "https://github.com/BediBot/BediBot-Rewrite#readme",
   "devDependencies": {
+    "@types/jest": "^26.0.24",
     "@types/node": "^16.4.13",
+    "jest": "^27.0.6",
     "typescript": "^4.3.5"
   },
   "dependencies": {
