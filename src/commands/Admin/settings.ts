@@ -6,6 +6,7 @@ import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
 import {listModulesString} from '../../utils/settingsUtil';
 
 const {Command} = require('@sapphire/framework');
+const colors = require('../../../color.config.json');
 
 module.exports = class SettingsCommand extends Command {
   constructor(context: PieceContext) {
@@ -21,7 +22,7 @@ module.exports = class SettingsCommand extends Command {
 
     if (!guild) {
       const embed = new BediEmbed()
-          .setColor('RED')
+          .setColor(colors.ERROR)
           .setTitle('Settings Reply')
           .setDescription('This command is only for guilds!');
       return message.reply({
@@ -34,7 +35,6 @@ module.exports = class SettingsCommand extends Command {
     const module = await args.restResult('string');
 
     const embed = new BediEmbed()
-        .setColor('BLUE')
         .setTitle('Settings Reply');
 
     if (!module.success) {
