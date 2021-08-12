@@ -3,7 +3,7 @@ import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {getSettings} from '../../database/settingsDB';
 import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
-import {listModulesString, validModule} from '../../utils/settingsUtil';
+import {listModulesString} from '../../utils/settingsUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -24,7 +24,6 @@ module.exports = class SettingsCommand extends Command {
           .setColor('RED')
           .setTitle('Settings Reply')
           .setDescription('This command is only for guilds!');
-
       return message.reply({
         embeds: [embed],
       });
@@ -38,14 +37,13 @@ module.exports = class SettingsCommand extends Command {
         .setColor('BLUE')
         .setTitle('Settings Reply');
 
-    if (!module.success || !validModule(module.value)) {
+    if (!module.success) {
       embed.setDescription('Run `' + settingsData.prefix + 'settings <module>' + '` to see more detailed settings' +
           '\nModules: ' + listModulesString() +
           '\n\nHere are the settings for `' + guild.name + '`')
            .addField('Prefix', '`' + settingsData.prefix + '`', false)
            .addField('Timezone', '`' + settingsData.timezone + '`', false)
            .addField('Pins Enabled', '`' + settingsData.pinsEnabled + '`', false);
-
     } else {
       embed.setDescription('Here are the settings for the `' + capFirstLetterEveryWord(module.value) + '` module');
 
@@ -66,6 +64,9 @@ module.exports = class SettingsCommand extends Command {
         case 'quotes':
           embed.addField('Quotes Enabled', '`' + settingsData.quotesEnabled + '`', false);
           break;
+        default:
+          embed.setColor('RED');
+          embed.setDescription('That is not a valid module! Run `' + settingsData.prefix + 'settings` to see a list of valid modules.');
       }
     }
 
