@@ -1,4 +1,6 @@
 const winston = require('winston');
+const errorLogsPath = './logs/error.log';
+const allLogsPath = './logs/combined.log';
 
 const logFormat = winston.format.combine(
     winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
@@ -20,10 +22,10 @@ const logConfig = {
       ),
     }),
     new winston.transports.File({
-      filename: './logs/error.log', level: 'error',
+      filename: errorLogsPath, level: 'error',
     }),
     new winston.transports.File({
-      filename: './logs/combined.log',
+      filename: allLogsPath,
     }),
   ],
 };
