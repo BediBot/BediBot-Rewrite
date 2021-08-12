@@ -7,7 +7,8 @@
     "build": "tsc",
     "start": "node ./prod/index.js",
     "test": "jest ./prod --reporters=default --reporters=jest-junit --detectOpenHandles",
-    "test:ci": "jest --ci ./prod --reporters=default --reporters=jest-junit"
+    "test:ci": "jest --ci ./prod --reporters=default --reporters=jest-junit",
+    "test:coverage": "jest ./prod --silent --ci --coverage --coverageReporters=\"text\" --coverageReporters=\"text-summary"
   },
   "repository": {
     "type": "git",
