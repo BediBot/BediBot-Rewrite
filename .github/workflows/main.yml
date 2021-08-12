@@ -24,3 +24,6 @@ jobs:
           name: Report
           path: 'reports/jest-*.xml'
           reporter: jest-junit
+      - uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
