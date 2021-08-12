@@ -11,7 +11,6 @@ export const capFirstLetter = (string: string) => {
 /**
  * Capitalizes the first letter of every word in a string.
  *
- *
  * @param {string} string The input string.
  * @return {number} The string with the first letter of every word capitalized.
  */
