@@ -1,3 +1,9 @@
+/**
+ * Validates Environment Variables by ensuring they exist
+ *
+ * @return {boolean} Are environment variables valid?
+ */
+
 export const validateEnv = () => {
   if (!process.env.BOT_TOKEN) {
     console.warn('Missing Discord bot token.');
