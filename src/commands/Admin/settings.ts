@@ -1,12 +1,12 @@
 import {Args, PieceContext} from '@sapphire/framework';
 import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import {getSettings} from '../../database/settingsDB';
 import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
 import {listModulesString} from '../../utils/settingsUtil';
+import {getSettings} from '../../database/models/SettingsModel';
+import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
-const colors = require('../../../color.config.json');
 
 module.exports = class SettingsCommand extends Command {
   constructor(context: PieceContext) {

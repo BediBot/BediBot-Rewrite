@@ -1,6 +1,5 @@
 import {MessageEmbed} from 'discord.js';
-
-const colors = require('../../color.config.json');
+import colors from '../utils/colorUtil';
 
 export class BediEmbed extends MessageEmbed {
   public constructor() {

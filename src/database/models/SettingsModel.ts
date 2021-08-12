@@ -1,15 +1,31 @@
 import {model, Schema} from 'mongoose';
 
+interface ISettings {
+  _id: string, // Guild ID
+  prefix: string,
+  timezone: string,
+  verificationEnabled: boolean,
+  pinsEnabled: boolean,
+  quotesEnabled: boolean,
+  birthdayAnnouncementsEnabled: boolean,
+  morningAnnouncementsEnabled: boolean,
+  dueDatesEnabled: boolean,
+  emailDomain: string,
+  verifiedRole: string,
+}
+
 export const Settings = new Schema({
   _id: String, // Guild ID
   prefix: String,
   timezone: String,
   verificationEnabled: Boolean,
   pinsEnabled: Boolean,
-  quotesEnabled: false,
+  quotesEnabled: Boolean,
   birthdayAnnouncementsEnabled: Boolean,
   morningAnnouncementsEnabled: Boolean,
   dueDatesEnabled: Boolean,
+  emailDomain: String,
+  verifiedRole: String,
 });
 
 export const defaultSettings = (guildID: string) => {
@@ -19,12 +35,22 @@ export const defaultSettings = (guildID: string) => {
     timezone: 'America/Toronto',
     pinsEnabled: false,
     quotesEnabled: false,
-    verificationEnabled: false,
+    verificationEnabled: true,
     birthdayAnnouncementsEnabled: false,
     morningAnnouncementsEnabled: false,
     dueDatesEnabled: false,
+    emailDomain: 'uwaterloo.ca',
+    verifiedRole: 'Verified',
   };
 };
 
-export default model('Settings', Settings, 'Settings');
+const settingsModel = model<ISettings>('Settings', Settings, 'Settings');
+
+export const getSettings = async (guildId: string) => {
+  let settingsData = await settingsModel.findOne({_id: guildId});
+
+  return settingsData ?? await settingsModel.create(defaultSettings(guildId as string));
+};
+
+export default settingsModel;
 
