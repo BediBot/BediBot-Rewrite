@@ -28,3 +28,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: './prod'
+          skip-step: install
