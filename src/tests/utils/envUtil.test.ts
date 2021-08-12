@@ -1,4 +1,4 @@
-import {validateEnv} from '../utils/validateEnv';
+import {validateEnv} from '../../utils/envUtil';
 
 describe('Environment Variables', () => {
   const OLD_ENV = process.env;

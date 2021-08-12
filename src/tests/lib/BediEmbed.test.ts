@@ -1,4 +1,4 @@
-import {BediEmbed} from '../lib/BediEmbed';
+import {BediEmbed} from '../../lib/BediEmbed';
 
 describe('BediEmbed', () => {
   test('BediEmbed has Correct Footer', () => {
