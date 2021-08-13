@@ -1,6 +1,6 @@
 import {model, Schema} from 'mongoose';
 
-interface ISettings {
+interface SettingsI {
   _id: string, // Guild ID
   prefix: string,
   timezone: string,
@@ -44,12 +44,12 @@ export const defaultSettings = (guildID: string) => {
   };
 };
 
-const settingsModel = model<ISettings>('Settings', Settings, 'Settings');
+const settingsModel = model<SettingsI>('Settings', Settings, 'Settings');
 
 /**
  * Gets the settings for a given guild
  * @param guildId
- * @returns {Promise<ISettings & Document<any, any, ISettings>>}
+ * @returns {Promise<SettingsI & Document<any, any, SettingsI>>}
  */
 export const getSettings = async (guildId: string) => {
   let settingsData = await settingsModel.findOne({_id: guildId});

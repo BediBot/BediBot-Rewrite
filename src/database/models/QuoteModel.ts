@@ -1,6 +1,6 @@
 import {model, Schema} from 'mongoose';
 
-interface IQuote {
+interface QuoteI {
   guildId: string,
   quote: string,
   author: string,
@@ -12,6 +12,6 @@ export const Quote = new Schema({
   author: String,
 });
 
-const quoteModel = model<IQuote>('Quote', Quote, 'Quotes');
+const quoteModel = model<QuoteI>('Quote', Quote, 'Quotes');
 
 export default quoteModel;

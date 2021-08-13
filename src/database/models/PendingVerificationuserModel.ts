@@ -2,7 +2,7 @@ import {model, Schema} from 'mongoose';
 
 const bcrypt = require('bcrypt');
 
-interface IPendingVerificationUser {
+interface PendingVerificationUserI {
   userId: string,
   guildId: string,
   emailHash: string,
@@ -16,7 +16,7 @@ export const PendingVerificationUser = new Schema({
   uniqueKey: String,
 });
 
-const pendingVerificationUserModel = model<IPendingVerificationUser>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
+const pendingVerificationUserModel = model<PendingVerificationUserI>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
 
 /**
  * Checks if a given email address is already linked to a pending verification user

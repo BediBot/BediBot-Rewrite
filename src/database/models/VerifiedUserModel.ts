@@ -3,7 +3,7 @@ import {getSettings} from './SettingsModel';
 
 const bcrypt = require('bcrypt');
 
-interface IVerifiedUser {
+interface VerifiedUserI {
   userId: string,
   guildId: string,
   emailHash: string,
@@ -17,7 +17,7 @@ export const VerifiedUser = new Schema({
   birthdate: Date,
 });
 
-const verifiedUserModel = model<IVerifiedUser>('VerifiedUser', VerifiedUser, 'VerifiedUsers');
+const verifiedUserModel = model<VerifiedUserI>('VerifiedUser', VerifiedUser, 'VerifiedUsers');
 
 /**
  * Checks if a given user is verified in a given guild
