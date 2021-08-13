@@ -1,4 +1,5 @@
 import {connect} from 'mongoose';
+import logger from '../utils/loggerUtil';
 
 export const connectDatabase = async () => {
   await connect(process.env.MONGO_URI as string, {
@@ -6,5 +7,5 @@ export const connectDatabase = async () => {
     useUnifiedTopology: true,
     useFindAndModify: false,
   });
-  console.log('Connected to database!');
+  logger.info('Connected to database!');
 };

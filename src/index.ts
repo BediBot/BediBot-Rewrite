@@ -1,6 +1,7 @@
 import {LogLevel, SapphireClient} from '@sapphire/framework';
 import {Intents} from 'discord.js';
 import {validateEnv} from './utils/envUtil';
+import logger from './utils/loggerUtil';
 
 require('dotenv').config({path: '../.env'});
 
@@ -18,14 +19,14 @@ const main = async () => {
   if (!validateEnv()) return;
 
   try {
-    client.logger.info('Bot is logging in');
+    logger.info('Bot is logging in');
     await client.login(process.env.BOT_TOKEN);
-    client.logger.info('Bot has logged in');
+    logger.info('Bot has logged in');
   } catch (error) {
-    client.logger.fatal(error);
+    logger.error(error);
     client.destroy();
     process.exit(1);
   }
 };
 
-main().catch(console.error);
+main().then();
