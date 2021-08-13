@@ -2,7 +2,7 @@ import {LogLevel, SapphireClient} from '@sapphire/framework';
 import {Intents} from 'discord.js';
 import {validateEnv} from './utils/envUtil';
 import logger from './utils/loggerUtil';
-import {getSettings} from './database/models/SettingsModel';
+import {fetchPrefix} from './utils/discordUtil';
 
 require('dotenv').config({path: '../.env'});
 
@@ -16,13 +16,7 @@ const client = new SapphireClient({
   partials: ['CHANNEL'],
 });
 
-client.fetchPrefix = async (message) => {
-  const {guildId} = message;
-
-  const guildPrefix = (await getSettings(guildId as string)).prefix;
-
-  return guildPrefix ?? '$';
-};
+client.fetchPrefix = fetchPrefix;
 
 const main = async () => {
   if (!validateEnv()) return;

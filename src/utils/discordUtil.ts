@@ -1,5 +1,6 @@
 import {Message, Role} from 'discord.js';
 import logger from './loggerUtil';
+import {getSettings} from '../database/models/SettingsModel';
 
 export const addRoleToAuthor = async (message: Message, roleName: string) => {
   const {guild, member} = message;
@@ -21,4 +22,12 @@ export const addRoleToAuthor = async (message: Message, roleName: string) => {
   } catch (error) {
     logger.error(error);
   }
+};
+
+export const fetchPrefix = async (message: Message) => {
+  const {guildId} = message;
+
+  const guildPrefix = (await getSettings(guildId as string)).prefix;
+
+  return guildPrefix ?? '$';
 };
