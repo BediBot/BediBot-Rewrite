@@ -46,6 +46,11 @@ export const defaultSettings = (guildID: string) => {
 
 const settingsModel = model<ISettings>('Settings', Settings, 'Settings');
 
+/**
+ * Gets the settings for a given guild
+ * @param guildId
+ * @returns {Promise<ISettings & Document<any, any, ISettings>>}
+ */
 export const getSettings = async (guildId: string) => {
   let settingsData = await settingsModel.findOne({_id: guildId});
 

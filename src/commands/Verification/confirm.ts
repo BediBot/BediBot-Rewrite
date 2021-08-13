@@ -19,22 +19,13 @@ module.exports = class ConfirmCommand extends Command {
     super(context, {
       name: 'confirm',
       description: 'Allows you to confirm with your unique code to access the server',
+      preconditions: ['GuildOnly'],
     });
   }
 
   async run(message: Message, args: Args) {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
-
-    if (!guild) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Confirm Reply')
-          .setDescription('This command is only for guilds!');
-      return message.reply({
-        embeds: [embed],
-      });
-    }
 
     if (!settingsData.verificationEnabled) {
       const embed = new BediEmbed()
@@ -93,7 +84,7 @@ module.exports = class ConfirmCommand extends Command {
     const embed = new BediEmbed()
         .setColor(colors.PRIMARY)
         .setTitle('Confirm Reply')
-        .setDescription('You have been verified on `' + guild.name + '`');
+        .setDescription('You have been verified on `' + guild!.name + '`');
     return message.author.send({
       embeds: [embed],
     });

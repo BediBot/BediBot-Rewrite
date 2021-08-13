@@ -12,22 +12,13 @@ module.exports = class UnverifyCommand extends Command {
     super(context, {
       name: 'unverify',
       description: 'Unverifies you from the server.',
+      preconditions: ['GuildOnly'],
     });
   }
 
   async run(message: Message) {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
-
-    if (!guild) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Unverify Reply')
-          .setDescription('This command is only for guilds!');
-      return message.reply({
-        embeds: [embed],
-      });
-    }
 
     if (!settingsData.verificationEnabled) {
       const embed = new BediEmbed()
@@ -52,7 +43,7 @@ module.exports = class UnverifyCommand extends Command {
     await removeVerifiedUser(author.id, guildId as string);
     const embed = new BediEmbed()
         .setTitle('Unverify Reply')
-        .setDescription('You have been unverified on `' + guild.name + '`');
+        .setDescription('You have been unverified on `' + guild!.name + '`');
     return message.author.send({
       embeds: [embed],
     });

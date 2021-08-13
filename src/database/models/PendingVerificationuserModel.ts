@@ -18,6 +18,11 @@ export const PendingVerificationUser = new Schema({
 
 const pendingVerificationUserModel = model<IPendingVerificationUser>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
 
+/**
+ * Checks if a given email address is already linked to a pending verification user
+ * @param {string} emailAddress
+ * @returns {Promise<boolean>}
+ */
 export const emailAddressLinkedToPendingVerificationUser = async (emailAddress: string) => {
   const docs = await pendingVerificationUserModel.find();
 
@@ -27,6 +32,14 @@ export const emailAddressLinkedToPendingVerificationUser = async (emailAddress: 
   return false;
 };
 
+/**
+ * Adds a pending verification user to the database
+ * @param {string} userId
+ * @param {string} guildId
+ * @param {string} emailHash
+ * @param {string} uniqueKey
+ * @returns {Promise<void>}
+ */
 export const addPendingVerificationUser = async (userId: string, guildId: string, emailHash: string, uniqueKey: string) => {
   await pendingVerificationUserModel.create({
     userId: userId,
@@ -36,6 +49,12 @@ export const addPendingVerificationUser = async (userId: string, guildId: string
   });
 };
 
+/**
+ * Removes a pending verification user from the database
+ * @param {string} userId
+ * @param {string} guildId
+ * @returns {Promise<void>}
+ */
 export const removePendingVerificationUser = async (userId: string, guildId: string) => {
   await pendingVerificationUserModel.deleteOne({
     userId: userId,
@@ -43,6 +62,12 @@ export const removePendingVerificationUser = async (userId: string, guildId: str
   });
 };
 
+/**
+ * Checks if a given user (id) is pending verification
+ * @param {string} userId
+ * @param {string} guildId
+ * @returns {Promise<boolean>}
+ */
 export const userPendingVerification = async (userId: string, guildId: string) => {
   return pendingVerificationUserModel.exists({
     userId: userId,
@@ -50,6 +75,13 @@ export const userPendingVerification = async (userId: string, guildId: string) =
   });
 };
 
+/**
+ * Checks if a unique key exists in the database and matches the given user id and guild id
+ * @param userId
+ * @param guildId
+ * @param uniqueKey
+ * @returns {Promise<boolean>}
+ */
 export const validUniqueKey = async (userId: string, guildId: string, uniqueKey: string) => {
   return pendingVerificationUserModel.exists({
     userId: userId,
@@ -58,6 +90,12 @@ export const validUniqueKey = async (userId: string, guildId: string, uniqueKey:
   });
 };
 
+/**
+ * Gets the hashed email of a pending verification user
+ * @param userId
+ * @param guildId
+ * @returns {Promise<any>}
+ */
 export const emailHashFromPendingUser = async (userId: string, guildId: string) => {
   const doc = await pendingVerificationUserModel.findOne({
     userId: userId,

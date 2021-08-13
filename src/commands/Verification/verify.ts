@@ -18,22 +18,13 @@ module.exports = class VerifyCommand extends Command {
       name: 'verify',
       aliases: ['verification', 'register'],
       description: 'Allows you to verify yourself and access the server',
+      preconditions: ['GuildOnly'],
     });
   }
 
   async run(message: Message, args: Args) {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
-
-    if (!guild) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Verify Reply')
-          .setDescription('This command is only for guilds!');
-      return message.reply({
-        embeds: [embed],
-      });
-    }
 
     await message.delete();
 
@@ -90,7 +81,7 @@ module.exports = class VerifyCommand extends Command {
       });
     }
 
-    if (await emailAddressLinkedToUser(emailAddress.value)) {
+    if (await emailAddressLinkedToUser(emailAddress.value, guildId as string)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
@@ -111,7 +102,7 @@ module.exports = class VerifyCommand extends Command {
     }
 
     const uniqueKey = createUniqueKey();
-    await sendConfirmationEmail(emailAddress.value, author.id, guild.name, settingsData.prefix, uniqueKey);
+    await sendConfirmationEmail(emailAddress.value, author.id, guild!.name, settingsData.prefix, uniqueKey);
     await addPendingVerificationUser(author.id, guildId as string, await hashString(emailAddress.value), uniqueKey);
 
     const embed = new BediEmbed()
