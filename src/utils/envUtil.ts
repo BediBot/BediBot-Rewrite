@@ -15,7 +15,27 @@ export const validateEnv = () => {
   }
 
   if (!process.env.BOT_OWNERS) {
-    console.warn('Missing Bot Owner ID');
+    console.warn('Missing Bot Owner IDs');
+    return false;
+  }
+
+  if (!process.env.EMAIL_USER) {
+    console.warn('Missing Email User');
+    return false;
+  }
+
+  if (!process.env.EMAIL_CLIENT_ID) {
+    console.warn('Missing Email Client ID');
+    return false;
+  }
+
+  if (!process.env.EMAIL_CLIENT_SECRET) {
+    console.warn('Missing Email Client Secret');
+    return false;
+  }
+
+  if (!process.env.EMAIL_CLIENT_REFRESH) {
+    console.warn('Missing Email Refresh Token');
     return false;
   }
   return true;

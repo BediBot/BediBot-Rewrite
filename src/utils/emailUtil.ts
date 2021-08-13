@@ -76,3 +76,12 @@ export const isEmailValid = (emailAddress: string) => {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(emailAddress);
 };
+
+/**
+ * Generates a random string of length numBytes * 2
+ * @returns {string}
+ */
+export const createUniqueKey = () => {
+  const numBytes = 10;
+  return crypto.randomBytes(numBytes).toString('hex');
+};

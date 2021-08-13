@@ -9,7 +9,7 @@ import {
   userPendingVerification,
   validUniqueKey,
 } from '../../database/models/PendingVerificationuserModel';
-import {addRoleToAuthor} from '../../tests/utils/discordUtil';
+import {addRoleToAuthor} from '../../utils/discordUtil';
 import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');

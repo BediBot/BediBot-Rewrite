@@ -1,5 +1,5 @@
 import {Message, Role} from 'discord.js';
-import logger from '../../utils/loggerUtil';
+import logger from './loggerUtil';
 
 export const addRoleToAuthor = async (message: Message, roleName: string) => {
   const {guild, member} = message;

@@ -3,11 +3,10 @@ import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {getSettings} from '../../database/models/SettingsModel';
 import {addVerifiedUser, emailAddressLinkedToUser, userVerifiedAnywhereEmailHash, userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
-import {addRoleToAuthor} from '../../tests/utils/discordUtil';
-import {isEmailValid, sendConfirmationEmail} from '../../utils/emailUtil';
+import {addRoleToAuthor} from '../../utils/discordUtil';
+import {createUniqueKey, isEmailValid, sendConfirmationEmail} from '../../utils/emailUtil';
 import {addPendingVerificationUser, emailAddressLinkedToPendingVerificationUser} from '../../database/models/PendingVerificationuserModel';
 import {hashString} from '../../utils/hashUtil';
-import crypto from 'crypto';
 import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -116,6 +115,3 @@ module.exports = class VerifyCommand extends Command {
   }
 };
 
-const createUniqueKey = () => {
-  return crypto.randomBytes(10).toString('hex');
-};

@@ -91,7 +91,7 @@ export const validUniqueKey = async (userId: string, guildId: string, uniqueKey:
 };
 
 /**
- * Gets the hashed email of a pending verification user
+ * Gets the hashed email of a pending verification user. Do not call this function unless you are certain the user exists in the DB.
  * @param userId
  * @param guildId
  * @returns {Promise<any>}
