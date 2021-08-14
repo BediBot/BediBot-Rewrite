@@ -1,6 +1,7 @@
 import {Guild, Message, Role} from 'discord.js';
 import logger from './loggerUtil';
 import {getSettings} from '../database/models/SettingsModel';
+import {DEFAULT_PREFIX} from '../config';
 
 /**
  * Adds role to the author of a given message
@@ -54,9 +55,9 @@ export const addRoleToUser = async (userId: string, guild: Guild | null, roleNam
  * @returns {Promise<any>}
  */
 export const fetchPrefix = async (message: Message) => {
+  if (!message.guild) return DEFAULT_PREFIX;
+
   const {guildId} = message;
 
-  const guildPrefix = (await getSettings(guildId as string)).prefix;
-
-  return guildPrefix ?? '$';
+  return (await getSettings(guildId as string)).prefix;
 };
