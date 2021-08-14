@@ -4,8 +4,6 @@ import {validateEnv} from './utils/envUtil';
 import logger from './utils/loggerUtil';
 import {fetchPrefix} from './utils/discordUtil';
 
-require('dotenv').config({path: '../.env'});
-
 const client = new SapphireClient({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
   defaultPrefix: '$',
