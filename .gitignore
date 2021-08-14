@@ -10,3 +10,6 @@ prod/
 reports/
 
 globalConfig.json
+
+coverage/
+logs/

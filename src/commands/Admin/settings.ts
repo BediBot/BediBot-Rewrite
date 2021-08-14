@@ -1,9 +1,10 @@
 import {Args, PieceContext} from '@sapphire/framework';
 import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import {getSettings} from '../../database/settingsDB';
 import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
 import {listModulesString} from '../../utils/settingsUtil';
+import {getSettings} from '../../database/models/SettingsModel';
+import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -13,6 +14,7 @@ module.exports = class SettingsCommand extends Command {
       name: 'settings',
       aliases: ['setting'],
       description: 'Displays the current guild settings',
+      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly'],
     });
   }
 
@@ -21,7 +23,7 @@ module.exports = class SettingsCommand extends Command {
 
     if (!guild) {
       const embed = new BediEmbed()
-          .setColor('RED')
+          .setColor(colors.ERROR)
           .setTitle('Settings Reply')
           .setDescription('This command is only for guilds!');
       return message.reply({
@@ -34,7 +36,6 @@ module.exports = class SettingsCommand extends Command {
     const module = await args.restResult('string');
 
     const embed = new BediEmbed()
-        .setColor('BLUE')
         .setTitle('Settings Reply');
 
     if (!module.success) {

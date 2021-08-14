@@ -1,5 +1,4 @@
-import SettingsModel, {defaultSettings} from '../../database/models/SettingsModel';
-import {getSettings} from '../../database/settingsDB';
+import SettingsModel, {defaultSettings, getSettings} from '../../database/models/SettingsModel';
 import mongoose from 'mongoose';
 
 describe('Settings DB', () => {
@@ -11,8 +10,11 @@ describe('Settings DB', () => {
     });
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await mongoose.connection.db.dropDatabase();
+  });
+
+  afterAll(async () => {
     await mongoose.connection.close();
   });
 

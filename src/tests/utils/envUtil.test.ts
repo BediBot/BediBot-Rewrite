@@ -15,18 +15,88 @@ describe('Environment Variables', () => {
   test('ENV Set up Correctly', () => {
     process.env.BOT_TOKEN = 'randomString';
     process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
 
     expect(validateEnv()).toBe(true);
   });
 
   test('ENV Missing Bot Token', () => {
     process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
 
   test('ENV Missing Mongo URI', () => {
     process.env.BOT_TOKEN = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
+
+    expect(validateEnv()).toBe(false);
+  });
+
+  test('ENV Missing Email User', () => {
+    process.env.BOT_TOKEN = 'randomString';
+    process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
+
+    expect(validateEnv()).toBe(false);
+  });
+
+  test('ENV Missing Client ID', () => {
+    process.env.BOT_TOKEN = 'randomString';
+    process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
+
+    expect(validateEnv()).toBe(false);
+  });
+
+  test('ENV Missing Client Secret', () => {
+    process.env.BOT_TOKEN = 'randomString';
+    process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
+
+    expect(validateEnv()).toBe(false);
+  });
+
+  test('ENV Missing Client Refresh Token', () => {
+    process.env.BOT_TOKEN = 'randomString';
+    process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
+
+    expect(validateEnv()).toBe(false);
+  });
+
+  test('ENV Bot Owners', () => {
+    process.env.BOT_TOKEN = 'randomString';
+    process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });

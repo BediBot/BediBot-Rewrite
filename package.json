@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./prod/index.js",
-    "test": "jest ./prod --reporters=default --reporters=jest-junit --detectOpenHandles",
+    "test": "jest ./prod --reporters=default --reporters=jest-junit --detectOpenHandles --coverage",
     "test:ci": "jest --ci ./prod --reporters=default --reporters=jest-junit"
   },
   "repository": {
@@ -30,10 +30,15 @@
   },
   "dependencies": {
     "@sapphire/framework": "^2.0.0-next.278b4799.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/nodemailer": "^6.4.4",
+    "bcrypt": "^5.0.1",
     "discord.js": "^13.0.1",
     "dotenv": "^10.0.0",
+    "googleapis": "^84.0.0",
     "jest-junit-reporter": "^1.1.0",
     "mongoose": "^5.13.6",
+    "nodemailer": "^6.6.3",
     "winston": "^3.3.3"
   },
   "jest": {

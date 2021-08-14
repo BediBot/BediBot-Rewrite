@@ -2,6 +2,7 @@ import {LogLevel, SapphireClient} from '@sapphire/framework';
 import {Intents} from 'discord.js';
 import {validateEnv} from './utils/envUtil';
 import logger from './utils/loggerUtil';
+import {fetchPrefix} from './utils/discordUtil';
 
 require('dotenv').config({path: '../.env'});
 
@@ -14,6 +15,8 @@ const client = new SapphireClient({
   },
   partials: ['CHANNEL'],
 });
+
+client.fetchPrefix = fetchPrefix;
 
 const main = async () => {
   if (!validateEnv()) return;

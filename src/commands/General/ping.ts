@@ -22,7 +22,6 @@ module.exports = class PingCommand extends Command {
     });
 
     const editEmbed = new BediEmbed()
-        .setColor('BLUE')
         .setTitle('Pong!')
         .setDescription(
             `Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${msg.createdTimestamp - message.createdTimestamp}ms.`);
