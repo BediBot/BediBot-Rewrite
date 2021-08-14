@@ -3,8 +3,6 @@ import {validateEnv} from './utils/envUtil';
 import logger from './utils/loggerUtil';
 import {CLIENT_OPTIONS} from './config';
 
-require('dotenv').config({path: '../.env'});
-
 const client = new SapphireClient(CLIENT_OPTIONS);
 
 const main = async () => {
