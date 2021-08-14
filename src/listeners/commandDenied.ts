@@ -2,6 +2,7 @@ import {CommandDeniedPayload, Events, Listener, PieceContext, UserError} from '@
 import {BediEmbed} from '../lib/BediEmbed';
 import colors from '../utils/colorUtil';
 import {capFirstLetter} from '../utils/stringsUtil';
+import logger from '../utils/loggerUtil';
 
 module.exports = class CommandDenied extends Listener {
   constructor(context: PieceContext) {
@@ -11,6 +12,8 @@ module.exports = class CommandDenied extends Listener {
   }
 
   public async run({context, message: content}: UserError, {message, command}: CommandDeniedPayload) {
+    logger.warn('Command Denied: ' + capFirstLetter(command.name));
+
     // Does nothing if command has 'silent' flag
     if (Reflect.get(Object(context), 'silent')) return;
 
