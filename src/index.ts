@@ -1,22 +1,11 @@
-import {LogLevel, SapphireClient} from '@sapphire/framework';
-import {Intents} from 'discord.js';
+import {SapphireClient} from '@sapphire/framework';
 import {validateEnv} from './utils/envUtil';
 import logger from './utils/loggerUtil';
-import {fetchPrefix} from './utils/discordUtil';
+import {CLIENT_OPTIONS} from './config';
 
 require('dotenv').config({path: '../.env'});
 
-const client = new SapphireClient({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
-  defaultPrefix: '$',
-  caseInsensitiveCommands: true,
-  logger: {
-    level: LogLevel.Info,
-  },
-  partials: ['CHANNEL'],
-});
-
-client.fetchPrefix = fetchPrefix;
+const client = new SapphireClient(CLIENT_OPTIONS);
 
 const main = async () => {
   if (!validateEnv()) return;
