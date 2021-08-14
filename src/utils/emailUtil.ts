@@ -24,6 +24,13 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.EMAIL_CLIENT_REFRESH,
 });
 
+/**
+ * Sends an email with given parameters
+ * @param toAddress
+ * @param subject
+ * @param text
+ * @param htmlText
+ */
 const sendMail = (toAddress: string, subject: string, text: string, htmlText: string) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -36,15 +43,29 @@ const sendMail = (toAddress: string, subject: string, text: string, htmlText: st
     },
   };
 
+  let response: (Error | null) | SentMessageInfo;
+
   transporter.sendMail(mailOptions, function(error: Error | null, info: SentMessageInfo) {
     if (error) {
       logger.error(error);
+      response = error;
     } else {
       logger.info('Email sent: ' + info.response);
+      response = info;
     }
   });
+
+  return response;
 };
 
+/**
+ * Sends a confirmation email with the specified parameters for verification
+ * @param toAddress
+ * @param userId
+ * @param serverName
+ * @param serverPrefix
+ * @param uniqueKey
+ */
 export const sendConfirmationEmail = (toAddress: string, userId: string, serverName: string, serverPrefix: string, uniqueKey: string) => {
   const text = `Please verify your email address by typing ${serverPrefix}confirm ${uniqueKey} in the ${serverName} server!`;
 
@@ -64,7 +85,7 @@ export const sendConfirmationEmail = (toAddress: string, userId: string, serverN
 </html>
 `;
 
-  sendMail(toAddress, 'BediBot Verification', text, htmlText);
+  return sendMail(toAddress, 'BediBot Verification', text, htmlText);
 };
 
 /**
@@ -73,7 +94,7 @@ export const sendConfirmationEmail = (toAddress: string, userId: string, serverN
  * @returns {boolean}
  */
 export const isEmailValid = (emailAddress: string) => {
-  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re = /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]+)$/;
   return re.test(emailAddress);
 };
 

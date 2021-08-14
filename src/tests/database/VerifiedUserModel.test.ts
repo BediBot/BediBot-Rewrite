@@ -31,5 +31,6 @@ describe('VerifiedUsers DB', () => {
     });
 
     expect(await emailAddressLinkedToUser(emailAddress, guildId)).toBe(true);
+    expect(await emailAddressLinkedToUser(emailAddress, 'wrongGuildId')).toBe(false);
   });
 });

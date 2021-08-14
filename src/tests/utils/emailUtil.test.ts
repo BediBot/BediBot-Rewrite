@@ -8,7 +8,7 @@ describe('Email Utils', () => {
     expect(isEmailValid('@gmail.com')).toBe(false);
     expect(isEmailValid('testgmail.com')).toBe(false);
     expect(isEmailValid('test@gmailcom')).toBe(false);
-    expect(isEmailValid('test@gmail.c')).toBe(false);
+    expect(isEmailValid('test@gmail.c')).toBe(true);
     expect(isEmailValid('@testgmail.com')).toBe(false);
   });
 });

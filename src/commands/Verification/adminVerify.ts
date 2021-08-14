@@ -4,6 +4,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {addVerifiedUser} from '../../database/models/VerifiedUserModel';
+import {addRoleToUser} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -12,7 +13,7 @@ module.exports = class AdminVerifyCommand extends Command {
     super(context, {
       name: 'adminverify',
       description: 'Forcibly verifies a user in the server.',
-      preconditions: ['AdminOnly', 'GuildOnly'],
+      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly'],
     });
   }
 
@@ -41,6 +42,7 @@ module.exports = class AdminVerifyCommand extends Command {
       });
     }
 
+    await addRoleToUser(user.value.id, guild, settingsData.verifiedRole);
     await addVerifiedUser(user.value.id, guildId as string, 'Admin Verified');
     const embed = new BediEmbed()
         .setTitle('Admin Verify Reply')

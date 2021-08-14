@@ -14,7 +14,7 @@ module.exports = class SettingsCommand extends Command {
       name: 'settings',
       aliases: ['setting'],
       description: 'Displays the current guild settings',
-      preconditions: ['AdminOnly', 'GuildOnly'],
+      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly'],
     });
   }
 

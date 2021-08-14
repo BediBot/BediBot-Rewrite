@@ -25,6 +25,7 @@ module.exports = class VerifyCommand extends Command {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
 
+    // Deleting message as it contains a users email
     await message.delete();
 
     if (!settingsData.verificationEnabled) {
@@ -101,7 +102,15 @@ module.exports = class VerifyCommand extends Command {
     }
 
     const uniqueKey = createUniqueKey();
-    await sendConfirmationEmail(emailAddress.value, author.id, guild!.name, settingsData.prefix, uniqueKey);
+    const response = await sendConfirmationEmail(emailAddress.value, author.id, guild!.name, settingsData.prefix, uniqueKey);
+
+    if (Object.prototype.toString.call(response) === '[object Error]') {
+      const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Verify Reply')
+          .setDescription('Sorry, something went wrong. Please contact a BediBot Dev.');
+    }
+
     await addPendingVerificationUser(author.id, guildId as string, await hashString(emailAddress.value), uniqueKey);
 
     const embed = new BediEmbed()
