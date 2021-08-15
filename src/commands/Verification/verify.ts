@@ -33,9 +33,7 @@ module.exports = class VerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
           .setDescription('Verification is not enabled on this server!');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     if (await userVerifiedInGuild(author.id, guildId as string)) {
@@ -43,9 +41,7 @@ module.exports = class VerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
           .setDescription(`You are already verified! Run ${settingsData.prefix}unverify if necessary.`);
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     const existingEmailHash = await userVerifiedAnywhereEmailHash(author.id, guildId as string);
@@ -55,9 +51,7 @@ module.exports = class VerifyCommand extends Command {
       const embed = new BediEmbed()
           .setTitle('Verify Reply')
           .setDescription('You have been automatically verified!');
-      return message.author.send({
-        embeds: [embed],
-      });
+      return message.author.send({embeds: [embed]});
     }
 
     const emailAddress = await args.pickResult('string');
@@ -66,9 +60,7 @@ module.exports = class VerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
           .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'verify <emailAddress>`');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     if (!(isEmailValid(emailAddress.value) && emailAddress.value.endsWith(settingsData.emailDomain))) {
@@ -76,9 +68,7 @@ module.exports = class VerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
           .setDescription('Invalid Syntax!\n\nMake sure your email is in the format `email@' + settingsData.emailDomain + '`');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     if (await emailAddressLinkedToUser(emailAddress.value, guildId as string)) {
@@ -86,9 +76,7 @@ module.exports = class VerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
           .setDescription('Invalid Email!\n\nThat email already belongs to a member of this server!');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     if (await emailAddressLinkedToPendingVerificationUser(emailAddress.value)) {
@@ -96,9 +84,7 @@ module.exports = class VerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
           .setDescription('Invalid Email!\n\nSomeone is pending verification with that email already!');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     const uniqueKey = createUniqueKey();
@@ -118,9 +104,7 @@ module.exports = class VerifyCommand extends Command {
         .setDescription(
             'Verification Email Sent to `' + emailAddress.value + '`\nCheck your email and run `' + settingsData.prefix +
             'confirm <uniqueKey>` to complete verification.');
-    return message.author.send({
-      embeds: [embed],
-    });
+    return message.author.send({embeds: [embed]});
   }
 };
 

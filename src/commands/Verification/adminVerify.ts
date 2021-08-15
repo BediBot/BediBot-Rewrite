@@ -26,9 +26,7 @@ module.exports = class AdminVerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Admin Verify Reply')
           .setDescription('Verification is not enabled on this server!'); // TODO: Explain how to enable verification when implemented
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     const user = await args.pickResult('user');
@@ -37,9 +35,7 @@ module.exports = class AdminVerifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Admin Verify Reply')
           .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'adminverify <@User>`');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     await addRoleToUser(user.value.id, guild, settingsData.verifiedRole);
@@ -47,8 +43,6 @@ module.exports = class AdminVerifyCommand extends Command {
     const embed = new BediEmbed()
         .setTitle('Admin Verify Reply')
         .setDescription(`${user.value} has been verified.`);
-    return message.channel.send({
-      embeds: [embed],
-    });
+    return message.channel.send({embeds: [embed]});
   }
 };

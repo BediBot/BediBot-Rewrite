@@ -25,9 +25,6 @@ module.exports = class PingCommand extends Command {
         .setTitle('Pong!')
         .setDescription(
             `Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${msg.createdTimestamp - message.createdTimestamp}ms.`);
-
-    return msg.edit({
-      embeds: [editEmbed],
-    });
+    return msg.edit({embeds: [editEmbed]});
   }
 };

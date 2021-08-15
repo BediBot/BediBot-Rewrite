@@ -26,9 +26,7 @@ module.exports = class SettingsCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Settings Reply')
           .setDescription('This command is only for guilds!');
-      return message.reply({
-        embeds: [embed],
-      });
+      return message.reply({embeds: [embed]});
     }
 
     let settingsData = await getSettings(guildId as string);
@@ -71,8 +69,6 @@ module.exports = class SettingsCommand extends Command {
       }
     }
 
-    return message.reply({
-      embeds: [embed],
-    });
+    return message.reply({embeds: [embed]});
   }
 };

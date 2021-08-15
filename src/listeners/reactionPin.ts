@@ -2,8 +2,7 @@ import {Events, Listener, PieceContext} from '@sapphire/framework';
 import {getSettings} from '../database/models/SettingsModel';
 import colors from '../utils/colorUtil';
 import {BediEmbed} from '../lib/BediEmbed';
-import {MessageReaction, User} from 'discord.js';
-import logger from '../utils/loggerUtil';
+import {MessageReaction, Permissions, User} from 'discord.js';
 
 module.exports = class PinReactionListener extends Listener {
   constructor(context: PieceContext) {
@@ -28,16 +27,14 @@ module.exports = class PinReactionListener extends Listener {
       return user.send({embeds: [embed]});
     }
 
-    try {
-      return messageReaction.message.pin();
-    } catch (error) {
-      logger.error('Failed to Pin Emoji: ' + error);
-
+    if (!guild.me?.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
       const embed = new BediEmbed()
-          .setColor(colors.ERROR)
           .setTitle('Pin Reply')
-          .setDescription('Sorry, something went wrong. Please contact a BediBot Dev.');
-      return user.send({embeds: [embed]});
+          .setColor(colors.ERROR)
+          .setDescription('BediBot does not have the required permissions: `MANAGE MESSAGES`');
+      return message.reply({embeds: [embed]});
     }
+
+    return messageReaction.message.pin();
   }
 };

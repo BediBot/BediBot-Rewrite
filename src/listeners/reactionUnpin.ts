@@ -1,8 +1,7 @@
 import {Events, Listener, PieceContext} from '@sapphire/framework';
 import colors from '../utils/colorUtil';
 import {BediEmbed} from '../lib/BediEmbed';
-import {MessageReaction, User} from 'discord.js';
-import logger from '../utils/loggerUtil';
+import {MessageReaction, Permissions, User} from 'discord.js';
 import {getSettings} from '../database/models/SettingsModel';
 
 module.exports = class PinReactionListener extends Listener {
@@ -28,22 +27,20 @@ module.exports = class PinReactionListener extends Listener {
       return user.send({embeds: [embed]});
     }
 
-    try {
-      await messageReaction.message.unpin();
-
+    if (!guild.me?.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
       const embed = new BediEmbed()
-          .setColor(colors.PRIMARY)
-          .setTitle('Unpin Reply')
-          .setDescription('Message unpinned successfully on `' + guild.name + '`');
-      return user.send({embeds: [embed]});
-    } catch (error) {
-      logger.error('Failed to Unpin Emoji: ' + error);
-
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
           .setTitle('Pin Reply')
-          .setDescription('Sorry, something went wrong. Please contact a BediBot Dev.');
-      return user.send({embeds: [embed]});
+          .setColor(colors.ERROR)
+          .setDescription('BediBot does not have the required permissions: `MANAGE MESSAGES`');
+      return message.reply({embeds: [embed]});
     }
+
+    await messageReaction.message.unpin();
+
+    const embed = new BediEmbed()
+        .setColor(colors.PRIMARY)
+        .setTitle('Unpin Reply')
+        .setDescription('Message unpinned successfully on `' + guild.name + '`');
+    return user.send({embeds: [embed]});
   }
 };

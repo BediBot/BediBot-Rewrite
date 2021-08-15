@@ -23,9 +23,6 @@ module.exports = class CommandDenied extends Listener {
         .setTitle(commandName + ' Reply')
         .setColor(colors.ERROR)
         .setDescription(content);
-
-    return message.reply({
-      embeds: [embed],
-    });
+    return message.reply({embeds: [embed]});
   }
 };
