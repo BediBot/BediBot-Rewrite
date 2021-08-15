@@ -1,5 +1,5 @@
 import {Args, PieceContext, Result, UserError} from '@sapphire/framework';
-import {Interaction, Message, MessageActionRow, MessageButton, Snowflake} from 'discord.js';
+import {Interaction, Message, MessageActionRow, MessageButton, Snowflake, User} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
@@ -41,17 +41,18 @@ module.exports = class PingCommand extends Command {
       return message.reply({embeds: [embed]});
     }
     let quote: string | Result<string, UserError>;
-    let quoteAuthor: Result<string, UserError>;
+    let quoteAuthor: Result<string, UserError> | Result<User, UserError>;
 
     if (message.reference) {
       quote = (await message.channel.messages.fetch(message.reference.messageId as Snowflake)).content;
-      quoteAuthor = await args.pickResult('string');
+      quoteAuthor = await args.pickResult('user');
+      if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
       if (!quoteAuthor.success) return invalidSyntaxReply(message, settingsData);
     } else {
-
       quote = await args.pickResult('string');
-      quoteAuthor = await args.pickResult('string');
+      quoteAuthor = await args.pickResult('user');
+      if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
       if (!quote.success || !quoteAuthor.success) return invalidSyntaxReply(message, settingsData);
       quote = quote.value;
@@ -64,13 +65,20 @@ module.exports = class PingCommand extends Command {
           .setDescription('Quote is too long! Please submit a quote that is 1024 characters or fewer.');
       return message.reply({embeds: [embed]});
     }
-
     const embed = new BediEmbed()
-        .setTitle(`Add Quote Reply - Approvals: 0/${settingsData.quoteApprovalsRequired}`)
-        .setDescription(`Quote: ${surroundStringWithBackTick(quote)}
+        .setTitle(`Add Quote Reply - Approvals: 0/${settingsData.quoteApprovalsRequired}`);
+
+    if (typeof quoteAuthor.value === 'string') {
+      embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
         Author: ${surroundStringWithBackTick(quoteAuthor.value as string)}
         Submitted By: ${author}
         Approved By:`);
+    } else {
+      embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
+        Author (Mention): ${quoteAuthor.value}
+        Submitted By: ${author}
+        Approved By:`);
+    }
 
     const row = new MessageActionRow()
         .addComponents(
@@ -120,10 +128,17 @@ module.exports = class PingCommand extends Command {
             .setDescription(description as string);
 
         const quote = description?.substring('Quote: `'.length, description?.indexOf('`', 'Quote: `'.length + 1));
-        const authorIndex = (description?.indexOf('Author: `') as number) + 'Author: `'.length;
-        const author = description?.substring(authorIndex, description?.indexOf('`', authorIndex + 1));
 
-        await addQuote(interaction.guildId as string, quote as string, author as string);
+        let author: string;
+
+        if (description?.includes('Author (Mention)')) {
+          author = description?.substring(description?.indexOf('<'), description?.indexOf('>') + 1) as string;
+        } else {
+          const authorIndex = (description?.indexOf('Author: `') as number) + 'Author: `'.length;
+          author = description?.substring(authorIndex, description?.indexOf('`', authorIndex + 1)) as string;
+        }
+
+        await addQuote(interaction.guildId as string, quote as string, author);
 
         await message.edit({
           embeds: [embed],
