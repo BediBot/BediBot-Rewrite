@@ -1,5 +1,5 @@
 import {Args, PieceContext, Result, UserError} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton, Snowflake} from 'discord.js';
+import {Interaction, Message, MessageActionRow, MessageButton, Snowflake} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
@@ -7,7 +7,6 @@ import {userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import logger from '../../utils/loggerUtil';
 import {addQuote} from '../../database/models/QuoteModel';
-import {client} from '../../index';
 
 const {Command} = require('@sapphire/framework');
 
@@ -88,19 +87,23 @@ module.exports = class PingCommand extends Command {
   }
 
   async onLoad() {
-    client.on('interactionCreate', async interaction => {
-      if (!interaction.isButton() || !(interaction.customId === 'QuoteApprove')) return;
+    this.container.client.on('interactionCreate', async (interaction: Interaction) => {
+      if (!interaction.isButton() || interaction.customId != 'QuoteApprove') return;
+
       await interaction.deferUpdate();
 
       const message = interaction.message;
       if (!(message instanceof Message)) return;
 
       let description = message.embeds[0].description;
+
       if (description?.includes(interaction.user.toString())) return;
 
       const title = message.embeds[0].title;
+
       let numApprovals = parseInt(title?.substring('Add Quote Reply - Approvals: '.length, title.indexOf('/')) as string, 10);
       numApprovals++;
+
       description += ` ${interaction.user}`;
 
       const settingsData = await getSettings(interaction.guildId as string);
@@ -131,6 +134,12 @@ module.exports = class PingCommand extends Command {
   }
 };
 
+/**
+ * Replies with the invalid syntax message - This function is purely to avoid repeated code
+ * @param message
+ * @param settingsData
+ * @returns {Promise<Message>}
+ */
 const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
   logger.info('this happened');
   const embed = new BediEmbed()
