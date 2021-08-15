@@ -13,6 +13,7 @@ interface SettingsI {
   emailDomain: string,
   verifiedRole: string,
   pinEmoji: string,
+  quoteApprovalsRequired: number,
 }
 
 export const Settings = new Schema({
@@ -28,6 +29,7 @@ export const Settings = new Schema({
   emailDomain: String,
   verifiedRole: String,
   pinEmoji: String,
+  quoteApprovalsRequired: String,
 });
 
 export const defaultSettings = (guildID: string) => {
@@ -44,6 +46,7 @@ export const defaultSettings = (guildID: string) => {
     emailDomain: 'uwaterloo.ca',
     verifiedRole: 'Verified',
     pinEmoji: '📌',
+    quoteApprovalsRequired: 4,
   };
 };
 

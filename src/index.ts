@@ -3,7 +3,7 @@ import {validateEnv} from './utils/envUtil';
 import logger from './utils/loggerUtil';
 import {CLIENT_OPTIONS} from './config';
 
-const client = new SapphireClient(CLIENT_OPTIONS);
+export const client = new SapphireClient(CLIENT_OPTIONS);
 
 const main = async () => {
   if (!validateEnv()) return;

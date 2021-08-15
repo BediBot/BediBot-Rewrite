@@ -96,3 +96,7 @@ export const purge_messages_from_specific_user = async (message: Message, number
   }
   return number_of_messages_deleted;
 };
+
+export const surroundStringWithBackTick = (string: string) => {
+  return '`' + string + '`';
+};
