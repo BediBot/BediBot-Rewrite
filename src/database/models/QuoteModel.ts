@@ -16,4 +16,13 @@ export const Quote = new Schema({
 
 const quoteModel = model<QuoteI>('Quote', Quote, 'Quotes');
 
+export const addQuote = async (guildId: string, quote: string, author: string, date: Date) => {
+  await quoteModel.create({
+    guildId: guildId,
+    quote: quote,
+    author: author,
+    date: date,
+  });
+};
+
 export default quoteModel;
