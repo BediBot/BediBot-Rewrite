@@ -32,7 +32,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('Verification is not enabled on this server!');
-      return message.reply({embeds: [embed]});
+      return message.channel.send({embeds: [embed]});
     }
 
     if (await userVerifiedInGuild(author.id, guildId as string)) {
@@ -40,7 +40,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription(`You are already verified! Run ${settingsData.prefix}unverify if necessary.`);
-      return message.reply({embeds: [embed]});
+      return message.channel.send({embeds: [embed]});
     }
 
     if (!await userPendingVerification(author.id, guildId as string)) {
@@ -48,7 +48,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('You have not run `' + settingsData.prefix + 'verify <emailAddress>` yet!');
-      return message.reply({embeds: [embed]});
+      return message.channel.send({embeds: [embed]});
     }
 
     const uniqueKey = await args.pickResult('string');
@@ -57,7 +57,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'confirm <uniqueKey>`');
-      return message.reply({embeds: [embed]});
+      return message.channel.send({embeds: [embed]});
     }
 
     if (!(await validUniqueKey(author.id, guildId as string, uniqueKey.value))) {
@@ -65,7 +65,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('Invalid key!');
-      return message.reply({embeds: [embed]});
+      return message.channel.send({embeds: [embed]});
     }
 
     await addRoleToAuthor(message, settingsData.verifiedRole);
