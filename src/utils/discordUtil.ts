@@ -67,6 +67,8 @@ export const fetchPrefix = async (message: Message) => {
  * @param channel Discord JS channel object in which to delete messages
  * @param number_of_msgs Number of messages to fetch and delete
  * @note This command will purposely ignore pinned messages
+ * 
+ * @returns whether the message was actually deleted or not
  */
 export const purge_messages = async(message: Message, number_of_msgs: number) => {
     if(message.channel.type == "GUILD_TEXT")
@@ -74,5 +76,7 @@ export const purge_messages = async(message: Message, number_of_msgs: number) =>
       const fetched_messages = await message.channel.messages.fetch({limit: number_of_msgs});
       const messages_to_delete = fetched_messages.filter((m) => !m.pinned);
       message.channel.bulkDelete(messages_to_delete); 
+      return true
     }
+    return false
 };
