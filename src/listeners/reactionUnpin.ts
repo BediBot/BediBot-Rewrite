@@ -3,6 +3,7 @@ import colors from '../utils/colorUtil';
 import {BediEmbed} from '../lib/BediEmbed';
 import {MessageReaction, User} from 'discord.js';
 import logger from '../utils/loggerUtil';
+import {getSettings} from '../database/models/SettingsModel';
 
 module.exports = class PinReactionListener extends Listener {
   constructor(context: PieceContext) {
@@ -16,6 +17,14 @@ module.exports = class PinReactionListener extends Listener {
     const {guild, guildId} = message;
 
     if (!guild || messageReaction.emoji.name != '📌') return;
+
+    if (!(await getSettings(guildId as string)).pinsEnabled) {
+      const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Pin Reply')
+          .setDescription('Sorry, `' + guild.name + '` does not have reaction pinning enabled');
+      return user.send({embeds: [embed]});
+    }
 
     try {
       await messageReaction.message.unpin();
