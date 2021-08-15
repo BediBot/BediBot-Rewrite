@@ -5,13 +5,18 @@ import {fetchPrefix} from './utils/discordUtil';
 export const DEFAULT_PREFIX = '$';
 
 export const CLIENT_OPTIONS: ClientOptions = {
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_INTEGRATIONS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
   defaultPrefix: DEFAULT_PREFIX,
   caseInsensitiveCommands: true,
   caseInsensitivePrefixes: true,
   logger: {
     level: LogLevel.None,
   },
-  partials: ['CHANNEL'],
+  partials: ['CHANNEL', 'MESSAGE', 'REACTION'],
   fetchPrefix: fetchPrefix,
 };
