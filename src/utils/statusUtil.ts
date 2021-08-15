@@ -1,7 +1,7 @@
 import logger from './loggerUtil';
 import {PresenceData} from 'discord.js';
 
-var statuses = [
+const statuses = [
     {status: 'online', activities: [{type: 'LISTENING', name: 'Martingales | $help'}]},
     {status: 'online', activities: [{type: 'LISTENING', name: '115 ASMR | $help'}]},
     {status: 'online', activities: [{type: 'WATCHING', name: 'Geese honk | $help'}]},
