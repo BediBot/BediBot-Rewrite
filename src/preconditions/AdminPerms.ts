@@ -3,9 +3,9 @@ import {Message, Permissions} from 'discord.js';
 
 export class ManageChannelPrecondition extends Precondition {
   public run(message: Message) {
-    if (message.guild && message.guild.me?.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+    if (message.guild && message.guild.me?.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
       return this.ok();
     }
-    return this.error({message: 'BediBot does not have the required permissions: `MANAGE MESSAGES`'});
+    return this.error({message: 'BediBot does not have the required permissions: `ADMINISTRATOR`'});
   }
 }

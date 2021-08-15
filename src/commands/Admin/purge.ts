@@ -3,7 +3,7 @@ import {Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {purge_messages, purge_messages_from_specific_user} from '../../utils/discordUtil';
+import {purge_messages} from '../../utils/discordUtil';
 
 const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
@@ -14,7 +14,7 @@ module.exports = class PingCommand extends Command {
     super(context, {
       name: 'purge',
       description: 'Purges a specific number of messages',
-      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly', 'ManageMessagePerms'],
+      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly', 'AdminPerms'],
     });
   }
 
@@ -33,16 +33,14 @@ module.exports = class PingCommand extends Command {
       });
     }
 
-    
     //Check if the number is within the bounds expected
-    if(!(number_of_msgs_to_delete.value > 0 && number_of_msgs_to_delete.value <= MAX_MSGS_THAT_CAN_BE_DELETED))
-    {
-        const embed = new BediEmbed()
+    if (!(number_of_msgs_to_delete.value > 0 && number_of_msgs_to_delete.value <= MAX_MSGS_THAT_CAN_BE_DELETED)) {
+      const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Ensure that the number of messages is less than or equal to ' + MAX_MSGS_THAT_CAN_BE_DELETED);
-        return message.reply({
-            embeds: [embed],
+      return message.reply({
+        embeds: [embed],
       });
     }
 
@@ -89,24 +87,23 @@ module.exports = class PingCommand extends Command {
     //Perform the deletion
     const success = await purge_messages(message, number_of_msgs_to_delete.value + 1); //Delete purge command as well
 
-    if(!success)
-    {
-        const embed = new BediEmbed()
-            .setColor(colors.ERROR)
-            .setTitle('Purge Reply')
-            .setDescription('Fatal error, please contact a Bedibot Dev');
-        return message.channel.send({
+    if (!success) {
+      const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Purge Reply')
+          .setDescription('Fatal error, please contact a Bedibot Dev');
+      return message.channel.send({
         embeds: [embed],
-    });
+      });
     }
 
     //Reply
     const embed = new BediEmbed()
         .setTitle('Purge Reply')
-        .setDescription('Successfully purged `' + number_of_msgs_to_delete.value + "` messages from `" + message.guild?.name + "`")
-    
+        .setDescription('Successfully purged `' + number_of_msgs_to_delete.value + '` messages from `' + message.guild?.name + '`');
+
     return message.author.send({
-        embeds: [embed]
+      embeds: [embed],
     });
     //}
   }

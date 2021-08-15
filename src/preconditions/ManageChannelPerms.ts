@@ -3,10 +3,9 @@ import {Message, Permissions} from 'discord.js';
 
 export class BotPermManageChannelPrecondition extends Precondition {
   public run(message: Message) {
-    if (message.guild && message.guild.me?.permissions.has("MANAGE_CHANNELS")) 
-    {
-        return this.ok();
+    if (message.guild && message.guild.me?.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+      return this.ok();
     }
-    return this.error({message: 'Bot does not have proper permissions: missing `MANAGE CHANNELS` permission'});
+    return this.error({message: 'BediBot does not have the required permissions: `MANAGE CHANNELS`'});
   }
 }
