@@ -1,4 +1,4 @@
-import {Guild, Message, Role} from 'discord.js';
+import {Guild, Message, Role, Channel} from 'discord.js';
 import logger from './loggerUtil';
 import {getSettings} from '../database/models/SettingsModel';
 
@@ -59,4 +59,20 @@ export const fetchPrefix = async (message: Message) => {
   const guildPrefix = (await getSettings(guildId as string)).prefix;
 
   return guildPrefix ?? '$';
+};
+
+
+/**
+ * 
+ * @param channel Discord JS channel object in which to delete messages
+ * @param number_of_msgs Number of messages to fetch and delete
+ * @note This command will purposely ignore pinned messages
+ */
+export const purge_messages = async(message: Message, number_of_msgs: number) => {
+    if(message.channel.type == "GUILD_TEXT")
+    {
+      const fetched_messages = await message.channel.messages.fetch({limit: number_of_msgs});
+      const messages_to_delete = fetched_messages.filter((m) => !m.pinned);
+      message.channel.bulkDelete(messages_to_delete); 
+    }
 };
