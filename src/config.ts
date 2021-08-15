@@ -1,5 +1,6 @@
-import {ClientOptions, Intents} from 'discord.js';
+import {ClientOptions, Intents, PresenceData} from 'discord.js';
 import {LogLevel} from '@sapphire/framework';
+import {getRandomStatus} from './utils/statusUtil';
 import {fetchPrefix} from './utils/discordUtil';
 
 export const DEFAULT_PREFIX = '$';
@@ -14,6 +15,7 @@ export const CLIENT_OPTIONS: ClientOptions = {
   defaultPrefix: DEFAULT_PREFIX,
   caseInsensitiveCommands: true,
   caseInsensitivePrefixes: true,
+  presence: getRandomStatus() as PresenceData,
   logger: {
     level: LogLevel.None,
   },
