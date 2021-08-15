@@ -12,13 +12,15 @@ module.exports = class CommandDenied extends Listener {
   }
 
   public async run({context, message: content}: UserError, {message, command}: CommandDeniedPayload) {
-    logger.warn('Command Denied: ' + capFirstLetter(command.name));
+    const commandName = capFirstLetter(command.name);
+
+    logger.warn('Command Denied: ' + commandName + ' - ' + content);
 
     // Does nothing if command has 'silent' flag
     if (Reflect.get(Object(context), 'silent')) return;
 
     const embed = new BediEmbed()
-        .setTitle(capFirstLetter(command.name) + ' Reply')
+        .setTitle(commandName + ' Reply')
         .setColor(colors.ERROR)
         .setDescription(content);
 
