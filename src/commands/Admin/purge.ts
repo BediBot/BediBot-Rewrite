@@ -75,7 +75,7 @@ module.exports = class PingCommand extends Command {
                 //Reply
                 const embed = new BediEmbed()
                 .setTitle('Purge Reply')
-                .setDescription('Successfully purged `' + number_of_msgs_deleted + "` messages from `" + user.value +"` in `" + message.guild?.name + "`")
+                .setDescription('Successfully purged `' + number_of_msgs_deleted + "` messages from `" + user.value.tag +"` in `" + message.guild?.name + "`")
             
             return message.author.send({
                 embeds: [embed]
