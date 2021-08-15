@@ -5,12 +5,11 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import logger from '../../utils/loggerUtil';
 import {addQuote} from '../../database/models/QuoteModel';
 
 const {Command} = require('@sapphire/framework');
 
-const EMBED_FIELD_MAX_CHAR_LENGTH = 1025;
+const EMBED_FIELD_MAX_CHAR_LENGTH = 1024;
 
 module.exports = class PingCommand extends Command {
   constructor(context: PieceContext) {
@@ -68,14 +67,18 @@ module.exports = class PingCommand extends Command {
     const embed = new BediEmbed()
         .setTitle(`Add Quote Reply - Approvals: 0/${settingsData.quoteApprovalsRequired}`);
 
+    const date = new Date(Date.now());
+
     if (typeof quoteAuthor.value === 'string') {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
         Author: ${surroundStringWithBackTick(quoteAuthor.value as string)}
+        Date: ${surroundStringWithBackTick(date.toDateString())}
         Submitted By: ${author}
         Approved By:`);
     } else {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
         Author (Mention): ${quoteAuthor.value}
+        Date: ${surroundStringWithBackTick(date.toDateString())}
         Submitted By: ${author}
         Approved By:`);
     }
@@ -138,7 +141,10 @@ module.exports = class PingCommand extends Command {
           author = description?.substring(authorIndex, description?.indexOf('`', authorIndex + 1)) as string;
         }
 
-        await addQuote(interaction.guildId as string, quote as string, author);
+        const dateIndex = (description?.indexOf('Date: `') as number) + 'Date: `'.length;
+        const date = new Date(Date.parse(description?.substring(dateIndex, description?.indexOf('`', dateIndex + 1)) as string));
+
+        await addQuote(interaction.guildId as string, quote as string, author, date);
 
         await message.edit({
           embeds: [embed],
@@ -156,7 +162,6 @@ module.exports = class PingCommand extends Command {
  * @returns {Promise<Message>}
  */
 const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
-  logger.info('this happened');
   const embed = new BediEmbed()
       .setColor(colors.ERROR)
       .setTitle('Add Quote Reply')
