@@ -10,6 +10,7 @@ import {addQuote} from '../../database/models/QuoteModel';
 const {Command} = require('@sapphire/framework');
 
 const EMBED_FIELD_MAX_CHAR_LENGTH = 1024;
+const TITLE_BEFORE_NUM_APPROVALS = 'Add Quote Reply - Approvals: ';
 
 module.exports = class PingCommand extends Command {
   constructor(context: PieceContext) {
@@ -65,7 +66,7 @@ module.exports = class PingCommand extends Command {
       return message.reply({embeds: [embed]});
     }
     const embed = new BediEmbed()
-        .setTitle(`Add Quote Reply - Approvals: 0/${settingsData.quoteApprovalsRequired}`);
+        .setTitle(`${TITLE_BEFORE_NUM_APPROVALS}0/${settingsData.quoteApprovalsRequired}`);
 
     const date = new Date(Date.now());
 
@@ -113,7 +114,7 @@ module.exports = class PingCommand extends Command {
 
       const title = message.embeds[0].title;
 
-      let numApprovals = parseInt(title?.substring('Add Quote Reply - Approvals: '.length, title.indexOf('/')) as string, 10);
+      let numApprovals = parseInt(title?.substring(TITLE_BEFORE_NUM_APPROVALS.length, title.indexOf('/')) as string, 10);
       numApprovals++;
 
       description += ` ${interaction.user}`;
