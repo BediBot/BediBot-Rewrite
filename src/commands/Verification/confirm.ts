@@ -32,9 +32,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('Verification is not enabled on this server!');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     if (await userVerifiedInGuild(author.id, guildId as string)) {
@@ -42,9 +40,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription(`You are already verified! Run ${settingsData.prefix}unverify if necessary.`);
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     if (!await userPendingVerification(author.id, guildId as string)) {
@@ -52,9 +48,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('You have not run `' + settingsData.prefix + 'verify <emailAddress>` yet!');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     const uniqueKey = await args.pickResult('string');
@@ -63,9 +57,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'confirm <uniqueKey>`');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     if (!(await validUniqueKey(author.id, guildId as string, uniqueKey.value))) {
@@ -73,9 +65,7 @@ module.exports = class ConfirmCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Confirm Reply')
           .setDescription('Invalid key!');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     await addRoleToAuthor(message, settingsData.verifiedRole);
@@ -85,8 +75,6 @@ module.exports = class ConfirmCommand extends Command {
         .setColor(colors.PRIMARY)
         .setTitle('Confirm Reply')
         .setDescription('You have been verified on `' + guild!.name + '`');
-    return message.author.send({
-      embeds: [embed],
-    });
+    return message.author.send({embeds: [embed]});
   }
 };

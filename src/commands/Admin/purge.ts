@@ -28,9 +28,7 @@ module.exports = class PingCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'purge <number>`');
-      return message.reply({
-        embeds: [embed],
-      });
+      return message.reply({embeds: [embed]});
     }
 
     //Check if the number is within the bounds expected
@@ -39,9 +37,7 @@ module.exports = class PingCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Ensure that the number of messages is less than or equal to ' + MAX_MSGS_THAT_CAN_BE_DELETED);
-      return message.reply({
-        embeds: [embed],
-      });
+      return message.reply({embeds: [embed]});
     }
 
     /* //Commented out code to support purging messages from a specific user, rationale is because the current interface is unintutive
@@ -92,19 +88,14 @@ module.exports = class PingCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Fatal error, please contact a Bedibot Dev');
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({embeds: [embed]});
     }
 
     //Reply
     const embed = new BediEmbed()
         .setTitle('Purge Reply')
         .setDescription('Successfully purged `' + number_of_msgs_to_delete.value + '` messages from `' + message.guild?.name + '`');
-
-    return message.author.send({
-      embeds: [embed],
-    });
+    return message.author.send({embeds: [embed]});
     //}
   }
 };
