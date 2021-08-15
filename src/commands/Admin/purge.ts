@@ -14,7 +14,7 @@ module.exports = class PingCommand extends Command {
     super(context, {
       name: 'purge',
       description: 'Purges a specific number of messages',
-      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly', 'ManageChannelPerms'],
+      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly', 'ManageMessagePerms'],
     });
   }
 
@@ -87,7 +87,7 @@ module.exports = class PingCommand extends Command {
     {
     */
     //Perform the deletion
-    const success = await purge_messages(message, number_of_msgs_to_delete.value);
+    const success = await purge_messages(message, number_of_msgs_to_delete.value + 1); //Delete purge command as well
 
     if(!success)
     {
