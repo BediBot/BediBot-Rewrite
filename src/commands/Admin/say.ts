@@ -9,7 +9,7 @@ const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
 const {Command} = require('@sapphire/framework');
 
-module.exports = class PingCommand extends Command {
+module.exports = class SayCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'say',
@@ -43,7 +43,7 @@ module.exports = class PingCommand extends Command {
             const embed = new BediEmbed()
                 .setColor(colors.ERROR)
                 .setTitle('Say Reply')
-                .setDescription('Invalid Syntax!\n\nMake sure your command is run in a guild text channel and in the format `' + settingsData.prefix + 'say <title> <body> (channel)`');
+                .setDescription('Invalid Syntax!\n\nMake sure your command is run in the format `' + settingsData.prefix + 'say <title> <body> (channel)`');
             return message.reply({embeds: [embed]});
           }
          
@@ -55,7 +55,7 @@ module.exports = class PingCommand extends Command {
     if(!BOT_OWNERS.includes(message.author.id))
     {
         //Append the user's @ to the message so that $say messages aren't mistaken for actual bot messages
-        body_content_to_send = body_content_to_send.concat("\n\nMessage created by " + message.author.toString());
+        body_content_to_send = body_content_to_send.concat("\n\nMessage created by " + message.author);
     }
     
     //Delete the original message
