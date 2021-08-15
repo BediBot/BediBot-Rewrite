@@ -37,34 +37,34 @@ module.exports = class PingCommand extends Command {
     let channel = message.channel;
     if(!args.finished)
     {
-        const arg_channel = await args.pickResult('channel');
+        const arg_channel = await args.pickResult('guildTextChannel');
 
         if (!arg_channel.success) {
             const embed = new BediEmbed()
                 .setColor(colors.ERROR)
                 .setTitle('Say Reply')
-                .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'say <title> <body> (channel)`');
+                .setDescription('Invalid Syntax!\n\nMake sure your command is run in a guild text channel and in the format `' + settingsData.prefix + 'say <title> <body> (channel)`');
             return message.reply({embeds: [embed]});
           }
          
-        //Assert that the channel type is only in guild_text
-        if(arg_channel.value.type != "GUILD_TEXT")
-        {
-            const embed = new BediEmbed()
-                .setColor(colors.ERROR)
-                .setTitle('Say Reply')
-                .setDescription('Please ensure that the channel is a guild text channel!');
-            return message.reply({embeds: [embed]});
-        }
-
         channel = arg_channel.value;
     }
+
+    let body_content_to_send = say_content.value
+    const BOT_OWNERS = process.env.BOT_OWNERS!.split(',');
+    if(!BOT_OWNERS.includes(message.author.id))
+    {
+        //Append the user's @ to the message so that $say messages aren't mistaken for actual bot messages
+        body_content_to_send = body_content_to_send.concat("\n\nMessage created by " + message.author.toString());
+    }
     
+    //Delete the original message
+    message.delete();
 
     //Send the say command
     const embed = new BediEmbed()
         .setTitle(say_title.value)
-        .setDescription(say_content.value);
+        .setDescription(body_content_to_send);
     return channel.send({embeds: [embed]});
   }
 };
