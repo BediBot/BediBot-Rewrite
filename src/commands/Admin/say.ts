@@ -3,7 +3,6 @@ import {Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {purge_messages} from '../../utils/discordUtil';
 
 const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
@@ -35,29 +34,28 @@ module.exports = class SayCommand extends Command {
 
     //Parse channel args
     let channel = message.channel;
-    if(!args.finished)
-    {
-        const arg_channel = await args.pickResult('guildTextChannel');
+    if (!args.finished) {
+      const arg_channel = await args.pickResult('guildTextChannel');
 
-        if (!arg_channel.success) {
-            const embed = new BediEmbed()
-                .setColor(colors.ERROR)
-                .setTitle('Say Reply')
-                .setDescription('Invalid Syntax!\n\nMake sure your command is run in the format `' + settingsData.prefix + 'say <title> <body> (channel)`');
-            return message.reply({embeds: [embed]});
-          }
-         
-        channel = arg_channel.value;
+      if (!arg_channel.success) {
+        const embed = new BediEmbed()
+            .setColor(colors.ERROR)
+            .setTitle('Say Reply')
+            .setDescription(
+                'Invalid Syntax!\n\nMake sure your command is run in the format `' + settingsData.prefix + 'say <title> <body> (channel)`');
+        return message.reply({embeds: [embed]});
+      }
+
+      channel = arg_channel.value;
     }
 
-    let body_content_to_send = say_content.value
+    let body_content_to_send = say_content.value;
     const BOT_OWNERS = process.env.BOT_OWNERS!.split(',');
-    if(!BOT_OWNERS.includes(message.author.id))
-    {
-        //Append the user's @ to the message so that $say messages aren't mistaken for actual bot messages
-        body_content_to_send = body_content_to_send.concat("\n\nMessage created by " + message.author);
+    if (!BOT_OWNERS.includes(message.author.id)) {
+      //Append the user's @ to the message so that $say messages aren't mistaken for actual bot messages
+      body_content_to_send = body_content_to_send.concat('\n\nMessage created by ' + message.author);
     }
-    
+
     //Delete the original message
     message.delete();
 
