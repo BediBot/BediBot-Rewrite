@@ -97,6 +97,7 @@ module.exports = class PingCommand extends Command {
     });
   }
 
+  // This function is called when the command is added to the command store. It is a useful place to add the listener for the button interactions.
   async onLoad() {
     this.container.client.on('interactionCreate', async (interaction: Interaction) => {
       if (!interaction.isButton() || interaction.customId != 'QuoteApprove') return;
