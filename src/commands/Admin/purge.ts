@@ -5,7 +5,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {purge_messages, purge_messages_from_specific_user} from '../../utils/discordUtil';
 
-const MAX_MSGS_THAT_CAN_BE_DELETED = 50;
+const MAX_MSGS_THAT_CAN_BE_DELETED = 500;
 
 const {Command} = require('@sapphire/framework');
 
