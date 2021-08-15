@@ -7,6 +7,6 @@ export class BotPermManageChannelPrecondition extends Precondition {
     {
         return this.ok();
     }
-    return this.error({message: 'Bot does not have proper permissions'});
+    return this.error({message: 'Bot does not have proper permissions: missing `MANAGE CHANNELS` permission'});
   }
 }
