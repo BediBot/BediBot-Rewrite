@@ -46,6 +46,7 @@ module.exports = class PingCommand extends Command {
       });
     }
 
+    /* //Commented out code to support purging messages from a specific user, rationale is because the current interface is unintutive
     if(!args.finished)
     {
         const user = await args.pickResult('user');
@@ -84,28 +85,29 @@ module.exports = class PingCommand extends Command {
     }
     else
     {
-        //Perform the deletion
-        const success = await purge_messages(message, number_of_msgs_to_delete.value);
+    */
+    //Perform the deletion
+    const success = await purge_messages(message, number_of_msgs_to_delete.value);
 
-        if(!success)
-        {
-            const embed = new BediEmbed()
-                .setColor(colors.ERROR)
-                .setTitle('Purge Reply')
-                .setDescription('Fatal error, please contact a Bedibot Dev');
-            return message.channel.send({
-            embeds: [embed],
-        });
-        }
-
-        //Reply
+    if(!success)
+    {
         const embed = new BediEmbed()
+            .setColor(colors.ERROR)
             .setTitle('Purge Reply')
-            .setDescription('Successfully purged `' + number_of_msgs_to_delete.value + "` messages from `" + message.guild?.name + "`")
-        
-        return message.author.send({
-            embeds: [embed]
-        });
+            .setDescription('Fatal error, please contact a Bedibot Dev');
+        return message.channel.send({
+        embeds: [embed],
+    });
     }
+
+    //Reply
+    const embed = new BediEmbed()
+        .setTitle('Purge Reply')
+        .setDescription('Successfully purged `' + number_of_msgs_to_delete.value + "` messages from `" + message.guild?.name + "`")
+    
+    return message.author.send({
+        embeds: [embed]
+    });
+    //}
   }
 };
