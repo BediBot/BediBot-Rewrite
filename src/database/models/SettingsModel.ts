@@ -12,6 +12,7 @@ interface SettingsI {
   dueDatesEnabled: boolean,
   emailDomain: string,
   verifiedRole: string,
+  pinEmoji: string,
 }
 
 export const Settings = new Schema({
@@ -26,6 +27,7 @@ export const Settings = new Schema({
   dueDatesEnabled: Boolean,
   emailDomain: String,
   verifiedRole: String,
+  pinEmoji: String,
 });
 
 export const defaultSettings = (guildID: string) => {
@@ -41,6 +43,7 @@ export const defaultSettings = (guildID: string) => {
     dueDatesEnabled: false,
     emailDomain: 'uwaterloo.ca',
     verifiedRole: 'Verified',
+    pinEmoji: '📌',
   };
 };
 

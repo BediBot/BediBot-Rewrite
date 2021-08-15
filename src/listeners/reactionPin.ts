@@ -16,9 +16,11 @@ module.exports = class PinReactionListener extends Listener {
     const {message} = messageReaction;
     const {guild, guildId} = message;
 
-    if (!guild || messageReaction.emoji.name != '📌') return;
+    const settingsData = await getSettings(guildId as string);
 
-    if (!(await getSettings(guildId as string)).pinsEnabled) {
+    if (!guild || messageReaction.emoji.name != settingsData.pinEmoji) return;
+
+    if (!settingsData.pinsEnabled) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Pin Reply')
