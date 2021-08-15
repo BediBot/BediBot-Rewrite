@@ -64,11 +64,10 @@ export const fetchPrefix = async (message: Message) => {
 
 
 /**
- * 
+ * @brief purge messages in a specific channel
  * @param message Discord JS message object
  * @param number_of_msgs Number of messages to fetch and delete
  * @note This command will purposely ignore pinned messages
- * 
  * @returns whether the message was actually deleted or not
  */
 export const purge_messages = async(message: Message, number_of_msgs: number) => {
@@ -83,11 +82,10 @@ export const purge_messages = async(message: Message, number_of_msgs: number) =>
 };
 
 /**
- * 
+ * @brief Purges messages from specific user with a specified search depth
  * @param channel Discord JS message object
  * @param number_of_msgs Number of messages to search from
  * @param userId user ID as a string to filter out messages for
- * 
  * @returns number of messages deleted
  */
  export const purge_messages_from_specific_user = async(message: Message, number_of_msgs_to_search: number, userId: string) => {

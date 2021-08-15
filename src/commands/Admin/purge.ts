@@ -28,7 +28,7 @@ module.exports = class PingCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'purge <number>`');
-      return message.channel.send({
+      return message.reply({
         embeds: [embed],
       });
     }
@@ -41,7 +41,7 @@ module.exports = class PingCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Ensure that the number of messages is less than ' + MAX_MSGS_THAT_CAN_BE_DELETED);
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
       });
     }
