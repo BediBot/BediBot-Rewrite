@@ -61,3 +61,38 @@ export const fetchPrefix = async (message: Message) => {
 
   return (await getSettings(guildId as string)).prefix;
 };
+
+/**
+ * Purge messages in a specific channel
+ * @param message Discord JS message object
+ * @param number_of_msgs Number of messages to fetch and delete
+ * @note This command will purposely ignore pinned messages
+ * @returns whether the message was actually deleted or not
+ */
+export const purge_messages = async (message: Message, number_of_msgs: number) => {
+  if (message.channel.type == 'GUILD_TEXT') {
+    const fetched_messages = await message.channel.messages.fetch({limit: number_of_msgs});
+    const messages_to_delete = fetched_messages.filter((m) => !m.pinned);
+    await message.channel.bulkDelete(messages_to_delete);
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Purges messages from specific user with a specified search depth
+ * @param message
+ * @param number_of_msgs_to_search
+ * @param userId user ID as a string to filter out messages for
+ * @returns number of messages deleted
+ */
+export const purge_messages_from_specific_user = async (message: Message, number_of_msgs_to_search: number, userId: string) => {
+  let number_of_messages_deleted = 0;
+  if (message.channel.type == 'GUILD_TEXT') {
+    const fetched_messages = await message.channel.messages.fetch({limit: number_of_msgs_to_search});
+    const messages_to_delete = fetched_messages.filter((m) => m.author.id == userId);
+    await message.channel.bulkDelete(messages_to_delete);
+    number_of_messages_deleted = messages_to_delete.size;
+  }
+  return number_of_messages_deleted;
+};
