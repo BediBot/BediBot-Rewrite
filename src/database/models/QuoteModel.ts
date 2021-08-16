@@ -33,4 +33,27 @@ export const removeQuote = async (guildId: string, quote: string, author: string
   });
 };
 
+/**
+ * Gets a random quote from the specified guild
+ * @param guildId
+ * @returns {Promise<Query<(QuoteI & Document<any, any, QuoteI>) | null, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
+ */
+export const getRandomQuote = async (guildId: string) => {
+  const random = Math.floor(Math.random() * (await quoteModel.countDocuments()));
+
+  return quoteModel.findOne().skip(random);
+};
+
+/**
+ * Gets a random quote from the specified guild and author
+ * @param guildId
+ * @param author
+ * @returns {Promise<Query<(QuoteI & Document<any, any, QuoteI>) | null, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
+ */
+export const getRandomQuoteFromAuthor = async (guildId: string, author: string) => {
+  const random = Math.floor(Math.random() * (await quoteModel.find({author: author}).countDocuments()));
+
+  return quoteModel.findOne({author: author}).skip(random);
+};
+
 export default quoteModel;
