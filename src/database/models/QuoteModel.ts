@@ -33,4 +33,13 @@ export const removeQuote = async (guildId: string, quote: string, author: string
   });
 };
 
+export const getQuotesFromAuthor = async (guildId: string, author: string) => {
+  return quoteModel.find({
+    guildId: guildId,
+    author: {
+      $regex: new RegExp(`^${author}$`, 'i'),
+    },
+  });
+};
+
 export default quoteModel;

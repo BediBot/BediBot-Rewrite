@@ -8,7 +8,7 @@ import {addQuote} from '../../database/models/QuoteModel';
 
 const {Command} = require('@sapphire/framework');
 
-const EMBED_FIELD_MAX_CHAR_LENGTH = 1024;
+const EMBED_FIELD_MAX_CHAR_LENGTH = 1022;
 const TITLE_BEFORE_NUM_APPROVALS = 'Add Quote Reply - Approvals: ';
 
 module.exports = class AddQuoteCommand extends Command {
@@ -47,7 +47,7 @@ module.exports = class AddQuoteCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Add Quote Reply')
-          .setDescription('Quote is too long! Please submit a quote that is 1024 characters or fewer.');
+          .setDescription('Quote is too long! Please submit a quote that is 1022 characters or fewer.');
       return message.reply({embeds: [embed]});
     }
     const embed = new BediEmbed()
