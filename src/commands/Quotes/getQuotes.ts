@@ -68,7 +68,8 @@ module.exports = class RemoveQuoteCommand extends Command {
     for (let i = 0; i < quotes.length; i += 5) {
       let embed = new BediEmbed()
           .setTitle('Get Quotes Reply')
-          .setDescription(templateDescription);
+          .setDescription(templateDescription)
+          .setFooter('  For any concerns, contact a BediBot Dev');
 
       for (let j = 0; j < MAX_QUOTES_PER_PAGE; j++) {
         if ((i + j) >= quotes.length) break;
