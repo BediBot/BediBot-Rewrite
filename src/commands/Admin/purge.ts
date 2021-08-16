@@ -9,7 +9,7 @@ const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
 const {Command} = require('@sapphire/framework');
 
-module.exports = class PingCommand extends Command {
+module.exports = class PurgeCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'purge',
