@@ -33,6 +33,12 @@ export const removeQuote = async (guildId: string, quote: string, author: string
   });
 };
 
+/**
+ * Gets all the quotes from a specified author in a specified guild
+ * @param guildId
+ * @param author
+ * @returns {Promise<Query<Array<EnforceDocument<QuoteI, {}>>, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
+ */
 export const getQuotesFromAuthor = async (guildId: string, author: string) => {
   return quoteModel.find({
     guildId: guildId,

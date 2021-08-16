@@ -63,6 +63,7 @@ module.exports = class RemoveQuoteCommand extends Command {
       templateDescription = `Quotes by ${quoteAuthor.value}`;
     }
 
+    // Creates a PaginatedMessage Object (built into Sapphire framework)
     const paginatedMessage = new PaginatedMessage();
 
     for (let i = 0; i < quotes.length; i += MAX_QUOTES_PER_PAGE) {
