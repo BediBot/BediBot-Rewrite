@@ -25,4 +25,12 @@ export const addQuote = async (guildId: string, quote: string, author: string, d
   });
 };
 
+export const removeQuote = async (guildId: string, quote: string, author: string) => {
+  return quoteModel.findOneAndDelete({
+    guildId: guildId,
+    quote: quote,
+    author: author,
+  });
+};
+
 export default quoteModel;
