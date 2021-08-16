@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node -r dotenv/config ./prod/index.js",
+    "prod": "tsc && node -r dotenv/config ./prod/index.js",
     "test": "jest ./prod --reporters=default --reporters=jest-junit --detectOpenHandles --coverage",
     "test:ci": "jest --ci ./prod --reporters=default --reporters=jest-junit"
   },
