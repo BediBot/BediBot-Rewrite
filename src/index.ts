@@ -12,7 +12,7 @@ const main = async () => {
     logger.info('Bot is logging in');
     await client.login(process.env.BOT_TOKEN);
     logger.info('Bot has logged in');
-    logger.info('THIS CHANGED APPEARED');
+    logger.info('bot auto restarted and detected this change');
   } catch (error) {
     logger.error(error);
     client.destroy();
