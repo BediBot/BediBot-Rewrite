@@ -65,7 +65,7 @@ module.exports = class RemoveQuoteCommand extends Command {
 
     const paginatedMessage = new PaginatedMessage();
 
-    for (let i = 0; i < quotes.length; i += 5) {
+    for (let i = 0; i < quotes.length; i += MAX_QUOTES_PER_PAGE) {
       let embed = new BediEmbed()
           .setTitle('Get Quotes Reply')
           .setDescription(templateDescription)
