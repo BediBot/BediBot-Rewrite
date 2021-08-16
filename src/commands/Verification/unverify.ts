@@ -12,21 +12,13 @@ module.exports = class UnverifyCommand extends Command {
     super(context, {
       name: 'unverify',
       description: 'Unverifies you from the server.',
-      preconditions: ['GuildOnly'],
+      preconditions: ['GuildOnly', 'VerificationEnabled'],
     });
   }
 
   async run(message: Message) {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
-
-    if (!settingsData.verificationEnabled) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Unverify Reply')
-          .setDescription('Verification is not enabled on this server!');
-      return message.reply({embeds: [embed]});
-    }
 
     if (!(await userVerifiedInGuild(author.id, guildId as string))) {
       const embed = new BediEmbed()

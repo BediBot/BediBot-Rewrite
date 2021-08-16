@@ -3,7 +3,6 @@ import {Interaction, Message, MessageActionRow, MessageButton, Snowflake, User} 
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {addQuote} from '../../database/models/QuoteModel';
 
@@ -18,6 +17,7 @@ module.exports = class PingCommand extends Command {
       name: 'addQuote',
       aliases: ['aq'],
       description: 'Adds a quote from an individual of your choice.',
+      preconditions: ['QuotesEnabled', 'UserVerified'],
     });
   }
 
@@ -25,21 +25,6 @@ module.exports = class PingCommand extends Command {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
 
-    if (!settingsData.quotesEnabled) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Add Quote Reply')
-          .setDescription('Quotes are not enabled on this server!');
-      return message.reply({embeds: [embed]});
-    }
-
-    if (settingsData.verificationEnabled && !(await userVerifiedInGuild(author.id, guildId as string))) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Add Quote Reply')
-          .setDescription(`You are not verified on this server! Run ${surroundStringWithBackTick(settingsData.prefix + 'verify <emailAddress>')}`);
-      return message.reply({embeds: [embed]});
-    }
     let quote: string | Result<string, UserError>;
     let quoteAuthor: Result<string, UserError> | Result<User, UserError>;
 

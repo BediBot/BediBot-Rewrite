@@ -14,7 +14,7 @@ module.exports = class PingCommand extends Command {
     super(context, {
       name: 'purge',
       description: 'Purges a specific number of messages',
-      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly', 'AdminPerms'],
+      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'AdminPerms'],
     });
   }
 

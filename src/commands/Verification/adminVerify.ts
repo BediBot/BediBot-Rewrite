@@ -13,7 +13,7 @@ module.exports = class AdminVerifyCommand extends Command {
     super(context, {
       name: 'adminverify',
       description: 'Forcibly verifies a user in the server.',
-      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly'],
+      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'VerificationEnabled'],
     });
   }
 

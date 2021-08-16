@@ -12,7 +12,7 @@ module.exports = class SayCommand extends Command {
     super(context, {
       name: 'say',
       description: 'Sends a message from the bot',
-      preconditions: [['AdminOnly', 'BotOwnerOnly'], 'GuildOnly'],
+      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
     });
   }
 

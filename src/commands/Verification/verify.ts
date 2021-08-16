@@ -17,7 +17,7 @@ module.exports = class VerifyCommand extends Command {
       name: 'verify',
       aliases: ['verification', 'register'],
       description: 'Allows you to verify yourself and access the server',
-      preconditions: ['GuildOnly'],
+      preconditions: ['GuildOnly', 'VerificationEnabled'],
     });
   }
 
@@ -27,14 +27,6 @@ module.exports = class VerifyCommand extends Command {
 
     // Deleting message as it contains a users email
     await message.delete();
-
-    if (!settingsData.verificationEnabled) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Verify Reply')
-          .setDescription('Verification is not enabled on this server!');
-      return message.channel.send({embeds: [embed]});
-    }
 
     if (await userVerifiedInGuild(author.id, guildId as string)) {
       const embed = new BediEmbed()
