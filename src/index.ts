@@ -12,7 +12,6 @@ const main = async () => {
     logger.info('Bot is logging in');
     await client.login(process.env.BOT_TOKEN);
     logger.info('Bot has logged in');
-    logger.info('Bot has logged in');
   } catch (error) {
     logger.error(error);
     client.destroy();
