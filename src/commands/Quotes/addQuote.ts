@@ -11,7 +11,7 @@ const {Command} = require('@sapphire/framework');
 const EMBED_FIELD_MAX_CHAR_LENGTH = 1024;
 const TITLE_BEFORE_NUM_APPROVALS = 'Add Quote Reply - Approvals: ';
 
-module.exports = class PingCommand extends Command {
+module.exports = class AddQuoteCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'addQuote',
