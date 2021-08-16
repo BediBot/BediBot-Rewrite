@@ -8,7 +8,7 @@ import {removeQuote} from '../../database/models/QuoteModel';
 
 const {Command} = require('@sapphire/framework');
 
-module.exports = class GithubCommand extends Command {
+module.exports = class RemoveQuoteCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'removeQuote',
