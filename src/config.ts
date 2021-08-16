@@ -1,7 +1,7 @@
 import {ClientOptions, Intents} from 'discord.js';
 import {LogLevel} from '@sapphire/framework';
-import {getRandomStatus} from './utils/statusUtil';
 import {fetchPrefix} from './utils/discordUtil';
+import {getRandomStatus} from './utils/statusUtil';
 
 export const DEFAULT_PREFIX = '$';
 
@@ -22,3 +22,4 @@ export const CLIENT_OPTIONS: ClientOptions = {
   partials: ['CHANNEL', 'MESSAGE', 'REACTION'],
   fetchPrefix: fetchPrefix,
 };
+

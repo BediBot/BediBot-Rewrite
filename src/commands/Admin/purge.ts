@@ -3,7 +3,7 @@ import {Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {purge_messages} from '../../utils/discordUtil';
+import {purge_messages, surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
@@ -21,18 +21,19 @@ module.exports = class PingCommand extends Command {
   async run(message: Message, args: Args) {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
-    //Check if args legnth is valid, and then read the number
-    const number_of_msgs_to_delete = await args.pickResult('integer');
-    if (!number_of_msgs_to_delete.success) {
+    //Check if args length is valid, and then read the number
+    const numMessagesToDelete = await args.pickResult('integer');
+    if (!numMessagesToDelete.success) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
-          .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'purge <number>`');
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+              settingsData.prefix + 'purge <number> <author:optional>')}`);
       return message.reply({embeds: [embed]});
     }
 
     //Check if the number is within the bounds expected
-    if (!(number_of_msgs_to_delete.value > 0 && number_of_msgs_to_delete.value <= MAX_MSGS_THAT_CAN_BE_DELETED)) {
+    if (!(numMessagesToDelete.value > 0 && numMessagesToDelete.value <= MAX_MSGS_THAT_CAN_BE_DELETED)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
@@ -71,7 +72,7 @@ module.exports = class PingCommand extends Command {
                 const embed = new BediEmbed()
                 .setTitle('Purge Reply')
                 .setDescription('Successfully purged `' + number_of_msgs_deleted + "` messages from `" + user.value.tag +"` in `" + message.guild?.name + "`")
-            
+
             return message.author.send({
                 embeds: [embed]
             });
@@ -81,9 +82,9 @@ module.exports = class PingCommand extends Command {
     {
     */
     //Perform the deletion
-    const success = await purge_messages(message, number_of_msgs_to_delete.value + 1); //Delete purge command as well
+    const successful = await purge_messages(message, numMessagesToDelete.value + 1); //Delete purge command as well
 
-    if (!success) {
+    if (!successful) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
@@ -94,7 +95,7 @@ module.exports = class PingCommand extends Command {
     //Reply
     const embed = new BediEmbed()
         .setTitle('Purge Reply')
-        .setDescription('Successfully purged `' + number_of_msgs_to_delete.value + '` messages from `' + message.guild?.name + '`');
+        .setDescription('Successfully purged `' + numMessagesToDelete.value + '` messages from `' + message.guild?.name + '`');
     return message.author.send({embeds: [embed]});
     //}
   }

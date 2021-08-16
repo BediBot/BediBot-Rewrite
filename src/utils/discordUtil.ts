@@ -97,6 +97,11 @@ export const purge_messages_from_specific_user = async (message: Message, number
   return number_of_messages_deleted;
 };
 
+/**
+ * Surrounds a string with back ticks to be used in bot messages.
+ * @param string
+ * @returns {string}
+ */
 export const surroundStringWithBackTick = (string: string) => {
   return '`' + string + '`';
 };

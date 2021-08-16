@@ -14,7 +14,6 @@ module.exports = class PingCommand extends Command {
 
   async run(message: Message) {
     const initialEmbed = new BediEmbed()
-        .setColor('FUCHSIA')
         .setTitle('Ping?');
 
     const msg = await message.reply({
