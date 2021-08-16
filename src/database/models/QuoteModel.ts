@@ -56,4 +56,19 @@ export const getRandomQuoteFromAuthor = async (guildId: string, author: string) 
   return quoteModel.findOne({author: author}).skip(random);
 };
 
+/**
+ * Gets all the quotes from a specified author in a specified guild
+ * @param guildId
+ * @param author
+ * @returns {Promise<Query<Array<EnforceDocument<QuoteI, {}>>, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
+ */
+export const getQuotesFromAuthor = async (guildId: string, author: string) => {
+  return quoteModel.find({
+    guildId: guildId,
+    author: {
+      $regex: new RegExp(`^${author}$`, 'i'),
+    },
+  });
+};
+
 export default quoteModel;
