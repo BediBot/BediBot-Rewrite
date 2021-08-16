@@ -1,18 +1,9 @@
 import {ClientOptions, Intents} from 'discord.js';
 import {LogLevel} from '@sapphire/framework';
-import {fetchPrefix, getRandomStatus} from './utils/discordUtil';
+import {fetchPrefix} from './utils/discordUtil';
+import {getRandomStatus} from './utils/statusUtil';
 
 export const DEFAULT_PREFIX = '$';
-
-export const STATUSES = [
-  {status: 'online', activities: [{type: 'LISTENING', name: 'Martingales | $help'}]},
-  {status: 'online', activities: [{type: 'LISTENING', name: '115 ASMR | $help'}]},
-  {status: 'online', activities: [{type: 'WATCHING', name: 'Geese honk | $help'}]},
-  {status: 'online', activities: [{type: 'WATCHING', name: 'Crowdmark | $help'}]},
-  {status: 'online', activities: [{type: 'STREAMING', name: 'EGAD Videos | $help'}]},
-  {status: 'online', activities: [{type: 'PLAYING', name: 'Solidworks | $help'}]},
-  {status: 'online', activities: [{type: 'PLAYING', name: 'Among Us | $help'}]},
-];
 
 export const CLIENT_OPTIONS: ClientOptions = {
   intents: [
