@@ -43,7 +43,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
     const embed = new BediEmbed()
         .setTitle('Get Random Quote Reply');
 
-    if (typeof quoteAuthor === 'string') {
+    if (typeof quoteAuthor.value === 'string') {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
         Author: ${surroundStringWithBackTick(quoteDoc.author)}
         Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
