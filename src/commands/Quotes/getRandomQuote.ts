@@ -40,12 +40,18 @@ module.exports = class GetRandomQuoteCommand extends Command {
           .setDescription('No quotes found!');
       return message.reply({embeds: [embed]});
     }
-
     const embed = new BediEmbed()
-        .setTitle('Get Random Quote Reply')
-        .setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
+        .setTitle('Get Random Quote Reply');
+
+    if (typeof quoteAuthor === 'string') {
+      embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
         Author: ${surroundStringWithBackTick(quoteDoc.author)}
         Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
+    } else {
+      embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
+        Author: ${quoteDoc.author}
+        Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
+    }
     return message.reply({embeds: [embed]});
   };
 };
