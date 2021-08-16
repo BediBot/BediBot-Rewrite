@@ -19,21 +19,13 @@ module.exports = class ConfirmCommand extends Command {
     super(context, {
       name: 'confirm',
       description: 'Allows you to confirm with your unique code to access the server',
-      preconditions: ['GuildOnly'],
+      preconditions: ['GuildOnly', 'VerificationEnabled'],
     });
   }
 
   async run(message: Message, args: Args) {
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
-
-    if (!settingsData.verificationEnabled) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Confirm Reply')
-          .setDescription('Verification is not enabled on this server!');
-      return message.reply({embeds: [embed]});
-    }
 
     if (await userVerifiedInGuild(author.id, guildId as string)) {
       const embed = new BediEmbed()
