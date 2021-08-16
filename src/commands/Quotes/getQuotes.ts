@@ -79,7 +79,6 @@ module.exports = class RemoveQuoteCommand extends Command {
       paginatedMessage.addPageEmbed(embed);
     }
 
-    await paginatedMessage.run(response, message.author);
-    return response;
+    return paginatedMessage.run(response, message.author);
   };
 };
