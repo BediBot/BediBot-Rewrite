@@ -1,3 +1,5 @@
+import DiscordTransport from 'winston-discord-transport';
+
 const winston = require('winston');
 const errorLogsPath = './logs/error.log';
 const allLogsPath = './logs/combined.log';
@@ -26,6 +28,11 @@ const logConfig = {
     }),
     new winston.transports.File({
       filename: allLogsPath,
+    }),
+    new DiscordTransport({
+      webhook: 'https://discord.com/api/webhooks/876877161867378728/Bm5MX6OzYS61rOgExwVH3gsceDjgEaM_al-Mz_TnDX4KSGp24-skJCg2UEIm56c_iAJi',
+      defaultMeta: {service: 'Discord_Logging_Service'},
+      level: 'info',
     }),
   ],
 };
