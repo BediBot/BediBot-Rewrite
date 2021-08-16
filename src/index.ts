@@ -19,4 +19,4 @@ const main = async () => {
   }
 };
 
-main().then(); // t
+main().then();
