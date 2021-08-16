@@ -30,7 +30,7 @@ const logConfig = {
       filename: allLogsPath,
     }),
     new DiscordTransport({
-      webhook: 'https://discord.com/api/webhooks/876877161867378728/Bm5MX6OzYS61rOgExwVH3gsceDjgEaM_al-Mz_TnDX4KSGp24-skJCg2UEIm56c_iAJi',
+      webhook: process.env.DISCORD_WEBHOOK as string,
       defaultMeta: {service: 'Discord_Logging_Service'},
       level: 'info',
     }),

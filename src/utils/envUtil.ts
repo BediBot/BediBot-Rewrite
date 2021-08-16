@@ -38,5 +38,10 @@ export const validateEnv = () => {
     console.warn('Missing Email Refresh Token');
     return false;
   }
+
+  if (!process.env.DISCORD_WEBHOOK) {
+    console.warn('Missing Discord Webhook');
+    return false;
+  }
   return true;
 };

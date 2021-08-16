@@ -20,6 +20,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
 
     expect(validateEnv()).toBe(true);
   });
@@ -31,6 +32,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
@@ -42,6 +44,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
@@ -53,6 +56,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
@@ -64,6 +68,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
@@ -75,6 +80,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_ID = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
@@ -86,17 +92,31 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_ID = 'randomString';
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
 
-  test('ENV Bot Owners', () => {
+  test('ENV Missing Bot Owners', () => {
     process.env.BOT_TOKEN = 'randomString';
     process.env.MONGO_URI = 'randomString';
     process.env.EMAIL_USER = 'randomString';
     process.env.EMAIL_CLIENT_ID = 'randomString';
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.DISCORD_WEBHOOK = 'randomString';
+
+    expect(validateEnv()).toBe(false);
+  });
+
+  test('ENV Missing Discord Webhook', () => {
+    process.env.BOT_TOKEN = 'randomString';
+    process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });
