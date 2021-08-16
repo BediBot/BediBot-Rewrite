@@ -19,4 +19,4 @@ const main = async () => {
   }
 };
 
-main().then();
+main().then(); // test
