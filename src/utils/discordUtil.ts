@@ -1,7 +1,7 @@
-import {Guild, Message, Role} from 'discord.js';
+import {Guild, Message, PresenceData, Role} from 'discord.js';
 import logger from './loggerUtil';
 import {getSettings} from '../database/models/SettingsModel';
-import {DEFAULT_PREFIX} from '../config';
+import {DEFAULT_PREFIX, STATUSES} from '../config';
 
 /**
  * Adds role to the author of a given message
@@ -97,6 +97,21 @@ export const purge_messages_from_specific_user = async (message: Message, number
   return number_of_messages_deleted;
 };
 
+/**
+ * Surrounds a string with back ticks to be used in bot messages.
+ * @param string
+ * @returns {string}
+ */
 export const surroundStringWithBackTick = (string: string) => {
   return '`' + string + '`';
+};
+
+/**
+ * Gets a random status for the bot
+ * @returns {PresenceData}
+ */
+export const getRandomStatus = () => {
+  const random_int = Math.floor(Math.random() * STATUSES.length);
+  const status_picked = STATUSES[random_int];
+  return status_picked as PresenceData;
 };

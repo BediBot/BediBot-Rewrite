@@ -25,7 +25,7 @@ module.exports = class UnverifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Unverify Reply')
           .setDescription('Verification is not enabled on this server!');
-      return message.channel.send({embeds: [embed]});
+      return message.reply({embeds: [embed]});
     }
 
     if (!(await userVerifiedInGuild(author.id, guildId as string))) {
@@ -33,7 +33,7 @@ module.exports = class UnverifyCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Unverify Reply')
           .setDescription(`You are not verified on this server! Run ${settingsData.prefix}verify if necessary.`);
-      return message.channel.send({embeds: [embed]});
+      return message.reply({embeds: [embed]});
     }
 
     await removeVerifiedUser(author.id, guildId as string);
