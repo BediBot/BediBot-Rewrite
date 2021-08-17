@@ -1,7 +1,8 @@
-import {Guild, Message, Role} from 'discord.js';
+import {Collection, Guild, GuildMember, Message, Role} from 'discord.js';
 import logger from './loggerUtil';
 import {getSettings} from '../database/models/SettingsModel';
 import {DEFAULT_PREFIX} from '../config';
+import {SapphireClient} from '@sapphire/framework';
 
 /**
  * Adds role to the author of a given message
@@ -104,4 +105,32 @@ export const purge_messages_from_specific_user = async (message: Message, number
  */
 export const surroundStringWithBackTick = (string: string) => {
   return '`' + string + '`';
+};
+
+/**
+ * Gets the number of guilds that the client is a member in
+ * @param client
+ * @returns {number}
+ */
+export const numGuilds = (client: SapphireClient) => {
+  return client.guilds.cache.size;
+};
+
+/**
+ * Gets the number of unique users that the client can see
+ * @param client
+ * @returns {number}
+ */
+export const numUsers = async (client: SapphireClient) => {
+  let members = new Collection<string, GuildMember>();
+
+  for (const guild of client.guilds.cache) {
+    const newMembers = (await guild[1].members.fetch()).filter(member => !member.user.bot);
+
+    newMembers.forEach(newMember => {
+      if (!members.find(oldMember => oldMember.id === newMember.id)) members.set(newMember.id, newMember);
+    });
+  }
+
+  return members.size;
 };
