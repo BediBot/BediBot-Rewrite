@@ -1,5 +1,5 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Message, MessageActionRow, MessageButton} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
@@ -53,7 +53,7 @@ module.exports = class SetBirthdayCommand extends Command {
     if (!(birthday.getFullYear() === year.value) || !(birthday.getMonth() + 1 === month) || !(birthday.getDate() == day.value)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
-          .setTitle('Set BirthdayModel Reply')
+          .setTitle('Set Birthday Reply')
           .setDescription('That date is invalid!');
       return message.channel.send({embeds: [embed]});
     }
@@ -61,12 +61,68 @@ module.exports = class SetBirthdayCommand extends Command {
     // Change year to a random year as we do not need the users year for our purposes
     birthday.setFullYear(YEAR_TO_SAVE);
 
-    await updateBirthday(author.id, birthday);
+    const row = new MessageActionRow().addComponents(
+        new MessageButton()
+            .setCustomId('birthdayAgree')
+            .setLabel('Yes')
+            .setStyle('SUCCESS'),
+        new MessageButton()
+            .setCustomId('birthdayDisagree')
+            .setLabel('No')
+            .setStyle('DANGER'),
+    );
+
+    const birthdayString = surroundStringWithBackTick(`${birthday.toLocaleString('default', {month: 'long'})} ${birthday.getDate()}`);
 
     const embed = new BediEmbed()
-        .setTitle('Set BirthdayModel Reply')
-        .setDescription('Your birthday has been updated! The year was not saved!');
-    return message.author.send({embeds: [embed]});
+        .setTitle('Set Birthday Reply')
+        .setDescription(`Birthday: ${birthdayString}
+        \nBirthdays saved by BediBot can be seen by **anyone** that shares a server with BediBot.
+        We will **never** save your birth year, only the month and day.
+        Do you agree to save your birthday?`);
+    const reply = await message.author.send({
+      embeds: [embed],
+      components: [row],
+    });
+
+    let updateEmbed = new BediEmbed()
+        .setTitle('Set Birthday Reply')
+        .setColor(colors.ERROR)
+        .setDescription('You did not respond in time');
+    const updateRow = new MessageActionRow().addComponents(
+        new MessageButton()
+            .setCustomId('birthdayAgree')
+            .setLabel('Yes')
+            .setStyle('SUCCESS')
+            .setDisabled(true),
+        new MessageButton()
+            .setCustomId('birthdayDisagree')
+            .setLabel('No')
+            .setStyle('DANGER')
+            .setDisabled(true),
+    );
+
+    // This collector will wait for a button click and act accordingly
+    // Normally you would need to check that the person who clicked was the author of the original command, but this takes place in a DM
+    const collector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 15000});
+    collector.on('collect', async interaction => {
+      await interaction.deferUpdate();
+      if (interaction.customId === 'birthdayAgree') {
+        updateEmbed.setDescription(`Your birthday has been saved as ${birthdayString}`)
+                   .setColor(colors.PRIMARY);
+        await updateBirthday(author.id, birthday);
+      } else {
+        updateEmbed.setDescription('Your birthday has **NOT** been saved');
+      }
+      collector.stop();
+    });
+
+    collector.on('end', async collected => {
+      await reply.edit({
+        embeds: [updateEmbed],
+        components: [updateRow],
+      });
+    });
   }
 };
 
@@ -79,7 +135,7 @@ module.exports = class SetBirthdayCommand extends Command {
 const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
   const embed = new BediEmbed()
       .setColor(colors.ERROR)
-      .setTitle('Set BirthdayModel Reply')
+      .setTitle('Set Birthday Reply')
       .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
           settingsData.prefix + 'setbirthday <month> <day> <year>')}`,
       );
