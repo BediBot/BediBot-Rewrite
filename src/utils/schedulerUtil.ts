@@ -25,5 +25,6 @@ export const startAgenda = async () => {
 };
 
 export const isValidDuration = (string: string) => {
+  if (string.length === 0) return false;
   return !isNaN(humanInterval(string).valueOf());
 };
