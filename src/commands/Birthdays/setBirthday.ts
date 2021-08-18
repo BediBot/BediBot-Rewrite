@@ -14,6 +14,7 @@ module.exports = class SetBirthdayCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'setbirthday',
+      aliases: ['sb'],
       description: 'Sets the users birthday.',
       //TODO: Add disclaimer that anyone in a BediBot server can find your birthday (month and day) - put in detailed description
       // Note that the year will only be used to validate the date and is never saved

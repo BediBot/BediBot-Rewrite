@@ -22,7 +22,7 @@ describe('Birthday DB', () => {
     const userId = 'randomID';
     const birthday = new Date();
 
-    expect(await birthdayModel.findOne({userId: userId})).toBeNull();
+    expect(await birthdayModel.findById(userId)).toBeNull();
 
     await updateBirthday(userId, birthday);
 
