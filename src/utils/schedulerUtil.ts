@@ -29,6 +29,11 @@ export const startAgenda = async () => {
   });
 };
 
+/**
+ * Checks if a string is a valid duration or time to schedule
+ * @param string
+ * @returns {boolean}
+ */
 export const isValidDurationOrTime = (string: string) => {
   if (string.length === 0) return false;
   const re12 = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/;
@@ -38,7 +43,7 @@ export const isValidDurationOrTime = (string: string) => {
   return !isNaN(humanInterval(string).valueOf());
 };
 
-// Define job for use in the command
+// This job allows a role to speak in a specific channel
 agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
