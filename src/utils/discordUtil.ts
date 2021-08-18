@@ -125,10 +125,13 @@ export const numUsers = async (client: SapphireClient) => {
   let members = new Collection<string, GuildMember>();
 
   for (const guild of client.guilds.cache) {
+    // Get all members in guild
     const newMembers = (await guild[1].members.fetch()).filter(member => !member.user.bot);
 
+    // Add member to collection of members if they are new (ensures that we dont double count members if they are in multiple guilds)
     newMembers.forEach(newMember => {
-      if (!members.find(oldMember => oldMember.id === newMember.id)) members.set(newMember.id, newMember);
+      if (!members.find(oldMember => oldMember.id === newMember.id))
+        members.set(newMember.id, newMember);
     });
   }
 
