@@ -16,6 +16,12 @@ describe('Scheduler Utils', () => {
     expect(isValidDurationOrTime('ten months')).toBe(true);
     expect(isValidDurationOrTime('one year')).toBe(true);
     expect(isValidDurationOrTime('ten years')).toBe(true);
+    expect(isValidDurationOrTime('23:59')).toBe(true);
+    expect(isValidDurationOrTime('02:17')).toBe(true);
+    expect(isValidDurationOrTime('2 am')).toBe(true);
+    expect(isValidDurationOrTime('12 pm')).toBe(true);
+    expect(isValidDurationOrTime('2:59 PM')).toBe(true);
+    expect(isValidDurationOrTime('13:78')).toBe(false);
     expect(isValidDurationOrTime('')).toBe(false);
     expect(isValidDurationOrTime('blahblahblah')).toBe(false);
     expect(isValidDurationOrTime('thisisnotvalid')).toBe(false);
