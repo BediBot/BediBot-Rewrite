@@ -7,14 +7,12 @@ interface VerifiedUserI {
   userId: string,
   guildId: string,
   emailHash: string,
-  birthdate: Date;
 }
 
 export const VerifiedUser = new Schema({
   userId: String,
   guildId: String,
   emailHash: String,
-  birthdate: Date,
 });
 
 const verifiedUserModel = model<VerifiedUserI>('VerifiedUser', VerifiedUser, 'VerifiedUsers');
