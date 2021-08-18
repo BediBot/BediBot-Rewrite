@@ -1,23 +1,23 @@
-import {isValidDuration} from '../../utils/schedulerUtil';
+import {isValidDurationOrTime} from '../../utils/schedulerUtil';
 
 describe('Scheduler Utils', () => {
   test('isValidDuration', () => {
-    expect(isValidDuration('one second')).toBe(true);
-    expect(isValidDuration('ten seconds')).toBe(true);
-    expect(isValidDuration('one minute')).toBe(true);
-    expect(isValidDuration('ten minutes')).toBe(true);
-    expect(isValidDuration('one hour')).toBe(true);
-    expect(isValidDuration('ten hours')).toBe(true);
-    expect(isValidDuration('one day')).toBe(true);
-    expect(isValidDuration('ten days')).toBe(true);
-    expect(isValidDuration('one week')).toBe(true);
-    expect(isValidDuration('ten weeks')).toBe(true);
-    expect(isValidDuration('one month')).toBe(true);
-    expect(isValidDuration('ten months')).toBe(true);
-    expect(isValidDuration('one year')).toBe(true);
-    expect(isValidDuration('ten years')).toBe(true);
-    expect(isValidDuration('')).toBe(false);
-    expect(isValidDuration('blahblahblah')).toBe(false);
-    expect(isValidDuration('thisisnotvalid')).toBe(false);
+    expect(isValidDurationOrTime('one second')).toBe(true);
+    expect(isValidDurationOrTime('ten seconds')).toBe(true);
+    expect(isValidDurationOrTime('one minute')).toBe(true);
+    expect(isValidDurationOrTime('ten minutes')).toBe(true);
+    expect(isValidDurationOrTime('one hour')).toBe(true);
+    expect(isValidDurationOrTime('ten hours')).toBe(true);
+    expect(isValidDurationOrTime('one day')).toBe(true);
+    expect(isValidDurationOrTime('ten days')).toBe(true);
+    expect(isValidDurationOrTime('one week')).toBe(true);
+    expect(isValidDurationOrTime('ten weeks')).toBe(true);
+    expect(isValidDurationOrTime('one month')).toBe(true);
+    expect(isValidDurationOrTime('ten months')).toBe(true);
+    expect(isValidDurationOrTime('one year')).toBe(true);
+    expect(isValidDurationOrTime('ten years')).toBe(true);
+    expect(isValidDurationOrTime('')).toBe(false);
+    expect(isValidDurationOrTime('blahblahblah')).toBe(false);
+    expect(isValidDurationOrTime('thisisnotvalid')).toBe(false);
   });
 });

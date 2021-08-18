@@ -24,7 +24,11 @@ export const startAgenda = async () => {
   });
 };
 
-export const isValidDuration = (string: string) => {
+export const isValidDurationOrTime = (string: string) => {
   if (string.length === 0) return false;
+  const re12 = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/;
+  const re12Short = /(1[0-2]|0?[1-9] ?([AaPp][Mm]))/;
+  const re24 = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+  if (re12.test(string) || re24.test(string) || re12Short.test(string)) return true;
   return !isNaN(humanInterval(string).valueOf());
 };

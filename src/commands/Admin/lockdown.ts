@@ -4,7 +4,7 @@ import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import {agenda, isValidDuration} from '../../utils/schedulerUtil';
+import {agenda, isValidDurationOrTime} from '../../utils/schedulerUtil';
 import {Job} from 'agenda';
 
 const {Command} = require('@sapphire/framework');
@@ -34,7 +34,7 @@ module.exports = class LockdownCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Lockdown Reply')
           .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'lockdown <role> <duration:optional>')}`);
+          ${surroundStringWithBackTick(settingsData.prefix + 'lockdown <role> <durationORtime:optional>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -53,8 +53,8 @@ module.exports = class LockdownCommand extends Command {
 
     await message.channel.permissionOverwrites.edit(role.value, {SEND_MESSAGES: false});
 
-    const duration = await args.restResult('string');
-    if (!duration.success) {
+    const durationOrTime = await args.restResult('string');
+    if (!durationOrTime.success) {
       const embed = new BediEmbed()
           .setTitle('Lockdown Reply')
           .setDescription(`Channel has been locked for ${surroundStringWithBackTick(roleString.value)}`);
@@ -62,11 +62,11 @@ module.exports = class LockdownCommand extends Command {
     }
 
     // Check if duration they entered is valid -> see human-interval module for valid durations
-    if (!isValidDuration(duration.value)) {
+    if (!isValidDurationOrTime(durationOrTime.value)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Lockdown Reply')
-          .setDescription('That is not a valid duration.');
+          .setDescription('That is not a valid duration or time.');
       return message.reply({embeds: [embed]});
     }
 
@@ -82,7 +82,7 @@ module.exports = class LockdownCommand extends Command {
     }
 
     // Schedule job
-    const job = await agenda.schedule(duration.value, JOB_NAME, {
+    const job = await agenda.schedule(durationOrTime.value, JOB_NAME, {
       guildId: message.guildId,
       channelId: message.channel.id,
       roleId: role.value.id,
