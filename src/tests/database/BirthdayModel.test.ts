@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import birthdayModel, {getBirthdaysFromMonth, updateBirthday} from '../../database/models/BirthdayModel';
-import logger from '../../utils/loggerUtil';
 
 describe('Birthday DB', () => {
   beforeAll(async () => {
@@ -62,7 +61,6 @@ describe('Birthday DB', () => {
     });
 
     const result = await getBirthdaysFromMonth(new Date().getMonth() + 1);
-    logger.info(result);
 
     expect(result[0]._id).toBe(userId);
     expect(result[0].birthDate.valueOf()).toBe(birthday);
