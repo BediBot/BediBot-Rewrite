@@ -22,4 +22,11 @@ export const updateBirthday = async (userId: string, birthDate: Date) => {
   await birthdayModel.updateOne({_id: userId}, {birthDate: birthDate}, {upsert: true});
 };
 
+export const getBirthdaysFromMonth = async (month: number) => {
+  return birthdayModel.aggregate([
+    {$addFields: {'month': {$month: '$birthDate'}}},
+    {$match: {month: month}},
+  ]).sort({birthDate: 1});
+};
+
 export default birthdayModel;
