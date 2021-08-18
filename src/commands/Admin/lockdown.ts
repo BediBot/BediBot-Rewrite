@@ -68,6 +68,16 @@ module.exports = class LockdownCommand extends Command {
       return message.reply({embeds: [embed]});
     }
 
+    // Remove old jobs
+    const jobs = await agenda.jobs({
+      'data.guildId': message.guildId,
+      'data.channelId': message.channel.id,
+      'data.roleId': role.value.id,
+    });
+    for (const job of jobs) {
+      await job.remove();
+    }
+
     // Schedule job
     const job = await agenda.schedule(duration.value, 'Unlock Channel for Role', {
       guildId: message.guildId,
