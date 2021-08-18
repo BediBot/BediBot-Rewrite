@@ -9,6 +9,8 @@ import {Job} from 'agenda';
 
 const {Command} = require('@sapphire/framework');
 
+const JOB_NAME = 'Unlock Channel for Role';
+
 module.exports = class LockdownCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
@@ -70,6 +72,7 @@ module.exports = class LockdownCommand extends Command {
 
     // Remove old jobs
     const jobs = await agenda.jobs({
+      'name': JOB_NAME,
       'data.guildId': message.guildId,
       'data.channelId': message.channel.id,
       'data.roleId': role.value.id,
@@ -79,7 +82,7 @@ module.exports = class LockdownCommand extends Command {
     }
 
     // Schedule job
-    const job = await agenda.schedule(duration.value, 'Unlock Channel for Role', {
+    const job = await agenda.schedule(duration.value, JOB_NAME, {
       guildId: message.guildId,
       channelId: message.channel.id,
       roleId: role.value.id,
@@ -99,7 +102,7 @@ module.exports = class LockdownCommand extends Command {
     super.onLoad();
 
     // Define job for use in the command
-    agenda.define('Unlock Channel for Role', async (job: Job) => {
+    agenda.define(JOB_NAME, async (job: Job) => {
       const {client} = this.container;
       const guildId = job.attrs.data?.guildId;
       const channelId = job.attrs.data?.channelId;
