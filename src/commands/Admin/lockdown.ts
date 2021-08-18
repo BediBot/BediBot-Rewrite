@@ -17,7 +17,7 @@ module.exports = class LockdownCommand extends Command {
       name: 'lockdown',
       aliases: ['ld'],
       description: 'Prevents a role from speaking in the channel',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'AdminPerms'],
+      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'ManageRolesPerms'],
       //TODO: put possible units in detailed description when written
       //seconds, minutes, hours, days, weeks, months (30 days), years (365 days)
     });
