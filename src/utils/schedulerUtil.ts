@@ -1,8 +1,13 @@
 import logger from './loggerUtil';
 
-import Agenda from 'agenda/dist/index';
+import Agenda, {Job} from 'agenda/dist/index';
+import {BaseGuildTextChannel} from 'discord.js';
+import {BediEmbed} from '../lib/BediEmbed';
+import {client} from '../index';
 
 const humanInterval = require('human-interval');
+
+export const UNLOCK_JOB_NAME = 'Unlock Channel for Role';
 
 export const agenda = new Agenda();
 
@@ -32,3 +37,34 @@ export const isValidDurationOrTime = (string: string) => {
   if (re12.test(string) || re24.test(string) || re12Short.test(string)) return true;
   return !isNaN(humanInterval(string).valueOf());
 };
+
+// Define job for use in the command
+agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
+  const guildId = job.attrs.data?.guildId;
+  const channelId = job.attrs.data?.channelId;
+  const roleId = job.attrs.data?.roleId;
+  const messageId = job.attrs.data?.messageId;
+
+  const guild = client.guilds.cache.get(guildId);
+
+  if (guild) {
+    const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
+    const role = await guild.roles.fetch(roleId);
+    if (channel && role) {
+      await channel.permissionOverwrites.edit(role, {SEND_MESSAGES: true});
+
+      const message = await channel.messages.fetch(messageId);
+      if (message) {
+        const embed = new BediEmbed()
+            .setTitle('Lockdown Reply')
+            .setDescription(`Channel has been unlocked for ${role.toString()}`);
+        await message.reply({embeds: [embed]});
+      }
+    } else {
+      job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
+    }
+  } else {
+    job.fail('Guild not found. This means BediBot is no longer in this guild.');
+  }
+  await job.remove();
+});

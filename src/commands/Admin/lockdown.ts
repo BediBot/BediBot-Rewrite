@@ -1,15 +1,12 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {BaseGuildTextChannel, GuildChannel, Message} from 'discord.js';
+import {GuildChannel, Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import {agenda, isValidDurationOrTime} from '../../utils/schedulerUtil';
-import {Job} from 'agenda';
+import {agenda, isValidDurationOrTime, UNLOCK_JOB_NAME} from '../../utils/schedulerUtil';
 
 const {Command} = require('@sapphire/framework');
-
-export const UNLOCK_JOB_NAME = 'Unlock Channel for Role';
 
 module.exports = class LockdownCommand extends Command {
   constructor(context: PieceContext) {
@@ -93,42 +90,6 @@ module.exports = class LockdownCommand extends Command {
         .setDescription(`Channel has been locked for ${role.value.toString()}
         Unlock scheduled for ${surroundStringWithBackTick(`${nextRun?.toDateString()} ${nextRun?.toLocaleTimeString()}`)}`);
     return message.reply({embeds: [embed]});
-  }
-
-  onLoad() {
-    super.onLoad();
-
-    // Define job for use in the command
-    agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
-      const {client} = this.container;
-      const guildId = job.attrs.data?.guildId;
-      const channelId = job.attrs.data?.channelId;
-      const roleId = job.attrs.data?.roleId;
-      const messageId = job.attrs.data?.messageId;
-
-      const guild = client.guilds.cache.get(guildId);
-
-      if (guild) {
-        const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
-        const role = await guild.roles.fetch(roleId);
-        if (channel && role) {
-          await channel.permissionOverwrites.edit(role, {SEND_MESSAGES: true});
-
-          const message = await channel.messages.fetch(messageId);
-          if (message) {
-            const embed = new BediEmbed()
-                .setTitle('Lockdown Reply')
-                .setDescription(`Channel has been unlocked for ${role.toString()}`);
-            await message.reply({embeds: [embed]});
-          }
-        } else {
-          job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
-        }
-      } else {
-        job.fail('Guild not found. This means BediBot is no longer in this guild.');
-      }
-      await job.remove();
-    });
   }
 };
 
