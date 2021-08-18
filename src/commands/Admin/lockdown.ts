@@ -9,7 +9,7 @@ import {Job} from 'agenda';
 
 const {Command} = require('@sapphire/framework');
 
-const JOB_NAME = 'Unlock Channel for Role';
+export const UNLOCK_JOB_NAME = 'Unlock Channel for Role';
 
 module.exports = class LockdownCommand extends Command {
   constructor(context: PieceContext) {
@@ -24,7 +24,7 @@ module.exports = class LockdownCommand extends Command {
   }
 
   async run(message: Message, args: Args) {
-    const {guild, guildId, author} = message;
+    const {guildId, channelId} = message;
     const settingsData = await getSettings(guildId as string);
 
     // Check if they even inputted a string
@@ -57,7 +57,7 @@ module.exports = class LockdownCommand extends Command {
     if (!durationOrTime.success) {
       const embed = new BediEmbed()
           .setTitle('Lockdown Reply')
-          .setDescription(`Channel has been locked for ${surroundStringWithBackTick(roleString.value)}`);
+          .setDescription(`Channel has been locked for ${role.value.toString()}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -72,9 +72,9 @@ module.exports = class LockdownCommand extends Command {
 
     // Remove old jobs
     const jobs = await agenda.jobs({
-      'name': JOB_NAME,
-      'data.guildId': message.guildId,
-      'data.channelId': message.channel.id,
+      'name': UNLOCK_JOB_NAME,
+      'data.guildId': guildId,
+      'data.channelId': channelId,
       'data.roleId': role.value.id,
     });
     for (const job of jobs) {
@@ -82,9 +82,9 @@ module.exports = class LockdownCommand extends Command {
     }
 
     // Schedule job
-    const job = await agenda.schedule(durationOrTime.value, JOB_NAME, {
-      guildId: message.guildId,
-      channelId: message.channel.id,
+    const job = await agenda.schedule(durationOrTime.value, UNLOCK_JOB_NAME, {
+      guildId: guildId,
+      channelId: channelId,
       roleId: role.value.id,
       messageId: message.id,
     });
@@ -102,7 +102,7 @@ module.exports = class LockdownCommand extends Command {
     super.onLoad();
 
     // Define job for use in the command
-    agenda.define(JOB_NAME, async (job: Job) => {
+    agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
       const {client} = this.container;
       const guildId = job.attrs.data?.guildId;
       const channelId = job.attrs.data?.channelId;
