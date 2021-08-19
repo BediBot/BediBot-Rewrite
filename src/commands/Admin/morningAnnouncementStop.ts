@@ -6,7 +6,7 @@ import {agenda, MORN_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
 
 const {Command} = require('@sapphire/framework');
 
-module.exports = class LockdownCommand extends Command {
+module.exports = class StopMorningAnnouncementCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'stopMorningAnnouncement',
@@ -23,7 +23,7 @@ module.exports = class LockdownCommand extends Command {
       'name': MORN_ANNOUNCE_JOB_NAME,
       'data.guildId': guildId,
     });
-    
+
     const embed = new BediEmbed()
         .setTitle('Stop Morning Announcement Reply')
         .setDescription(`Morning Announcements have been cancelled for ${surroundStringWithBackTick(guild?.name as string)}`);

@@ -8,7 +8,7 @@ import {agenda, isValidTime, MORN_ANNOUNCE_JOB_NAME} from '../../utils/scheduler
 
 const {Command} = require('@sapphire/framework');
 
-module.exports = class LockdownCommand extends Command {
+module.exports = class MorningAnnouncementCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'morningAnnouncement',
