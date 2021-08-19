@@ -6,11 +6,14 @@ import {BediEmbed} from '../lib/BediEmbed';
 import {client} from '../index';
 import {getRandomQuote} from '../database/models/QuoteModel';
 import {getUserFromMention, surroundStringWithBackTick} from './discordUtil';
+import {getBirthdaysToday} from '../database/models/BirthdayModel';
+import {getSettings} from '../database/models/SettingsModel';
 
 const humanInterval = require('human-interval');
 
 export const UNLOCK_JOB_NAME = 'Unlock Channel for Role';
 export const MORN_ANNOUNCE_JOB_NAME = 'Send Morning Announcement';
+export const BIRTH_ANNOUNCE_JOB_NAME = 'Send Birthday Announcement';
 
 export const agenda = new Agenda();
 
@@ -100,6 +103,54 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
           .setTitle('Good Morning!')
           .setDescription(description);
       await channel.send({embeds: [embed]});
+    } else {
+      job.fail('Channel not found. This means that the channel has been deleted.');
+    }
+  } else {
+    job.fail('Guild not found. This means BediBot is no longer in this guild.');
+  }
+});
+
+agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
+  const guildId = job.attrs.data?.guildId;
+  const channelId = job.attrs.data?.channelId;
+  const roleId = job.attrs.data?.roleId;
+
+  const guild = client.guilds.cache.get(guildId);
+
+  if (guild) {
+    const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
+    if (channel) {
+      const settingsData = await getSettings(guildId);
+      const birthdays = await getBirthdaysToday(settingsData.timezone);
+      const guildMembers = await guild.members.fetch();
+      birthdays.filter(birthday => guildMembers.has(birthday._id));
+
+      let role = null;
+      if (roleId) {
+        role = await guild.roles.fetch(roleId);
+        if (role) {
+          for (const member of guildMembers) {
+            if (member[1].roles.cache.has(roleId)) await member[1].roles.remove(role);
+          }
+        }
+      }
+
+      if (birthdays.length === 0) return;
+
+      let mentions = '';
+      for (const birthday of birthdays) {
+        const user = guildMembers.get(birthday._id);
+        if (role) user?.roles.add(role);
+        mentions += ` ${user?.toString()}`;
+      }
+
+      const embed = new BediEmbed()
+          .setTitle('Happy Birthday!')
+          .setDescription(mentions);
+
+      await channel.send({embeds: [embed]});
+
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
     }
