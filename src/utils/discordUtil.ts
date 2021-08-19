@@ -3,6 +3,7 @@ import logger from './loggerUtil';
 import {getSettings} from '../database/models/SettingsModel';
 import {DEFAULT_PREFIX} from '../config';
 import {SapphireClient} from '@sapphire/framework';
+import {client} from '../index';
 
 /**
  * Adds role to the author of a given message
@@ -136,4 +137,23 @@ export const numUsers = async (client: SapphireClient) => {
   }
 
   return members.size;
+};
+
+/**
+ * Gets a user object from a mention
+ * @param mention
+ * @returns {User | undefined}
+ */
+export const getUserFromMention = (mention: string) => {
+  if (!mention) return;
+
+  if (mention.startsWith('<@') && mention.endsWith('>')) {
+    mention = mention.slice(2, -1);
+
+    if (mention.startsWith('!')) {
+      mention = mention.slice(1);
+    }
+
+    return client.users.fetch(mention);
+  }
 };
