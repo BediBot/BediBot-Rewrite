@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import birthdayModel, {updateBirthday} from '../../database/models/BirthdayModel';
+import birthdayModel, {getBirthdaysFromMonth, updateBirthday} from '../../database/models/BirthdayModel';
 
 describe('Birthday DB', () => {
   beforeAll(async () => {
@@ -35,5 +35,38 @@ describe('Birthday DB', () => {
 
     result = await birthdayModel.findById(userId);
     expect(result?.birthDate.toString()).toBe(birthday.toString());
+  });
+
+  test('getBirthdaysFromMonth', async () => {
+    const userId = 'randomID';
+    const userId1 = 'randomID1';
+    const userId2 = 'randomID2';
+    const birthday = new Date().setDate(1);
+    const birthday1 = new Date().setDate(2);
+    const birthday2 = new Date().setDate(3);
+
+    await birthdayModel.create({
+      _id: userId,
+      birthDate: birthday,
+    });
+
+    await birthdayModel.create({
+      _id: userId2,
+      birthDate: birthday2,
+    });
+
+    await birthdayModel.create({
+      _id: userId1,
+      birthDate: birthday1,
+    });
+
+    const result = await getBirthdaysFromMonth(new Date().getMonth() + 1);
+
+    expect(result[0]._id).toBe(userId);
+    expect(result[0].birthDate.valueOf()).toBe(birthday);
+    expect(result[1]._id).toBe(userId1);
+    expect(result[1].birthDate.valueOf()).toBe(birthday1);
+    expect(result[2]._id).toBe(userId2);
+    expect(result[2].birthDate.valueOf()).toBe(birthday2);
   });
 });
