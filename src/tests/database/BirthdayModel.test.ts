@@ -96,7 +96,7 @@ describe('Birthday DB', () => {
 
     logger.info(await birthdayModel.find());
 
-    const result = await getBirthdaysToday('America/Toronto');
+    const result = await getBirthdaysToday(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
     expect(result.length).toBe(2);
     expect(result[0]._id).toBe(userId);
