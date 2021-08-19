@@ -4,10 +4,13 @@ import Agenda, {Job} from 'agenda/dist/index';
 import {BaseGuildTextChannel} from 'discord.js';
 import {BediEmbed} from '../lib/BediEmbed';
 import {client} from '../index';
+import {getRandomQuote} from '../database/models/QuoteModel';
+import {getUserFromMention, surroundStringWithBackTick} from './discordUtil';
 
 const humanInterval = require('human-interval');
 
 export const UNLOCK_JOB_NAME = 'Unlock Channel for Role';
+export const MORN_ANNOUNCE_JOB_NAME = 'Send Morning Announcement';
 
 export const agenda = new Agenda();
 
@@ -31,14 +34,18 @@ export const startAgenda = async () => {
 
 export const isValidDurationOrTime = (string: string) => {
   if (string.length === 0) return false;
+  if (isValidTime(string)) return true;
+  return !isNaN(humanInterval(string).valueOf());
+};
+
+export const isValidTime = (string: string) => {
   const re12 = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/;
   const re12Short = /(1[0-2]|0?[1-9] ?([AaPp][Mm]))/;
   const re24 = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
   if (re12.test(string) || re24.test(string) || re12Short.test(string)) return true;
-  return !isNaN(humanInterval(string).valueOf());
+  return false;
 };
 
-// Define job for use in the command
 agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
@@ -67,4 +74,36 @@ agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
     job.fail('Guild not found. This means BediBot is no longer in this guild.');
   }
   await job.remove();
+});
+
+agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
+  const guildId = job.attrs.data?.guildId;
+  const channelId = job.attrs.data?.channelId;
+
+  const guild = client.guilds.cache.get(guildId);
+
+  if (guild) {
+    const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
+    if (channel) {
+      const quote = await getRandomQuote(guildId);
+      const user = await getUserFromMention(quote?.author as string);
+
+      let description: string;
+      if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
+        Author: ${quote?.author}
+        Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
+      else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
+        Author: ${surroundStringWithBackTick(quote?.author as string)}
+        Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
+
+      const embed = new BediEmbed()
+          .setTitle('Good Morning!')
+          .setDescription(description);
+      await channel.send({embeds: [embed]});
+    } else {
+      job.fail('Channel not found. This means that the channel has been deleted.');
+    }
+  } else {
+    job.fail('Guild not found. This means BediBot is no longer in this guild.');
+  }
 });
