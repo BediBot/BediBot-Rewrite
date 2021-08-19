@@ -15,7 +15,7 @@ module.exports = class AddQuoteCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'addQuote',
-      aliases: ['aq'],
+      aliases: ['aq', 'addq', 'aquote'],
       description: 'Adds a quote from an individual of your choice.',
       preconditions: ['QuotesEnabled', 'UserVerified'],
     });

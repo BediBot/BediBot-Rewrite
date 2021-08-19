@@ -15,7 +15,7 @@ module.exports = class RemoveQuoteCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'getQuotes',
-      aliases: ['gq'],
+      aliases: ['gq', 'getq', 'getquote', 'gquote', 'gquotes'],
       description: 'Displays an authors quotes',
       preconditions: ['GuildOnly', 'QuotesEnabled'],
     });
