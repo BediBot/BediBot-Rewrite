@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import birthdayModel, {getBirthdaysFromMonth, updateBirthday} from '../../database/models/BirthdayModel';
+import birthdayModel, {getBirthdaysFromMonth, getBirthdaysToday, updateBirthday} from '../../database/models/BirthdayModel';
+import logger from '../../utils/loggerUtil';
 
 describe('Birthday DB', () => {
   beforeAll(async () => {
@@ -68,5 +69,39 @@ describe('Birthday DB', () => {
     expect(result[1].birthDate.valueOf()).toBe(birthday1);
     expect(result[2]._id).toBe(userId2);
     expect(result[2].birthDate.valueOf()).toBe(birthday2);
+  });
+
+  test('getBirthdaysToday', async () => {
+    const userId = 'randomID';
+    const userId1 = 'randomID1';
+    const userId2 = 'randomID2';
+    const birthday = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    const birthday1 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    const birthday2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
+
+    await birthdayModel.create({
+      _id: userId,
+      birthDate: birthday,
+    });
+
+    await birthdayModel.create({
+      _id: userId2,
+      birthDate: birthday2,
+    });
+
+    await birthdayModel.create({
+      _id: userId1,
+      birthDate: birthday1,
+    });
+
+    logger.info(await birthdayModel.find());
+
+    const result = await getBirthdaysToday(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+    expect(result.length).toBe(2);
+    expect(result[0]._id).toBe(userId);
+    expect(result[0].birthDate.valueOf()).toBe(birthday.valueOf());
+    expect(result[1]._id).toBe(userId1);
+    expect(result[1].birthDate.valueOf()).toBe(birthday1.valueOf());
   });
 });
