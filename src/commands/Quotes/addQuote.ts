@@ -17,7 +17,7 @@ module.exports = class AddQuoteCommand extends Command {
       name: 'addQuote',
       aliases: ['aq', 'addq', 'aquote'],
       description: 'Adds a quote from an individual of your choice.',
-      preconditions: ['QuotesEnabled', 'UserVerified'],
+      preconditions: ['GuildOnly', 'QuotesEnabled'],
     });
   }
 
