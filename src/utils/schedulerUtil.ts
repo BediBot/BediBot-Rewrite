@@ -92,12 +92,19 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
       const user = await getUserFromMention(quote?.author as string);
 
       let description: string;
-      if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
+      if (quote?.date) {
+        if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
         Author: ${quote?.author}
         Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
-      else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
+        else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
         Author: ${surroundStringWithBackTick(quote?.author as string)}
         Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
+      } else {
+        if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
+        Author: ${quote?.author}`;
+        else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
+        Author: ${surroundStringWithBackTick(quote?.author as string)}`;
+      }
 
       const embed = new BediEmbed()
           .setTitle('Good Morning!')
