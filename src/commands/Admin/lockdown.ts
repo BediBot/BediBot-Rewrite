@@ -68,7 +68,7 @@ module.exports = class LockdownCommand extends Command {
     }
 
     // Remove old jobs
-    const jobs = await agenda.cancel({
+    await agenda.cancel({
       'name': UNLOCK_JOB_NAME,
       'data.guildId': guildId,
       'data.channelId': channelId,
