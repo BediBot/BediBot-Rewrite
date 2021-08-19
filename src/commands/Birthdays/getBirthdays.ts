@@ -9,7 +9,7 @@ import {PaginatedMessage} from '@sapphire/discord.js-utilities';
 
 const {Command} = require('@sapphire/framework');
 
-const MAX_BIRTHDAYS_PER_PAGE = 5;
+const MAX_BIRTHDAYS_PER_PAGE = 10;
 
 module.exports = class GetBirthdays extends Command {
   constructor(context: PieceContext) {
