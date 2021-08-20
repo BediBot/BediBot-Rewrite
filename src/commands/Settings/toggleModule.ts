@@ -4,7 +4,6 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import settingsModel from '../../database/models/SettingsModel';
 import logger from '../../utils/loggerUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -76,19 +75,9 @@ module.exports = class SettingsCommand extends Command {
     const selectCollector = reply.createMessageComponentCollector({componentType: 'SELECT_MENU', time: 60000});
     selectCollector.on('collect', async interaction => {
       if (!interaction.isSelectMenu()) return;
-      if (interaction.user.id != message.author.id) {
-        const embed = new BediEmbed()
-            .setTitle('Toggle Modules Reply')
-            .setColor(colors.ERROR)
-            .setDescription('You did not run this command');
-
-        return interaction.reply({
-          ephemeral: true,
-          embeds: [embed],
-        });
-      }
-
       await interaction.deferUpdate();
+      if (interaction.user.id != message.author.id) return;
+
       module = interaction.values[0];
     });
 
@@ -103,15 +92,7 @@ module.exports = class SettingsCommand extends Command {
     buttonCollector.on('collect', async interaction => {
       if (!interaction.isButton()) return;
       if (interaction.user.id != message.author.id) {
-        const embed = new BediEmbed()
-            .setTitle('Toggle Modules Reply')
-            .setColor(colors.ERROR)
-            .setDescription('You did not run this command');
-
-        return interaction.reply({
-          ephemeral: true,
-          embeds: [embed],
-        });
+        return interaction.deferUpdate();
       }
       if (!module) {
         const embed = new BediEmbed()
