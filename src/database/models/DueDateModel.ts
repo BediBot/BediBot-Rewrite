@@ -1,5 +1,6 @@
 import {model, Schema} from 'mongoose';
 import moment from 'moment-timezone/moment-timezone-utils';
+import {getSettings} from './SettingsModel';
 
 interface DueDateI {
   guildId: string,
@@ -45,8 +46,39 @@ export const addDueDate = async (guildId: string, title: string, dateTime: Date,
   });
 };
 
-export const removeOldDueDates = async (guildId: string) => {
-  await dueDateModel.deleteMany({dateTime: {$lte: moment().toDate()}});
+/**
+ * Removes old due dates in a guild
+ * @param guildId
+ * @returns {Promise<void>}
+ */
+export const removeOldDueDatesInGuild = async (guildId: string) => {
+  const settingsData = await getSettings(guildId);
+
+  await dueDateModel.deleteMany({
+    dateTime: {$lte: moment().toDate()},
+    dateOnly: false,
+    guildId: guildId,
+  });
+  await dueDateModel.deleteMany({
+    dateTime: {$lte: moment().subtract(1, 'd').toDate()},
+    dateOnly: true,
+    guildId: guildId,
+  });
+};
+
+/**
+ * Gets all the due dates in a guild for a specific stream and course
+ * @param guildId
+ * @param stream
+ * @param course
+ * @return {Promise<Query<Array<EnforceDocument<DueDateI, {}>>, DueDateI & Document<any, any, DueDateI>, {}, DueDateI>>}
+ */
+export const getDueDatesInGuildForStreamAndCourse = async (guildId: string, stream: string, course: string) => {
+  return dueDateModel.find({
+    guildId: guildId,
+    stream: stream,
+    course: course,
+  }).sort({dateTime: 1});
 };
 
 export default dueDateModel;

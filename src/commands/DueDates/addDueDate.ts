@@ -4,7 +4,7 @@ import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import {agenda, isValidTime} from '../../utils/schedulerUtil';
+import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 import {addDueDate} from '../../database/models/DueDateModel';
 
@@ -79,7 +79,7 @@ module.exports = class AddQuoteCommand extends Command {
       dateOnly = false;
     }
 
-    if (dateMoment < moment()) {
+    if (dateMoment < moment().subtract(1, 'd') || (!dateOnly && dateMoment < moment())) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Add Due Date Reply')
@@ -171,9 +171,12 @@ module.exports = class AddQuoteCommand extends Command {
         ]);
 
     const embed = new BediEmbed()
-        .setTitle('Add Due Date Reply')
-        .setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
-            `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'})}`)}`);
+        .setTitle('Add Due Date Reply');
+
+    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
+        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full'})}`)}`);
+    else embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
+        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'})}`)}`);
     const reply = await message.reply({
       embeds: [embed],
       components: [typeSelect, streamSelect, courseSelect, buttons],
@@ -247,8 +250,15 @@ module.exports = class AddQuoteCommand extends Command {
 
       await addDueDate(guildId as string, title.value, date, type, stream, course, dateOnly);
 
-      //TODO: Trigger an update of the due date message board here
-      //Choosing to leave this for later as the message board hasn't been implemented yet and don't want to make this a huge PR
+      const jobs = await agenda.jobs({
+        name: DUE_DATE_UPDATE_JOB_NAME,
+        'data.guildId': guildId,
+        'data.stream': stream,
+      });
+
+      if (jobs.length != 0) {
+        await jobs[0].run();
+      }
 
       await reply.edit({
         embeds: [embed],

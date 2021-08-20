@@ -8,12 +8,14 @@ import {getRandomQuote} from '../database/models/QuoteModel';
 import {getUserFromMention, surroundStringWithBackTick} from './discordUtil';
 import {getBirthdaysToday} from '../database/models/BirthdayModel';
 import {getSettings} from '../database/models/SettingsModel';
+import {getDueDatesInGuildForStreamAndCourse, removeOldDueDatesInGuild} from '../database/models/DueDateModel';
 
 const humanInterval = require('human-interval');
 
 export const UNLOCK_JOB_NAME = 'Unlock Channel for Role';
 export const MORN_ANNOUNCE_JOB_NAME = 'Send Morning Announcement';
 export const BIRTH_ANNOUNCE_JOB_NAME = 'Send Birthday Announcement';
+export const DUE_DATE_UPDATE_JOB_NAME = 'Update Due Dates';
 
 export const agenda = new Agenda();
 
@@ -69,6 +71,8 @@ agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
             .setTitle('Lockdown Reply')
             .setDescription(`Channel has been unlocked for ${role.toString()}`);
         await message.reply({embeds: [embed]});
+      } else {
+        job.fail('Message not found. This means either the message has been deleted.');
       }
     } else {
       job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
@@ -158,6 +162,92 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
 
       await channel.send({embeds: [embed]});
 
+    } else {
+      job.fail('Channel not found. This means that the channel has been deleted.');
+    }
+  } else {
+    job.fail('Guild not found. This means BediBot is no longer in this guild.');
+  }
+});
+
+const MAX_NUM_EMBED_FIELDS = 25;
+
+agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
+  const guildId = job.attrs.data?.guildId;
+  const channelId = job.attrs.data?.channelId;
+  const messageId = job.attrs.data?.messageId;
+  const stream = job.attrs.data?.stream;
+
+  const guild = client.guilds.cache.get(guildId);
+
+  if (guild) {
+    const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
+    if (channel) {
+      const message = await channel.messages.fetch(messageId);
+      if (message) {
+        // This should never return as you should never schedule this job with a messageID unless the client sent it
+        if (message.author.id != client.id) return;
+
+        await removeOldDueDatesInGuild(guildId);
+
+        const settingsData = await getSettings(guildId);
+
+        const embed = new BediEmbed().setTitle(`Due Dates for Stream ${stream}`);
+
+        for (const course of settingsData.courses) {
+          if (embed.fields.length === MAX_NUM_EMBED_FIELDS) {
+            break;
+          }
+
+          const dueDates = await getDueDatesInGuildForStreamAndCourse(guildId, stream, course);
+
+          for (const dueDate of dueDates) {
+            let emoji: string;
+            switch (dueDate.type) {
+              case 'Assignment':
+                emoji = ':pushpin:';
+                break;
+              case 'Test':
+                emoji = ':bulb:';
+                break;
+              case 'Exam':
+                emoji = ':pen_ballpoint:';
+                break;
+              case 'Project':
+                emoji = ':books:';
+                break;
+              case 'Quiz':
+                emoji = ':pencil:';
+                break;
+              default:
+                emoji = ':placard:';
+            }
+
+            let fieldName: string;
+            if (dueDate === dueDates[0]) fieldName = `——————————**${course}**——————————\n\n${emoji} ${dueDate.title}`;
+            else fieldName = `${emoji} ${dueDate.title}`;
+
+            let fieldValue: string;
+            if (dueDate.dateOnly) fieldValue = `**Type:** ${surroundStringWithBackTick(dueDate.type)}
+            **Date:** ${surroundStringWithBackTick(dueDate.dateTime.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full'}))}
+            \u200b`;
+            else fieldValue = `**Type:** ${surroundStringWithBackTick(dueDate.type)}
+            **Date:** ${surroundStringWithBackTick(
+                dueDate.dateTime.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'}))}
+            \u200b`;
+
+            if (embed.fields.length === (MAX_NUM_EMBED_FIELDS - 1)) {
+              embed.addField('Maximum Limit Reached', 'Remaining Due Dates hidden');
+              break;
+            }
+
+            embed.addField(fieldName, fieldValue, false);
+          }
+        }
+        await message.edit({embeds: [embed]});
+      } else {
+        job.fail('Message not found. This means either the message has been deleted.');
+      }
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
     }
