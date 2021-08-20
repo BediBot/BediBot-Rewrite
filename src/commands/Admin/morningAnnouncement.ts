@@ -5,6 +5,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, isValidTime, MORN_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
+import moment from 'moment-timezone/moment-timezone-utils';
 
 const {Command} = require('@sapphire/framework');
 
@@ -22,7 +23,7 @@ module.exports = class MorningAnnouncementCommand extends Command {
     const {guildId, channelId} = message;
     const settingsData = await getSettings(guildId as string);
 
-    const announcementTime = await args.pickResult('string');
+    const announcementTime = await args.restResult('string');
 
     if (!announcementTime.success) {
       const embed = new BediEmbed()
@@ -55,11 +56,18 @@ module.exports = class MorningAnnouncementCommand extends Command {
              .schedule(announcementTime.value)
              .save();
 
-    // Response message with next run time
-    const nextRun = job.attrs.nextRunAt;
+    const localRunTime = job.attrs.nextRunAt;
+
+    const nextRun = moment.tz(moment().format('YYYY-MM-DD'), settingsData.timezone);
+    nextRun.set({h: localRunTime?.getHours(), m: localRunTime?.getMinutes()});
+    if (nextRun < moment()) nextRun.add(1, 'd');
+
+    await job.schedule(nextRun.toDate()).save();
+
     const embed = new BediEmbed()
         .setTitle('Morning Announcement Reply')
-        .setDescription(`Morning Announcements have been scheduled for ${surroundStringWithBackTick(`${nextRun?.toLocaleTimeString()}`)}`);
+        .setDescription(`Morning Announcements have been scheduled for ${surroundStringWithBackTick(
+            `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
     return message.reply({embeds: [embed]});
   }
 };

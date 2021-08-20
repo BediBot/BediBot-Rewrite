@@ -88,7 +88,7 @@ module.exports = class LockdownCommand extends Command {
     const embed = new BediEmbed()
         .setTitle('Lockdown Reply')
         .setDescription(`Channel has been locked for ${role.value.toString()}
-        Unlock scheduled for ${surroundStringWithBackTick(`${nextRun?.toDateString()} ${nextRun?.toLocaleTimeString()}`)}`);
+        Unlock scheduled for ${surroundStringWithBackTick(`${nextRun?.toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
     return message.reply({embeds: [embed]});
   }
 };
