@@ -71,4 +71,15 @@ export const getQuotesFromAuthor = async (guildId: string, author: string) => {
   });
 };
 
+/**
+ * Gets all the quotes in a guild
+ * @param guildId
+ * @returns {Promise<Query<Array<EnforceDocument<QuoteI, {}>>, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
+ */
+export const getQuotesInGuild = async (guildId: string) => {
+  return quoteModel.find({
+    guildId: guildId,
+  });
+};
+
 export default quoteModel;

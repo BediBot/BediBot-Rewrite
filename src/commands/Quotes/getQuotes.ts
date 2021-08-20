@@ -11,7 +11,7 @@ const {Command} = require('@sapphire/framework');
 
 const MAX_QUOTES_PER_PAGE = 5;
 
-module.exports = class RemoveQuoteCommand extends Command {
+module.exports = class GetQuotesCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'getQuotes',
