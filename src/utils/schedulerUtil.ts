@@ -8,7 +8,7 @@ import {getRandomQuote} from '../database/models/QuoteModel';
 import {getUserFromMention, surroundStringWithBackTick} from './discordUtil';
 import {getBirthdaysToday} from '../database/models/BirthdayModel';
 import {getSettings} from '../database/models/SettingsModel';
-import {getDueDatesInGuildForStreamAndCourse, removeOldDueDatesInGuild} from '../database/models/DueDateModel';
+import {getDueDatesInGuildForCategoryAndCourse, removeOldDueDatesInGuild} from '../database/models/DueDateModel';
 
 const humanInterval = require('human-interval');
 
@@ -176,7 +176,7 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
   const messageId = job.attrs.data?.messageId;
-  const stream = job.attrs.data?.stream;
+  const category = job.attrs.data?.category;
 
   const guild = client.guilds.cache.get(guildId);
 
@@ -192,14 +192,14 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
 
         const settingsData = await getSettings(guildId);
 
-        const embed = new BediEmbed().setTitle(`Due Dates for Stream ${stream}`);
+        const embed = new BediEmbed().setTitle(`Due Dates for Category: ${category}`);
 
         for (const course of settingsData.courses) {
           if (embed.fields.length === MAX_NUM_EMBED_FIELDS) {
             break;
           }
 
-          const dueDates = await getDueDatesInGuildForStreamAndCourse(guildId, stream, course);
+          const dueDates = await getDueDatesInGuildForCategoryAndCourse(guildId, category, course);
 
           for (const dueDate of dueDates) {
             let emoji: string;

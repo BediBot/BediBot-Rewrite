@@ -16,7 +16,8 @@ interface SettingsI {
   verifiedRole: string,
 
   dueDatesEnabled: boolean,
-  streams: string[],
+  types: string[],
+  categories: string[],
   courses: string[],
 }
 
@@ -36,7 +37,8 @@ export const Settings = new Schema({
   verifiedRole: String,
 
   dueDatesEnabled: Boolean,
-  streams: [String],
+  types: [String],
+  categories: [String],
   courses: [String],
 });
 
@@ -46,18 +48,19 @@ export const defaultSettings = (guildID: string) => {
     prefix: '$',
     timezone: 'America/Toronto',
 
-    pinsEnabled: false,
+    pinsEnabled: true,
     pinEmoji: '📌',
 
-    quotesEnabled: false,
+    quotesEnabled: true,
     quoteApprovalsRequired: 4,
 
-    verificationEnabled: true,
+    verificationEnabled: false,
     emailDomain: 'uwaterloo.ca',
     verifiedRole: 'Verified',
 
-    dueDatesEnabled: false,
-    streams: ['8'],
+    dueDatesEnabled: true,
+    types: ['Assignment', 'Test', 'Quiz', 'Exam', 'Project', 'Other'],
+    categories: ['Stream 8'],
     courses: [],
   };
 };

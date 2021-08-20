@@ -22,22 +22,22 @@ module.exports = class DisplayDueDatesCommand extends Command {
     const {guildId, channelId} = message;
     const settingsData = await getSettings(guildId as string);
 
-    const streamArg = await args.pickResult('string');
+    const categoryArg = await args.pickResult('string');
 
-    if (!streamArg.success) {
+    if (!categoryArg.success) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Display Due Dates Reply')
           .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'displayDueDates <stream>')}`);
+          ${surroundStringWithBackTick(settingsData.prefix + 'displayDueDates <category>')}`);
       return message.reply({embeds: [embed]});
     }
 
-    if (!settingsData.streams.includes(streamArg.value)) {
+    if (!settingsData.categories.includes(categoryArg.value)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Display Due Dates Reply')
-          .setDescription('That stream is not set up on this server!');
+          .setDescription('That category is not set up on this server!');
       return message.reply({embeds: [embed]});
     }
 
@@ -49,18 +49,18 @@ module.exports = class DisplayDueDatesCommand extends Command {
     const jobs = await agenda.jobs({
       name: DUE_DATE_UPDATE_JOB_NAME,
       'data.guildId': guildId,
-      'data.stream': streamArg.value,
+      'data.category': categoryArg.value,
     });
 
     if (jobs.length != 0) {
       await jobs[0].remove();
     }
 
-    await agenda.every('one minute', DUE_DATE_UPDATE_JOB_NAME, {
+    await agenda.every('10 seconds', DUE_DATE_UPDATE_JOB_NAME, {
       guildId: guildId,
       channelId: channelId,
       messageId: reply.id,
-      stream: streamArg.value,
+      category: categoryArg.value,
     });
   }
 };

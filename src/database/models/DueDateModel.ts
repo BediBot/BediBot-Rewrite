@@ -7,7 +7,7 @@ interface DueDateI {
   title: string,
   dateTime: Date,
   type: string,
-  stream: string,
+  category: string,
   course: string,
   dateOnly: boolean,
 }
@@ -17,7 +17,7 @@ export const DueDate = new Schema({
   title: String,
   dateTime: Date,
   type: String,
-  stream: String,
+  category: String,
   course: String,
   dateOnly: Boolean,
 });
@@ -30,17 +30,19 @@ const dueDateModel = model<DueDateI>('DueDate', DueDate, 'DueDates');
  * @param title
  * @param dateTime
  * @param type
- * @param stream
  * @param course
  * @returns {Promise<void>}
+ * @param category
+ * @param dateOnly
  */
-export const addDueDate = async (guildId: string, title: string, dateTime: Date, type: string, stream: string, course: string, dateOnly: boolean) => {
+export const addDueDate = async (
+    guildId: string, title: string, dateTime: Date, type: string, category: string, course: string, dateOnly: boolean) => {
   await dueDateModel.create({
     guildId: guildId,
     title: title,
     dateTime: dateTime,
     type: type,
-    stream: stream,
+    category: category,
     course: course,
     dateOnly: dateOnly,
   });
@@ -73,10 +75,10 @@ export const removeOldDueDatesInGuild = async (guildId: string) => {
  * @param course
  * @return {Promise<Query<Array<EnforceDocument<DueDateI, {}>>, DueDateI & Document<any, any, DueDateI>, {}, DueDateI>>}
  */
-export const getDueDatesInGuildForStreamAndCourse = async (guildId: string, stream: string, course: string) => {
+export const getDueDatesInGuildForCategoryAndCourse = async (guildId: string, category: string, course: string) => {
   return dueDateModel.find({
     guildId: guildId,
-    stream: stream,
+    category: category,
     course: course,
   }).sort({dateTime: 1});
 };
