@@ -74,7 +74,8 @@ module.exports = class RemoveQuoteCommand extends Command {
 
       for (let j = 0; j < MAX_QUOTES_PER_PAGE; j++) {
         if ((i + j) >= quotes.length) break;
-        embed.addField(quotes[i + j].date.toDateString(), surroundStringWithBackTick(quotes[i + j].quote), false);
+        if (quotes[i + j].date) embed.addField(quotes[i + j].date.toDateString(), surroundStringWithBackTick(quotes[i + j].quote), false);
+        else embed.addField('Before Sep 2021', surroundStringWithBackTick(quotes[i + j].quote), false);
       }
 
       paginatedMessage.addPageEmbed(embed);
