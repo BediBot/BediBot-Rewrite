@@ -60,6 +60,8 @@ module.exports = class AddQuoteCommand extends Command {
 
     const dateMoment = moment.tz(moment(date).format('YYYY-MM-DD'), settingsData.timezone);
 
+    let dateOnly = true;
+
     if (timeString.success) {
       if (!isValidTime(timeString.value)) {
         const embed = new BediEmbed()
@@ -74,6 +76,7 @@ module.exports = class AddQuoteCommand extends Command {
       await job.remove();
 
       dateMoment.set({h: tempDate?.getHours(), m: tempDate?.getMinutes()});
+      dateOnly = false;
     }
 
     if (dateMoment < moment()) {
@@ -242,7 +245,7 @@ module.exports = class AddQuoteCommand extends Command {
         });
       }
 
-      await addDueDate(guildId as string, title.value, date, type, stream, course);
+      await addDueDate(guildId as string, title.value, date, type, stream, course, dateOnly);
 
       //TODO: Trigger an update of the due date message board here
       //Choosing to leave this for later as the message board hasn't been implemented yet and don't want to make this a huge PR
