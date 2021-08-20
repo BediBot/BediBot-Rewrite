@@ -76,6 +76,18 @@ module.exports = class SettingsCommand extends Command {
     const selectCollector = reply.createMessageComponentCollector({componentType: 'SELECT_MENU', time: 60000});
     selectCollector.on('collect', async interaction => {
       if (!interaction.isSelectMenu()) return;
+      if (interaction.user.id != message.author.id) {
+        const embed = new BediEmbed()
+            .setTitle('Toggle Modules Reply')
+            .setColor(colors.ERROR)
+            .setDescription('You did not run this command');
+
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [embed],
+        });
+      }
+
       await interaction.deferUpdate();
       module = interaction.values[0];
     });
