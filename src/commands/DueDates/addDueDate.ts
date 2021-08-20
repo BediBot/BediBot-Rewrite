@@ -7,6 +7,7 @@ import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 import {addDueDate} from '../../database/models/DueDateModel';
+import {didDateChange, isValidMonth} from '../../utils/dateUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -35,22 +36,14 @@ module.exports = class AddQuoteCommand extends Command {
     if (!title.success || !month.success || !day.success || !year.success) return invalidSyntaxReply(message, settingsData);
 
     // If month is a string, parse it into a date and extract the month number. This works with full month and short forms as well.
-    if (typeof month.value === 'string') {
-      const tempDate = Date.parse(month.value + '1, 2021');
-      if (!isNaN(tempDate)) {
-        month = new Date(tempDate).getMonth() + 1;
-      } else return invalidSyntaxReply(message, settingsData);
-    }
+    month = isValidMonth(month.value);
 
-    // Set month variable to value for consistency
-    if (typeof month != 'number') {
-      month = month.value;
-    }
+    if (!month) return invalidSyntaxReply(message, settingsData);
 
-    let date = new Date(year.value, (month as number) - 1, day.value);
+    let date = new Date(year.value, month - 1, day.value);
 
     // Sometimes an invalid date can be created but the date will change e.g Feb 29, 2021 becomes Mar 1, 2021. This doesn't let those cases through
-    if (!(date.getFullYear() === year.value) || !(date.getMonth() + 1 === month) || !(date.getDate() == day.value)) {
+    if (didDateChange(date, day.value, month, year.value)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Add Due Date Reply')
