@@ -42,7 +42,8 @@ module.exports = class DisplayDueDatesCommand extends Command {
     }
 
     const embed = new BediEmbed()
-        .setTitle('Temporary Reply');
+        .setTitle('Temporary Reply')
+        .setDescription(surroundStringWithBackTick('Loading . . .'));
 
     const reply = await message.channel.send({embeds: [embed]});
 
