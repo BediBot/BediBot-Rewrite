@@ -54,7 +54,8 @@ module.exports = class HelpCommand extends Command {
            .setDescription(command.description);
 
       embed.addField('Category', command.category, false);
-      if (command.detailedDescription) embed.addField('Detailed Description', command.detailedDescription, false);
+      if (command.detailedDescription) embed.addField('Detailed Description',
+          `Usage: ${surroundStringWithBackTick(settingsData.prefix)}` + command.detailedDescription, false);
       if (command.aliases) {
         let aliasString = '';
 
