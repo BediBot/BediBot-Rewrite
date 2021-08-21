@@ -11,8 +11,9 @@ module.exports = class StopMorningAnnouncementCommand extends Command {
     super(context, {
       name: 'stopMorningAnnouncement',
       aliases: ['stopma', 'sma'],
-      description: 'Stops any scheduled morning announcements in this guild',
+      description: 'Stops any scheduled morning announcements in this server',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      detailedDescription: `${surroundStringWithBackTick(`Usage: stopMorningAnnouncement`)}`,
     });
   }
 

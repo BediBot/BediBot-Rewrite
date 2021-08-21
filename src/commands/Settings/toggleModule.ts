@@ -12,9 +12,10 @@ module.exports = class SettingsCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'toggleModule',
-      aliases: ['tm'],
+      aliases: ['tm', 'toggleModules'],
       description: 'Allows you to enable or disable BediBot modules',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      detailedDescription: `${surroundStringWithBackTick(`Usage: toggleModule`)}`,
     });
   }
 

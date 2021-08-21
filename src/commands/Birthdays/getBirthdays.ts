@@ -6,6 +6,7 @@ import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {getBirthdaysFromMonth} from '../../database/models/BirthdayModel';
 import {PaginatedMessage} from '@sapphire/discord.js-utilities';
+import {isValidMonth} from '../../utils/dateUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -17,6 +18,8 @@ module.exports = class GetBirthdays extends Command {
       name: 'getbirthdays',
       description: 'Gets the birthdays for a month',
       preconditions: ['GuildOnly'],
+      detailedDescription: `${surroundStringWithBackTick(`Usage: getBirthdays <month>`)}
+The month can be long (January), short (Jan), or number (1).`,
     });
   }
 
@@ -30,20 +33,9 @@ module.exports = class GetBirthdays extends Command {
 
     if (!month.success) return invalidSyntaxReply(message, settingsData);
 
-    // If month is a string, parse it into a date and extract the month number. This works with full month and short forms as well.
-    if (typeof month.value === 'string') {
-      const tempDate = Date.parse(month.value + '1, 2021');
-      if (!isNaN(tempDate)) {
-        month = new Date(tempDate).getMonth() + 1;
-      } else return invalidSyntaxReply(message, settingsData);
-    }
+    month = isValidMonth(month.value);
 
-    // Set month variable to value for consistency
-    if (typeof month != 'number') {
-      month = month.value;
-    }
-
-    if (!(month > 0 && month <= 12)) return invalidSyntaxReply(message, settingsData);
+    if (!month) return invalidSyntaxReply(message, settingsData);
 
     const birthdays = await getBirthdaysFromMonth(month as number);
     const members = await message.guild?.members.fetch();

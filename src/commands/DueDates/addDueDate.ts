@@ -18,6 +18,10 @@ module.exports = class AddQuoteCommand extends Command {
       aliases: ['add', 'adddue', 'adddate'],
       description: 'Adds a due date',
       preconditions: ['GuildOnly', 'DueDatesEnabled'],
+      detailedDescription: `${surroundStringWithBackTick(`Usage: addDueDate <title> <month> <day> <year> <time:optional>`)}
+The month can be long (January), short (Jan), or number (1).
+You can specify the (optional) time in most common time formats.
+Make sure to run the displayDueDates command somewhere!`,
     });
   }
 

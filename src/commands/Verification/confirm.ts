@@ -9,7 +9,7 @@ import {
   userPendingVerification,
   validUniqueKey,
 } from '../../database/models/PendingVerificationuserModel';
-import {addRoleToAuthor} from '../../utils/discordUtil';
+import {addRoleToAuthor, surroundStringWithBackTick} from '../../utils/discordUtil';
 import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -20,6 +20,7 @@ module.exports = class ConfirmCommand extends Command {
       name: 'confirm',
       description: 'Allows you to confirm with your unique code to access the server',
       preconditions: ['GuildOnly', 'VerificationEnabled'],
+      detailedDescription: `${surroundStringWithBackTick(`Usage: confirm <uniqueKey>`)}`,
     });
   }
 

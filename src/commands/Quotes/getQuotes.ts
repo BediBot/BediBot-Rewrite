@@ -16,8 +16,9 @@ module.exports = class GetQuotesCommand extends Command {
     super(context, {
       name: 'getQuotes',
       aliases: ['gq', 'getq', 'getquote', 'gquote', 'gquotes'],
-      description: 'Displays an authors quotes',
+      description: `Displays an author's quotes`,
       preconditions: ['GuildOnly', 'QuotesEnabled'],
+      detailedDescription: `${surroundStringWithBackTick(`Usage: getQuotes <author>`)}`,
     });
   }
 
