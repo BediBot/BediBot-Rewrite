@@ -16,7 +16,7 @@ module.exports = class MorningAnnouncementCommand extends Command {
       aliases: ['ma'],
       description: 'Schedules Morning Announcements in the Current Channel',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
-      detailedDescription: `${surroundStringWithBackTick(`Usage: morningAnnouncement <time>`)}.
+      detailedDescription: `${surroundStringWithBackTick(`morningAnnouncement <time>`)}.
 You can specify the announcement time in most common time formats.
 If you make a mistake, simply run the command again, only one morning announcement can be scheduled per day.`,
     });

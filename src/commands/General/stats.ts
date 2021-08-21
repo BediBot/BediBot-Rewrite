@@ -11,7 +11,7 @@ module.exports = class StatsCommand extends Command {
       name: 'stats',
       aliases: ['stat'],
       description: 'Sends some statistics about the bot',
-      detailedDescription: `${surroundStringWithBackTick(`Usage: stats`)}`,
+      detailedDescription: `${surroundStringWithBackTick(`stats`)}`,
     });
   }
 

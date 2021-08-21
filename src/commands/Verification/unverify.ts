@@ -14,7 +14,7 @@ module.exports = class UnverifyCommand extends Command {
       name: 'unverify',
       description: 'Unverifies you from the server.',
       preconditions: ['GuildOnly', 'VerificationEnabled'],
-      detailedDescription: `${surroundStringWithBackTick(`Usage: unverify`)}`,
+      detailedDescription: `${surroundStringWithBackTick(`unverify`)}`,
     });
   }
 

@@ -11,7 +11,7 @@ module.exports = class GithubCommand extends Command {
       name: 'github',
       aliases: ['git'],
       description: 'Shows the GitHub Repository for BediBot',
-      detailedDescription: `${surroundStringWithBackTick(`Usage: github`)}`,
+      detailedDescription: `${surroundStringWithBackTick(`github`)}`,
     });
   }
 

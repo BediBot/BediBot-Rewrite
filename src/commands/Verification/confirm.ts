@@ -20,7 +20,7 @@ module.exports = class ConfirmCommand extends Command {
       name: 'confirm',
       description: 'Allows you to confirm with your unique code to access the server',
       preconditions: ['GuildOnly', 'VerificationEnabled'],
-      detailedDescription: `${surroundStringWithBackTick(`Usage: confirm <uniqueKey>`)}`,
+      detailedDescription: `${surroundStringWithBackTick(`confirm <uniqueKey>`)}`,
     });
   }
 
