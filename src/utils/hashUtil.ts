@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const jsSHA = require('jssha');
 
 /**
  * Hashes a string
@@ -6,8 +6,10 @@ const bcrypt = require('bcrypt');
  * @returns {Promise<string>}
  */
 export const hashString = async (string: string) => {
-  const HASH_ROUNDS = 10;
-
-  const salt = await bcrypt.genSalt(HASH_ROUNDS);
-  return await bcrypt.hash(string, salt);
+  const sha256 = new jsSHA('SHA-256', 'TEXT');
+  sha256.update(string);
+  return sha256.getHash('HEX');
 };
+
+
+

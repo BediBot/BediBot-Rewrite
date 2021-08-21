@@ -1,6 +1,7 @@
 import {PieceContext} from '@sapphire/framework';
 import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
+import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 

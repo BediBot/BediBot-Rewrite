@@ -4,6 +4,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {removeVerifiedUser, userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
+import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 

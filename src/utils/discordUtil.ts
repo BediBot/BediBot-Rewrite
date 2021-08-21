@@ -2,8 +2,7 @@ import {Collection, Guild, GuildMember, Message, Role} from 'discord.js';
 import logger from './loggerUtil';
 import {getSettings} from '../database/models/SettingsModel';
 import {DEFAULT_PREFIX} from '../config';
-import {SapphireClient} from '@sapphire/framework';
-import {client} from '../index';
+import {container, SapphireClient} from '@sapphire/framework';
 
 /**
  * Adds role to the author of a given message
@@ -154,6 +153,6 @@ export const getUserFromMention = (mention: string) => {
       mention = mention.slice(1);
     }
 
-    return client.users.fetch(mention);
+    return container.client.users.fetch(mention);
   }
 };

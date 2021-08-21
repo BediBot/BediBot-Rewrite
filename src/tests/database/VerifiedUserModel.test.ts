@@ -20,13 +20,13 @@ describe('VerifiedUsers DB', () => {
   });
 
   test('emailAddressLinkedToUser', async () => {
-    const emailAddress = 'randomString';
+    const emailAddress = 'randomString@gmail.com';
     const guildId = 'randomGuildId';
 
     expect(await emailAddressLinkedToUser(emailAddress, guildId)).toBe(false);
 
     await verifiedUserModel.create({
-      emailHash: await hashString(emailAddress),
+      emailHash: await hashString(emailAddress.substring(0, emailAddress.indexOf('@'))),
       guildId: guildId,
     });
 

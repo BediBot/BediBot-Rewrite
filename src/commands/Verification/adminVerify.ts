@@ -4,7 +4,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {addVerifiedUser} from '../../database/models/VerifiedUserModel';
-import {addRoleToUser} from '../../utils/discordUtil';
+import {addRoleToUser, surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 

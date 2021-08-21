@@ -5,6 +5,7 @@ import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
 import {listModulesString} from '../../utils/settingsUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import colors from '../../utils/colorUtil';
+import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 

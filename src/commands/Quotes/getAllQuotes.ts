@@ -55,7 +55,7 @@ module.exports = class GetAllQuotesCommand extends Command {
 
       for (let j = 0; j < MAX_QUOTES_PER_PAGE; j++) {
         if ((i + j) >= quotes.length) break;
-        const user = await getUserFromMention(quotes[i + j].author as string);
+        const user = await getUserFromMention(quotes[i + j].name as string);
         let title: string;
         let field: string;
 
@@ -63,7 +63,7 @@ module.exports = class GetAllQuotesCommand extends Command {
         else title = 'Before Sep 2021';
 
         if (user) field = `${surroundStringWithBackTick(quotes[i + j].quote)} by ${user.toString()}`;
-        else field = `${surroundStringWithBackTick(quotes[i + j].quote)} by ${surroundStringWithBackTick(quotes[i + j].author)}`;
+        else field = `${surroundStringWithBackTick(quotes[i + j].quote)} by ${surroundStringWithBackTick(quotes[i + j].name)}`;
 
         embed.addField(title, field);
       }

@@ -1,6 +1,5 @@
 import {model, Schema} from 'mongoose';
-
-const bcrypt = require('bcrypt');
+import {hashString} from '../../utils/hashUtil';
 
 interface PendingVerificationUserI {
   userId: string,
@@ -27,7 +26,9 @@ export const emailAddressLinkedToPendingVerificationUser = async (emailAddress: 
   const docs = await pendingVerificationUserModel.find();
 
   for (const doc of docs) {
-    if (bcrypt.compareSync(emailAddress, doc.emailHash)) return true;
+    const emailHash = await hashString(emailAddress.substring(0, emailAddress.indexOf('@')));
+
+    if (emailHash === doc.emailHash) return true;
   }
   return false;
 };
