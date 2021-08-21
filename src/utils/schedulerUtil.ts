@@ -3,12 +3,12 @@ import logger from './loggerUtil';
 import Agenda, {Job} from 'agenda/dist/index';
 import {BaseGuildTextChannel} from 'discord.js';
 import {BediEmbed} from '../lib/BediEmbed';
-import {client} from '../index';
 import {getRandomQuote} from '../database/models/QuoteModel';
 import {getUserFromMention, surroundStringWithBackTick} from './discordUtil';
 import {getBirthdaysToday} from '../database/models/BirthdayModel';
 import {getSettings} from '../database/models/SettingsModel';
 import {getDueDatesInGuildForCategoryAndCourse, removeOldDueDatesInGuild} from '../database/models/DueDateModel';
+import {container} from '@sapphire/framework';
 
 const humanInterval = require('human-interval');
 
@@ -52,6 +52,8 @@ export const isValidTime = (string: string) => {
 };
 
 agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
+  const client = container.client;
+
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
   const roleId = job.attrs.data?.roleId;
@@ -84,6 +86,8 @@ agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
 });
 
 agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
+  const client = container.client;
+
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
 
@@ -116,13 +120,17 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
       await channel.send({embeds: [embed]});
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
+      await job.remove();
     }
   } else {
     job.fail('Guild not found. This means BediBot is no longer in this guild.');
+    await job.remove();
   }
 });
 
 agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
+  const client = container.client;
+
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
   const roleId = job.attrs.data?.roleId;
@@ -164,15 +172,19 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
 
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
+      await job.remove();
     }
   } else {
     job.fail('Guild not found. This means BediBot is no longer in this guild.');
+    await job.remove();
   }
 });
 
 const MAX_NUM_EMBED_FIELDS = 25;
 
 agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
+  const client = container.client;
+
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
   const messageId = job.attrs.data?.messageId;
@@ -247,11 +259,14 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
         await message.edit({embeds: [embed]});
       } else {
         job.fail('Message not found. This means either the message has been deleted.');
+        await job.remove();
       }
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
+      await job.remove();
     }
   } else {
     job.fail('Guild not found. This means BediBot is no longer in this guild.');
+    await job.remove();
   }
 });
