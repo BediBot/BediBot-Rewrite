@@ -5,6 +5,7 @@ import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
 import {listModulesString} from '../../utils/settingsUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import colors from '../../utils/colorUtil';
+import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -15,6 +16,7 @@ module.exports = class SettingsCommand extends Command {
       aliases: ['setting'],
       description: 'Displays the current guild settings',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      detailedDescription: `${surroundStringWithBackTick(`settings`)}`,
     });
   }
 
@@ -50,12 +52,6 @@ module.exports = class SettingsCommand extends Command {
       switch (module.value.toLowerCase()) {
         case 'verification':
           embed.addField('Verification Enabled', '`' + settingsData.verificationEnabled + '`', false);
-          break;
-        case 'birthdays':
-          embed.addField('Birthday Announcements Enabled', '`' + settingsData.birthdayAnnouncementsEnabled + '`', false);
-          break;
-        case 'announcements':
-          embed.addField('Morning Announcements Enabled', '`' + settingsData.morningAnnouncementsEnabled + '`', false);
           break;
         case 'due dates':
           embed.addField('Due Dates Enabled', '`' + settingsData.dueDatesEnabled + '`', false);

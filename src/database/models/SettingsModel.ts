@@ -4,32 +4,42 @@ interface SettingsI {
   _id: string, // Guild ID
   prefix: string,
   timezone: string,
-  verificationEnabled: boolean,
+
   pinsEnabled: boolean,
+  pinEmoji: string,
+
   quotesEnabled: boolean,
-  birthdayAnnouncementsEnabled: boolean,
-  morningAnnouncementsEnabled: boolean,
-  dueDatesEnabled: boolean,
+  quoteApprovalsRequired: number,
+
+  verificationEnabled: boolean,
   emailDomain: string,
   verifiedRole: string,
-  pinEmoji: string,
-  quoteApprovalsRequired: number,
+
+  dueDatesEnabled: boolean,
+  types: string[],
+  categories: string[],
+  courses: string[],
 }
 
 export const Settings = new Schema({
   _id: String, // Guild ID
   prefix: String,
   timezone: String,
-  verificationEnabled: Boolean,
+
   pinsEnabled: Boolean,
+  pinEmoji: String,
+
   quotesEnabled: Boolean,
-  birthdayAnnouncementsEnabled: Boolean,
-  morningAnnouncementsEnabled: Boolean,
-  dueDatesEnabled: Boolean,
+  quoteApprovalsRequired: Number,
+
+  verificationEnabled: Boolean,
   emailDomain: String,
   verifiedRole: String,
-  pinEmoji: String,
-  quoteApprovalsRequired: String,
+
+  dueDatesEnabled: Boolean,
+  types: [String],
+  categories: [String],
+  courses: [String],
 });
 
 export const defaultSettings = (guildID: string) => {
@@ -37,16 +47,21 @@ export const defaultSettings = (guildID: string) => {
     _id: guildID,
     prefix: '$',
     timezone: 'America/Toronto',
-    pinsEnabled: false,
-    quotesEnabled: false,
-    verificationEnabled: true,
-    birthdayAnnouncementsEnabled: false,
-    morningAnnouncementsEnabled: false,
-    dueDatesEnabled: false,
+
+    pinsEnabled: true,
+    pinEmoji: '📌',
+
+    quotesEnabled: true,
+    quoteApprovalsRequired: 4,
+
+    verificationEnabled: false,
     emailDomain: 'uwaterloo.ca',
     verifiedRole: 'Verified',
-    pinEmoji: '📌',
-    quoteApprovalsRequired: 4,
+
+    dueDatesEnabled: true,
+    types: ['Assignment', 'Test', 'Quiz', 'Exam', 'Project', 'Other'],
+    categories: ['Stream 8'],
+    courses: [],
   };
 };
 
