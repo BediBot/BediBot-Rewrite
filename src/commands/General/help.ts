@@ -1,5 +1,5 @@
-import {Args, CommandStore, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Args, CommandStore, PieceContext, PreconditionContainerArray} from '@sapphire/framework';
+import {Message, Permissions} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
@@ -31,8 +31,19 @@ module.exports = class HelpCommand extends Command {
         let fieldValue = '';
 
         for (const command of this.store as CommandStore) {
+          let skip = false;
+          if (message.guild && !message.member?.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+            for (const preconditionContainer of command[1].preconditions.entries) {
+              if (preconditionContainer instanceof PreconditionContainerArray &&
+                  preconditionContainer.entries.find((precondition: any) => precondition.name === 'AdminOnly')) skip = true;
+            }
+          }
+
+          if (skip) continue;
+
           if (command[1].category === category) fieldValue += `${surroundStringWithBackTick(command[1]?.name)} `;
         }
+        if (fieldValue.length === 0) continue;
 
         embed.addField(category, fieldValue, false);
       }
