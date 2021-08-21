@@ -4,7 +4,7 @@ import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import {agenda, isValidTime} from '../../utils/schedulerUtil';
+import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 import {addDueDate} from '../../database/models/DueDateModel';
 import {didDateChange, isValidMonth} from '../../utils/dateUtil';
@@ -72,7 +72,7 @@ module.exports = class AddQuoteCommand extends Command {
       dateOnly = false;
     }
 
-    if (dateMoment < moment()) {
+    if (dateMoment < moment().subtract(1, 'd') || (!dateOnly && dateMoment < moment())) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Add Due Date Reply')
@@ -82,44 +82,19 @@ module.exports = class AddQuoteCommand extends Command {
 
     date = dateMoment.toDate();
 
-    const typeSelect = new MessageActionRow()
-        .addComponents(
-            new MessageSelectMenu()
-                .setCustomId('typeSelect')
-                .setPlaceholder('Select a Due Date Type')
-                .addOptions([
-                  {
-                    label: 'Assignment',
-                    value: 'Assignment',
-                  },
-                  {
-                    label: 'Test',
-                    value: 'Test',
-                  },
-                  {
-                    label: 'Quiz',
-                    value: 'Quiz',
-                  },
-                  {
-                    label: 'Exam',
-                    value: 'Exam',
-                  },
-                  {
-                    label: 'Project',
-                    value: 'Project',
-                  },
-                  {
-                    label: 'Other',
-                    value: 'Other',
-                  },
-                ]),
-        );
-
-    if (settingsData.streams.length === 0) {
+    if (settingsData.types.length === 0) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Add Due Date Reply')
-          .setDescription('Your server has no streams setup. Ask an admin to add some.'); //TODO: 'Add some with $command' when implemented
+          .setDescription('Your server has no due date types setup. Ask an admin to add some.'); //TODO: 'Add some with $command' when implemented
+      return message.reply({embeds: [embed]});
+    }
+
+    if (settingsData.categories.length === 0) {
+      const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Add Due Date Reply')
+          .setDescription('Your server has no categories setup. Ask an admin to add some.'); //TODO: 'Add some with $command' when implemented
       return message.reply({embeds: [embed]});
     }
 
@@ -131,15 +106,25 @@ module.exports = class AddQuoteCommand extends Command {
       return message.reply({embeds: [embed]});
     }
 
-    const streamSelectMenu = new MessageSelectMenu().setCustomId('streamSelect').setPlaceholder('Select a Stream');
-    for (const stream of settingsData.streams) {
-      streamSelectMenu.addOptions([
+    const typeSelectMenu = new MessageSelectMenu().setCustomId('typeSelect').setPlaceholder('Select a Type');
+    for (const type of settingsData.types) {
+      typeSelectMenu.addOptions([
         {
-          label: stream,
-          value: stream,
+          label: type,
+          value: type,
         }]);
     }
-    const streamSelect = new MessageActionRow().addComponents(streamSelectMenu);
+    const typeSelect = new MessageActionRow().addComponents(typeSelectMenu);
+
+    const categorySelectMenu = new MessageSelectMenu().setCustomId('categorySelect').setPlaceholder('Select a Category');
+    for (const category of settingsData.categories) {
+      categorySelectMenu.addOptions([
+        {
+          label: category,
+          value: category,
+        }]);
+    }
+    const categorySelect = new MessageActionRow().addComponents(categorySelectMenu);
 
     const courseSelectMenu = new MessageSelectMenu().setCustomId('courseSelect').setPlaceholder('Select a Course');
     for (const course of settingsData.courses) {
@@ -164,16 +149,19 @@ module.exports = class AddQuoteCommand extends Command {
         ]);
 
     const embed = new BediEmbed()
-        .setTitle('Add Due Date Reply')
-        .setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
-            `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'})}`)}`);
+        .setTitle('Add Due Date Reply');
+
+    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
+        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full'})}`)}`);
+    else embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
+        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'})}`)}`);
     const reply = await message.reply({
       embeds: [embed],
-      components: [typeSelect, streamSelect, courseSelect, buttons],
+      components: [typeSelect, categorySelect, courseSelect, buttons],
     });
 
     let type: string | null = null;
-    let stream: string | null = null;
+    let category: string | null = null;
     let course: string | null = null;
 
     const selectCollector = reply.createMessageComponentCollector({componentType: 'SELECT_MENU', time: 60000});
@@ -193,7 +181,7 @@ module.exports = class AddQuoteCommand extends Command {
       await interaction.deferUpdate();
 
       if (interaction.customId === 'typeSelect') type = interaction.values[0];
-      else if (interaction.customId === 'streamSelect') stream = interaction.values[0];
+      else if (interaction.customId === 'categorySelect') category = interaction.values[0];
       else course = interaction.values[0];
     });
 
@@ -227,10 +215,10 @@ module.exports = class AddQuoteCommand extends Command {
         return interaction.deferUpdate();
       }
 
-      if (!type || !stream || !course) {
+      if (!type || !category || !course) {
         const embed = new BediEmbed()
             .setTitle('Toggle Modules Reply')
-            .setDescription('Please select all a due date, stream, and course first');
+            .setDescription('Please select all a due date, category, and course first');
 
         return interaction.reply({
           ephemeral: true,
@@ -238,10 +226,17 @@ module.exports = class AddQuoteCommand extends Command {
         });
       }
 
-      await addDueDate(guildId as string, title.value, date, type, stream, course, dateOnly);
+      await addDueDate(guildId as string, title.value, date, type, category, course, dateOnly);
 
-      //TODO: Trigger an update of the due date message board here
-      //Choosing to leave this for later as the message board hasn't been implemented yet and don't want to make this a huge PR
+      const jobs = await agenda.jobs({
+        name: DUE_DATE_UPDATE_JOB_NAME,
+        'data.guildId': guildId,
+        'data.category': category,
+      });
+
+      if (jobs.length != 0) {
+        await jobs[0].run();
+      }
 
       await reply.edit({
         embeds: [embed],
