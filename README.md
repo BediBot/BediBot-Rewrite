@@ -23,8 +23,8 @@ Do NOT commit to master under any circumstances.
 
 ## Contributors
 
-Active Developers: Aadi Chaudhary, Joe Ma, Sahil Kale, Zayd Tahir
+Active Developers: Aadi Chaudhary, Sahil Kale, Zayd Tahir
 
-Additional Contributors: Carson Bay, Leo Gabriel
+Additional Contributors: Carson Bay, Leo Gabriel, Joe Ma
 
 Please contact if you'd like to use any part of this code in your own repo :)
