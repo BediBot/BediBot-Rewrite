@@ -25,13 +25,13 @@ describe('PendingVerification DB', () => {
   });
 
   test('emailAddressLinkedToPendingVerificationUser', async () => {
-    const emailHash = 'randomString';
+    const email = 'randomString@gmail.com';
 
-    expect(await emailAddressLinkedToPendingVerificationUser(emailHash)).toBe(false);
+    expect(await emailAddressLinkedToPendingVerificationUser(email)).toBe(false);
 
-    await pendingVerificationUserModel.create({emailHash: await hashString(emailHash)});
+    await pendingVerificationUserModel.create({emailHash: await hashString(email.substring(0, email.indexOf('@')))});
 
-    expect(await emailAddressLinkedToPendingVerificationUser(emailHash)).toBe(true);
+    expect(await emailAddressLinkedToPendingVerificationUser(email)).toBe(true);
   });
 
   test('userPendingVerification', async () => {
