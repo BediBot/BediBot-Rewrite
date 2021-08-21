@@ -89,7 +89,8 @@ module.exports = class VerifyCommand extends Command {
           .setDescription('Sorry, something went wrong. Please contact a BediBot Dev.');
     }
 
-    await addPendingVerificationUser(author.id, guildId as string, await hashString(emailAddress.value), uniqueKey);
+    await addPendingVerificationUser(author.id, guildId as string, await hashString(emailAddress.value.substring(0, emailAddress.value.indexOf('@'))),
+        uniqueKey);
 
     const embed = new BediEmbed()
         .setTitle('Verify Reply')

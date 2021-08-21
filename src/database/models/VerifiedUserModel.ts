@@ -1,7 +1,6 @@
 import {model, Schema} from 'mongoose';
 import {getSettings} from './SettingsModel';
-
-const bcrypt = require('bcrypt');
+import {hashString} from '../../utils/hashUtil';
 
 interface VerifiedUserI {
   userId: string,
@@ -42,7 +41,7 @@ export const userVerifiedAnywhereEmailHash = async (userId: string, guildId: str
     const origSettingsData = await getSettings(guildId);
     const otherSettingsData = await getSettings(guildId);
 
-    if (origSettingsData.prefix === otherSettingsData.prefix) {
+    if (origSettingsData.emailDomain === otherSettingsData.emailDomain) {
       return doc.emailHash;
     }
   }
@@ -87,7 +86,9 @@ export const emailAddressLinkedToUser = async (emailAddress: string, guildId: st
   const docs = await verifiedUserModel.find({guildId: guildId});
 
   for (const doc of docs) {
-    if (bcrypt.compareSync(emailAddress, doc.emailHash)) return true;
+    const emailHash = await hashString(emailAddress.substring(0, emailAddress.indexOf('@')));
+
+    if (emailHash === doc.emailHash) return true;
   }
   return false;
 };
