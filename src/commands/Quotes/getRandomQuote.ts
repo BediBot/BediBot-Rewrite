@@ -46,20 +46,20 @@ module.exports = class GetRandomQuoteCommand extends Command {
     if (quoteDoc.date) {
       if (typeof quoteAuthor.value === 'string') {
         embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
-        Author: ${surroundStringWithBackTick(quoteDoc.author)}
+        Author: ${surroundStringWithBackTick(quoteDoc.name)}
         Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
       } else {
         embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
-        Author: ${quoteDoc.author}
+        Author: ${quoteDoc.name}
         Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
       }
     } else {
       if (typeof quoteAuthor.value === 'string') {
         embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
-        Author: ${surroundStringWithBackTick(quoteDoc.author)}`);
+        Author: ${surroundStringWithBackTick(quoteDoc.name)}`);
       } else {
         embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
-        Author: ${quoteDoc.author}`);
+        Author: ${quoteDoc.name}`);
       }
     }
 

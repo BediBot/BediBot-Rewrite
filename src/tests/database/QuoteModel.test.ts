@@ -20,22 +20,22 @@ describe('Settings DB', () => {
 
   test('getQuotesFromAuthor', async () => {
     const guildId = 'randomGuild';
-    const author = 'randomAuthor';
+    const name = 'randomAuthor';
     const quote = 'randomQuote';
     const numQuotes = 10;
 
-    let result = await getQuotesFromAuthor(guildId, author);
+    let result = await getQuotesFromAuthor(guildId, name);
     expect(result.length).toBe(0);
 
     for (let i = 0; i < numQuotes; i++) {
       await quoteModel.create({
         guildId: guildId,
-        author: author,
+        name: name,
         quote: quote,
       });
     }
 
-    result = await getQuotesFromAuthor(guildId, author);
+    result = await getQuotesFromAuthor(guildId, name);
     expect(result.length).toBe(numQuotes);
 
     for (let i = 0; i < numQuotes; i++) {
