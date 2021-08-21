@@ -25,11 +25,11 @@ export const startAgenda = async () => {
   logger.info('Agenda Started!');
 
   agenda.on('start', (job) => {
-    logger.info(`Job ${job.attrs.name} started`);
+    logger.verbose(`Job ${job.attrs.name} started`);
   });
 
   agenda.on('success', (job) => {
-    logger.info(`Job ${job.attrs.name} succeeded`);
+    logger.verbose(`Job ${job.attrs.name} succeeded`);
   });
 
   agenda.on('fail', (err, job) => {
