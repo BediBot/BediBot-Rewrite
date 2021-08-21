@@ -97,21 +97,21 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
     const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
     if (channel) {
       const quote = await getRandomQuote(guildId);
-      const user = await getUserFromMention(quote?.author as string);
+      const user = await getUserFromMention(quote?.name as string);
 
       let description: string;
       if (quote?.date) {
         if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${quote?.author}
+        Author: ${quote?.name}
         Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
         else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${surroundStringWithBackTick(quote?.author as string)}
+        Author: ${surroundStringWithBackTick(quote?.name as string)}
         Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
       } else {
         if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${quote?.author}`;
+        Author: ${quote?.name}`;
         else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${surroundStringWithBackTick(quote?.author as string)}`;
+        Author: ${surroundStringWithBackTick(quote?.name as string)}`;
       }
 
       const embed = new BediEmbed()
