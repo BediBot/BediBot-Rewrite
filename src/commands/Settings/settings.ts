@@ -51,12 +51,6 @@ module.exports = class SettingsCommand extends Command {
         case 'verification':
           embed.addField('Verification Enabled', '`' + settingsData.verificationEnabled + '`', false);
           break;
-        case 'birthdays':
-          embed.addField('Birthday Announcements Enabled', '`' + settingsData.birthdayAnnouncementsEnabled + '`', false);
-          break;
-        case 'announcements':
-          embed.addField('Morning Announcements Enabled', '`' + settingsData.morningAnnouncementsEnabled + '`', false);
-          break;
         case 'due dates':
           embed.addField('Due Dates Enabled', '`' + settingsData.dueDatesEnabled + '`', false);
           break;

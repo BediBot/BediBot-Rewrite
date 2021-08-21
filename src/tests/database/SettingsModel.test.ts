@@ -29,8 +29,6 @@ describe('Settings DB', () => {
     expect(result.pinsEnabled).toBe(doc.pinsEnabled);
     expect(result.quotesEnabled).toBe(doc.quotesEnabled);
     expect(result.verificationEnabled).toBe(doc.verificationEnabled);
-    expect(result.birthdayAnnouncementsEnabled).toBe(doc.birthdayAnnouncementsEnabled);
-    expect(result.morningAnnouncementsEnabled).toBe(doc.morningAnnouncementsEnabled);
     expect(result.dueDatesEnabled).toBe(doc.dueDatesEnabled);
   });
 
@@ -44,8 +42,6 @@ describe('Settings DB', () => {
     expect(result.pinsEnabled).toBe(doc.pinsEnabled);
     expect(result.quotesEnabled).toBe(doc.quotesEnabled);
     expect(result.verificationEnabled).toBe(doc.verificationEnabled);
-    expect(result.birthdayAnnouncementsEnabled).toBe(doc.birthdayAnnouncementsEnabled);
-    expect(result.morningAnnouncementsEnabled).toBe(doc.morningAnnouncementsEnabled);
     expect(result.dueDatesEnabled).toBe(doc.dueDatesEnabled);
   });
 });

@@ -5,6 +5,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {updateBirthday} from '../../database/models/BirthdayModel';
+import {didDateChange, isValidMonth} from '../../utils/dateUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -36,22 +37,14 @@ module.exports = class SetBirthdayCommand extends Command {
     if (!month.success || !day.success || !year.success) return invalidSyntaxReply(message, settingsData);
 
     // If month is a string, parse it into a date and extract the month number. This works with full month and short forms as well.
-    if (typeof month.value === 'string') {
-      const tempDate = Date.parse(month.value + '1, 2021');
-      if (!isNaN(tempDate)) {
-        month = new Date(tempDate).getMonth() + 1;
-      } else return invalidSyntaxReply(message, settingsData);
-    }
+    month = isValidMonth(month.value);
 
-    // Set month variable to value for consistency
-    if (typeof month != 'number') {
-      month = month.value;
-    }
+    if (!month) return invalidSyntaxReply(message, settingsData);
 
-    const birthday = new Date(year.value, (month as number) - 1, day.value);
+    let birthday = new Date(year.value, (month as number) - 1, day.value);
 
     // Sometimes an invalid date can be created but the date will change e.g Feb 29, 2021 becomes Mar 1, 2021. This doesn't let those cases through
-    if (!(birthday.getFullYear() === year.value) || !(birthday.getMonth() + 1 === month) || !(birthday.getDate() == day.value)) {
+    if (didDateChange(birthday, day.value, month as number, year.value)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Set Birthday Reply')
