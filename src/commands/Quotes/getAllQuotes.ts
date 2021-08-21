@@ -18,7 +18,7 @@ module.exports = class GetAllQuotesCommand extends Command {
       aliases: ['gaq', 'getaq', 'getaquote', 'gaquote', 'gaquotes'],
       description: 'Displays all quotes',
       preconditions: ['GuildOnly', 'QuotesEnabled'],
-      detailedDescription: `${surroundStringWithBackTick(`getAllQuotes`)}`,
+      detailedDescription: `${'getAllQuotes`'}`,
     });
   }
 

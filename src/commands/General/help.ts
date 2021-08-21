@@ -11,6 +11,7 @@ module.exports = class HelpCommand extends Command {
     super(context, {
       name: 'help',
       description: 'Shows helpful information about commands',
+      detailedDescription: `${'help`'}`,
     });
   }
 
@@ -55,7 +56,7 @@ module.exports = class HelpCommand extends Command {
 
       embed.addField('Category', command.category, false);
       if (command.detailedDescription) embed.addField('Detailed Description',
-          `Usage: ${surroundStringWithBackTick(settingsData.prefix)}` + command.detailedDescription, false);
+          'Usage: `' + settingsData.prefix + command.detailedDescription, false);
       if (command.aliases) {
         let aliasString = '';
 

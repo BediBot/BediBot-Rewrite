@@ -13,7 +13,7 @@ module.exports = class StopMorningAnnouncementCommand extends Command {
       aliases: ['stopma', 'sma'],
       description: 'Stops any scheduled morning announcements in this server',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
-      detailedDescription: `${surroundStringWithBackTick(`stopMorningAnnouncement`)}`,
+      detailedDescription: `${'stopMorningAnnouncement`'}`,
     });
   }
 

@@ -3,7 +3,7 @@ import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {getSettings} from '../../database/models/SettingsModel';
 import {addVerifiedUser, emailAddressLinkedToUser, userVerifiedAnywhereEmailHash, userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
-import {addRoleToAuthor, surroundStringWithBackTick} from '../../utils/discordUtil';
+import {addRoleToAuthor} from '../../utils/discordUtil';
 import {createUniqueKey, isEmailValid, sendConfirmationEmail} from '../../utils/emailUtil';
 import {addPendingVerificationUser, emailAddressLinkedToPendingVerificationUser} from '../../database/models/PendingVerificationuserModel';
 import {hashString} from '../../utils/hashUtil';
@@ -18,7 +18,7 @@ module.exports = class VerifyCommand extends Command {
       aliases: ['verification', 'register'],
       description: 'Allows you to verify yourself and access the server',
       preconditions: ['GuildOnly', 'VerificationEnabled'],
-      detailedDescription: `${surroundStringWithBackTick(`Usage: verify <emailAddress>`)}`,
+      detailedDescription: `${'Usage: verify <emailAddress>`'}`,
     });
   }
 

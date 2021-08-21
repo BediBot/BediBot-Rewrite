@@ -18,7 +18,7 @@ module.exports = class GetBirthdays extends Command {
       name: 'getbirthdays',
       description: 'Gets the birthdays for a month',
       preconditions: ['GuildOnly'],
-      detailedDescription: `${surroundStringWithBackTick(`getBirthdays <month>`)}
+      detailedDescription: `${'getBirthdays <month>`'}
 The month can be long (January), short (Jan), or number (1).`,
     });
   }

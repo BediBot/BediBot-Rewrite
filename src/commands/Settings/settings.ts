@@ -5,7 +5,6 @@ import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
 import {listModulesString} from '../../utils/settingsUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -16,7 +15,7 @@ module.exports = class SettingsCommand extends Command {
       aliases: ['setting'],
       description: 'Displays the current guild settings',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
-      detailedDescription: `${surroundStringWithBackTick(`settings`)}`,
+      detailedDescription: `${'`settings`'}`,
     });
   }
 
