@@ -15,6 +15,7 @@ module.exports = class RemoveQuoteCommand extends Command {
       aliases: ['rq'],
       description: 'Removes a quote from an individual of your choice',
       preconditions: ['GuildOnly', 'QuotesEnabled', ['AdminOnly', 'BotOwnerOnly']],
+      detailedDescription: `${surroundStringWithBackTick(`removeQuote <quote> <author>`)}`,
     });
   }
 
@@ -34,7 +35,7 @@ module.exports = class RemoveQuoteCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Remove Quote Reply')
           .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-              settingsData.prefix + 'removequote <quote> <author>')}`);
+              settingsData.prefix + 'removeQuote <quote> <author>')}`);
       return message.reply({embeds: [embed]});
     }
 

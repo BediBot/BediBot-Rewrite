@@ -15,6 +15,8 @@ module.exports = class PurgeCommand extends Command {
       name: 'purge',
       description: 'Purges a specific number of messages',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'AdminPerms'],
+      detailedDescription: `${surroundStringWithBackTick(`purge <number>`)}. 
+The number represents the number of messages to purge. Maximum: 100`,
     });
   }
 
@@ -28,7 +30,7 @@ module.exports = class PurgeCommand extends Command {
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-              settingsData.prefix + 'purge <number> <author:optional>')}`);
+              settingsData.prefix + 'purge <number>')}`);
       return message.reply({embeds: [embed]});
     }
 

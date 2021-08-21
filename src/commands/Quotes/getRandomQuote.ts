@@ -14,6 +14,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
       aliases: ['grq'],
       description: 'Gets a random quote',
       preconditions: ['GuildOnly', 'QuotesEnabled'],
+      detailedDescription: `${surroundStringWithBackTick(`getRandomQuote <author:optional>`)}`,
     });
   }
 

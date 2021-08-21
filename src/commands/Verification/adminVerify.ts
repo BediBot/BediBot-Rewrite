@@ -4,16 +4,17 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {addVerifiedUser} from '../../database/models/VerifiedUserModel';
-import {addRoleToUser} from '../../utils/discordUtil';
+import {addRoleToUser, surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
 module.exports = class AdminVerifyCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
-      name: 'adminverify',
+      name: 'adminVerify',
       description: 'Forcibly verifies a user in the server.',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'VerificationEnabled'],
+      detailedDescription: `${surroundStringWithBackTick(`adminVerify <@User>`)}`,
     });
   }
 

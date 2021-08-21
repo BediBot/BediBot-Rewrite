@@ -15,6 +15,9 @@ module.exports = class DisplayDueDatesCommand extends Command {
       aliases: ['ddd'],
       description: 'Displays the due dates for a certain stream in the current channel',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      detailedDescription: `${surroundStringWithBackTick(`displayDueDates <stream>`)}
+      If you make a mistake, just run the command again. Only the latest command for a stream will be considered.
+      You are free to delete the messages created by this command if you wish, due dates will (obviously) stop being updated on that message.`,
     });
   }
 

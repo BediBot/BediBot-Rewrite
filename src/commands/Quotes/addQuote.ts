@@ -18,6 +18,8 @@ module.exports = class AddQuoteCommand extends Command {
       aliases: ['aq', 'addq', 'aquote'],
       description: 'Adds a quote from an individual of your choice.',
       preconditions: ['GuildOnly', 'QuotesEnabled'],
+      detailedDescription: `${surroundStringWithBackTick(`addQuote <quote> <author>`)}
+      This command supports both regular names as well as mention's for the author parameter.`,
     });
   }
 

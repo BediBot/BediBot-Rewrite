@@ -1,6 +1,7 @@
 import {PieceContext} from '@sapphire/framework';
 import {Message, MessageActionRow, MessageButton} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
+import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -10,6 +11,7 @@ module.exports = class GithubCommand extends Command {
       name: 'github',
       aliases: ['git'],
       description: 'Shows the GitHub Repository for BediBot',
+      detailedDescription: `${surroundStringWithBackTick(`github`)}`,
     });
   }
 
