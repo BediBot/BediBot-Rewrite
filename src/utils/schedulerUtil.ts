@@ -116,9 +116,11 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
       await channel.send({embeds: [embed]});
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
+      await job.remove();
     }
   } else {
     job.fail('Guild not found. This means BediBot is no longer in this guild.');
+    await job.remove();
   }
 });
 
@@ -164,9 +166,11 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
 
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
+      await job.remove();
     }
   } else {
     job.fail('Guild not found. This means BediBot is no longer in this guild.');
+    await job.remove();
   }
 });
 
@@ -247,11 +251,14 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
         await message.edit({embeds: [embed]});
       } else {
         job.fail('Message not found. This means either the message has been deleted.');
+        await job.remove();
       }
     } else {
       job.fail('Channel not found. This means that the channel has been deleted.');
+      await job.remove();
     }
   } else {
     job.fail('Guild not found. This means BediBot is no longer in this guild.');
+    await job.remove();
   }
 });
