@@ -43,21 +43,30 @@ module.exports = class SettingsCommand extends Command {
           '\nModules: ' + listModulesString() +
           '\n\nHere are the settings for `' + guild.name + '`')
            .addField('Prefix', '`' + settingsData.prefix + '`', false)
-           .addField('Timezone', '`' + settingsData.timezone + '`', false)
-           .addField('Pins Enabled', '`' + settingsData.pinsEnabled + '`', false);
+           .addField('Timezone', '`' + settingsData.timezone + '`', false);
     } else {
       embed.setDescription('Here are the settings for the `' + capFirstLetterEveryWord(module.value) + '` module');
 
       // Add settings to the cases below as they are implemented
       switch (module.value.toLowerCase()) {
         case 'verification':
-          embed.addField('Verification Enabled', '`' + settingsData.verificationEnabled + '`', false);
+          embed.addField('Verification Enabled', '`' + settingsData.verificationEnabled + '`', false)
+               .addField('Email Domain', '`' + settingsData.emailDomain + '`', false)
+               .addField('Verified Role', '`' + settingsData.verifiedRole + '`', false);
           break;
         case 'due dates':
-          embed.addField('Due Dates Enabled', '`' + settingsData.dueDatesEnabled + '`', false);
+          embed.addField('Due Dates Enabled', '`' + settingsData.dueDatesEnabled + '`', false)
+               .addField('Types', '`' + settingsData.types.join(', ') + '`', false)
+               .addField('Categories', '`' + settingsData.categories.join(', ') + '`', false)
+               .addField('Courses', '`' + settingsData.courses.join(', ') + '`', false);
           break;
         case 'quotes':
-          embed.addField('Quotes Enabled', '`' + settingsData.quotesEnabled + '`', false);
+          embed.addField('Quotes Enabled', '`' + settingsData.quotesEnabled + '`', false)
+               .addField('Number of Approvals Required to Save', '`' + settingsData.quoteApprovalsRequired + '`', false);
+          break;
+        case 'pins':
+          embed.addField('Pins Enabled', '`' + settingsData.pinsEnabled + '`', false)
+               .addField('Pin Emoji', '`' + settingsData.pinEmoji + '`', false);
           break;
         default:
           embed.setColor('RED');
