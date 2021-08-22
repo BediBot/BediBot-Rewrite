@@ -13,7 +13,7 @@ module.exports = class SetPinEmojiCommand extends Command {
       name: 'setPinEmoji',
       aliases: ['spe'],
       description: 'Changes the pin emoji for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setPinEmoji <:emoji:>`'}`,
     });
   }

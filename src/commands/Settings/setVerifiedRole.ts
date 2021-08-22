@@ -13,7 +13,7 @@ module.exports = class SetVerifiedRoleCommand extends Command {
       name: 'setVerifiedRole',
       aliases: ['svr'],
       description: 'Changes the verified role for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setVerifiedRole <newRole>`'}`,
     });
   }

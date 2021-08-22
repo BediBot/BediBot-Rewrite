@@ -13,7 +13,7 @@ module.exports = class SetCoursesCommand extends Command {
       name: 'setCourses',
       aliases: ['setcourse'],
       description: 'Changes the due date courses for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setCourses <course> <course:optional> . . .`'}`,
     });
   }

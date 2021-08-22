@@ -12,7 +12,7 @@ module.exports = class StopMorningAnnouncementCommand extends Command {
       name: 'stopMorningAnnouncement',
       aliases: ['stopma', 'sma'],
       description: 'Stops any scheduled morning announcements in this server',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'stopMorningAnnouncement`'}`,
     });
   }

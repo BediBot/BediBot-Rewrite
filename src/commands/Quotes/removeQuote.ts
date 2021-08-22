@@ -14,7 +14,7 @@ module.exports = class RemoveQuoteCommand extends Command {
       name: 'removeQuote',
       aliases: ['rq'],
       description: 'Removes a quote from an individual of your choice',
-      preconditions: ['GuildOnly', 'QuotesEnabled', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', 'QuotesEnabled', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'removeQuote <quote> <author>`'}`,
     });
   }

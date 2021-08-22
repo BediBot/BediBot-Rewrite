@@ -13,7 +13,7 @@ module.exports = class SetTypesCommand extends Command {
       name: 'setTypes',
       aliases: ['settype'],
       description: 'Changes the due date types for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setTypes <type> <type:optional> . . .`'}`,
     });
   }
