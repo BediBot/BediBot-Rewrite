@@ -30,7 +30,7 @@ The number represents the number of messages to purge. Maximum: 100`,
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-              settingsData.prefix + 'purge <number>')}`);
+              settingsData.prefix + 'purge <integer>')}`);
       return message.reply({embeds: [embed]});
     }
 
