@@ -40,7 +40,7 @@ module.exports = class SettingsCommand extends Command {
 
     if (!module.success) {
       embed.setDescription('Run `' + settingsData.prefix + 'settings <module>' + '` to see more detailed settings' +
-          '\nModules: ' + listModulesString() + `\n\nRun ${surroundStringWithBackTick(settingsData.prefix + "togglemodules")} to enable or disable any specific module` + 
+          '\nModules: ' + listModulesString() + `\n\nRun ${surroundStringWithBackTick(settingsData.prefix + "toggleModules")} to enable or disable any specific module` + 
           `\nRun ${surroundStringWithBackTick(settingsData.prefix + "help")} to view commands to update settings` +
           '\n\nHere are the settings for `' + guild.name + '`')
            .addField('Prefix', '`' + settingsData.prefix + '`', false)
