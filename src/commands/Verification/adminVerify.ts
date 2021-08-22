@@ -14,7 +14,7 @@ module.exports = class AdminVerifyCommand extends Command {
       name: 'adminVerify',
       description: 'Forcibly verifies a user in the server.',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'VerificationEnabled'],
-      detailedDescription: `${surroundStringWithBackTick(`adminVerify <@User>`)}`,
+      detailedDescription: `${'adminVerify <@User>`'}`,
     });
   }
 

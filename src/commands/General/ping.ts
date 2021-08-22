@@ -10,7 +10,7 @@ module.exports = class PingCommand extends Command {
     super(context, {
       name: 'ping',
       description: 'Send back the ping of the bot',
-      detailedDescription: `${surroundStringWithBackTick(`ping`)}`,
+      detailedDescription: `${'ping`'}`,
     });
   }
 

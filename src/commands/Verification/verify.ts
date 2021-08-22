@@ -18,7 +18,7 @@ module.exports = class VerifyCommand extends Command {
       aliases: ['verification', 'register'],
       description: 'Allows you to verify yourself and access the server',
       preconditions: ['GuildOnly', 'VerificationEnabled'],
-      detailedDescription: `${surroundStringWithBackTick(`Usage: verify <emailAddress>`)}`,
+      detailedDescription: `${'Usage: verify <emailAddress>`'}`,
     });
   }
 
