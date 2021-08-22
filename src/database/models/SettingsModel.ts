@@ -1,4 +1,5 @@
 import {model, Schema} from 'mongoose';
+import {reqBoolean, reqNumber, reqString, reqStringArray} from '../../utils/databaseUtil';
 
 interface SettingsI {
   _id: string, // Guild ID
@@ -22,25 +23,25 @@ interface SettingsI {
 }
 
 export const Settings = new Schema({
-  _id: String, // Guild ID
-  prefix: String,
-  timezone: String,
+  _id: reqString, // Guild ID
+  prefix: reqString,
+  timezone: reqString,
 
-  pinsEnabled: Boolean,
-  pinEmoji: String,
+  pinsEnabled: reqBoolean,
+  pinEmoji: reqString,
 
-  quotesEnabled: Boolean,
-  quoteApprovalsRequired: Number,
+  quotesEnabled: reqBoolean,
+  quoteApprovalsRequired: reqNumber,
 
-  verificationEnabled: Boolean,
-  emailDomain: String,
-  verifiedRole: String,
+  verificationEnabled: reqBoolean,
+  emailDomain: reqString,
+  verifiedRole: reqString,
 
-  dueDatesEnabled: Boolean,
-  types: [String],
-  categories: [String],
-  courses: [String],
-});
+  dueDatesEnabled: reqBoolean,
+  types: reqStringArray,
+  categories: reqStringArray,
+  courses: reqStringArray,
+}, {versionKey: false});
 
 export const defaultSettings = (guildID: string) => {
   return {
