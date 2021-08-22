@@ -22,7 +22,7 @@ module.exports = class GuildCreateListener extends Listener {
       .setTitle('BediBot has entered the server!')
       .setColor(colors.PRIMARY)
       .addField("List of commands", `Run ${surroundStringWithBackTick(settingsData.prefix + 'help')} to see the list of commands`)
-      .addField("How to setup Bedibot", `Run ${surroundStringWithBackTick(settingsData.prefix + 'settings')} to setup all of the features offed by BediBot`)
+      .addField("How to setup Bedibot", `Run ${surroundStringWithBackTick(settingsData.prefix + 'settings')} to setup all of the features offered by BediBot`)
       .addField("Server Name:", `**${guild_object.name}**`)
       .addField("Server ID:", `\`\`\`${guild_object.id}\`\`\``)
     return channel?.send({embeds: [embed]})
