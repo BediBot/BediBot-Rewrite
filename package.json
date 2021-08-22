@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@sapphire/discord.js-utilities": "^3.0.0-next.a35c1cca.0",
-    "@sapphire/framework": "^2.0.0-next.d4386ff5.0",
+    "@sapphire/framework": "^2.0.0-pr-244.ee400ddf.0",
     "@types/bcrypt": "^5.0.0",
     "@types/nodemailer": "^6.4.4",
     "agenda": "^4.2.1",

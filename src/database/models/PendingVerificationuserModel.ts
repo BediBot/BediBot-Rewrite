@@ -1,5 +1,6 @@
 import {model, Schema} from 'mongoose';
 import {hashString} from '../../utils/hashUtil';
+import {reqString} from '../../utils/databaseUtil';
 
 interface PendingVerificationUserI {
   userId: string,
@@ -9,11 +10,11 @@ interface PendingVerificationUserI {
 }
 
 export const PendingVerificationUser = new Schema({
-  userId: String,
-  guildId: String,
-  emailHash: String,
-  uniqueKey: String,
-});
+  userId: reqString,
+  guildId: reqString,
+  emailHash: reqString,
+  uniqueKey: reqString,
+}, {versionKey: false});
 
 const pendingVerificationUserModel = model<PendingVerificationUserI>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
 

@@ -15,7 +15,7 @@ module.exports = class SettingsCommand extends Command {
       aliases: ['tm', 'toggleModules'],
       description: 'Allows you to enable or disable BediBot modules',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
-      detailedDescription: `${surroundStringWithBackTick(`toggleModule`)}`,
+      detailedDescription: `${'toggleModule`'}`,
     });
   }
 

@@ -17,7 +17,7 @@ module.exports = class SetBirthdayCommand extends Command {
       name: 'setbirthday',
       aliases: ['sb'],
       description: 'Sets the users birthday.',
-      detailedDescription: `${surroundStringWithBackTick(`setBirthday <month> <day> <year>`)}
+      detailedDescription: `${'setBirthday <month> <day> <year>`'}
 The month can be long (January), short (Jan), or number (1).
 If you choose to set your birthday, anyone in a BediBot server will be able to find your birthday (month and day).
 We will never save your birth year, it is only used to validate your entry and ensure it is a real date.`,
