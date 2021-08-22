@@ -83,7 +83,8 @@ module.exports = class GetQuotesCommand extends Command {
         // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
         if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
 
-        if (quotes[i + j].date) embed.addField(quotes[i + j].date.toDateString(), quoteText, false);
+        if (quotes[i + j].date) embed.addField(quotes[i + j].date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}),
+            quoteText, false);
         else embed.addField('Before Sep 2021', quoteText, false);
       }
 

@@ -61,7 +61,7 @@ module.exports = class GetAllQuotesCommand extends Command {
         let title: string;
         let field: string;
 
-        if (quotes[i + j].date) title = quotes[i + j].date.toDateString();
+        if (quotes[i + j].date) title = quotes[i + j].date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'});
         else title = 'Before Sep 2021';
 
         let quoteText = quotes[i + j].quote;

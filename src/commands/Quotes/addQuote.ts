@@ -60,13 +60,13 @@ module.exports = class AddQuoteCommand extends Command {
     if (typeof quoteAuthor.value === 'string') {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
         Author: ${surroundStringWithBackTick(quoteAuthor.value as string)}
-        Date: ${surroundStringWithBackTick(date.toDateString())}
+        Date: ${surroundStringWithBackTick(date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}
         Submitted By: ${author}
         Approved By:`);
     } else {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
         Author (Mention): ${quoteAuthor.value}
-        Date: ${surroundStringWithBackTick(date.toDateString())}
+        Date: ${surroundStringWithBackTick(date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}
         Submitted By: ${author}
         Approved By:`);
     }
