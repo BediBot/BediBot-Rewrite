@@ -6,22 +6,21 @@ import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
-import {addDueDate} from '../../database/models/DueDateModel';
+import {removeDueDate} from '../../database/models/DueDateModel';
 import {didDateChange, isValidMonth} from '../../utils/dateUtil';
 
 const {Command} = require('@sapphire/framework');
 
-module.exports = class AddDueDateCommand extends Command {
+module.exports = class RemoveDueDateCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
-      name: 'addDueDate',
-      aliases: ['add', 'adddue', 'adddate'],
-      description: 'Adds a due date',
+      name: 'removeDueDate',
+      aliases: ['rdd', 'removedue', 'removedate'],
+      description: 'Removes a due date',
       preconditions: ['GuildOnly', 'DueDatesEnabled'],
-      detailedDescription: `${surroundStringWithBackTick(`addDueDate <title> <month> <day> <year> <time:optional>`)}
+      detailedDescription: `${'removeDueDate <title> <month> <day> <year> <time:optional>`'}
 The month can be long (January), short (Jan), or number (1).
-You can specify the (optional) time in most common time formats.
-Make sure to run the displayDueDates command somewhere!`,
+You can specify the (optional) time in most common time formats.`,
     });
   }
 
@@ -50,7 +49,7 @@ Make sure to run the displayDueDates command somewhere!`,
     if (didDateChange(date, day.value, month, year.value)) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
-          .setTitle('Add Due Date Reply')
+          .setTitle('Remove Due Date Reply')
           .setDescription('That date is invalid!');
       return message.channel.send({embeds: [embed]});
     }
@@ -63,7 +62,7 @@ Make sure to run the displayDueDates command somewhere!`,
       if (!isValidTime(timeString.value)) {
         const embed = new BediEmbed()
             .setColor(colors.ERROR)
-            .setTitle('Add Due Date Reply')
+            .setTitle('Remove Due Date Reply')
             .setDescription('That is not a valid time.');
         return message.reply({embeds: [embed]});
       }
@@ -79,7 +78,7 @@ Make sure to run the displayDueDates command somewhere!`,
     if (dateMoment < moment().subtract(1, 'd') || (!dateOnly && dateMoment < moment())) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
-          .setTitle('Add Due Date Reply')
+          .setTitle('Remove Due Date Reply')
           .setDescription('You can not set a date/time in the past.');
       return message.reply({embeds: [embed]});
     }
@@ -89,7 +88,7 @@ Make sure to run the displayDueDates command somewhere!`,
     if (settingsData.types.length === 0) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
-          .setTitle('Add Due Date Reply')
+          .setTitle('Remove Due Date Reply')
           .setDescription(`Your server has no due date types setup. Ask an admin to add some with ${surroundStringWithBackTick(
               settingsData.prefix + 'setTypes')}`);
       return message.reply({embeds: [embed]});
@@ -98,7 +97,7 @@ Make sure to run the displayDueDates command somewhere!`,
     if (settingsData.categories.length === 0) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
-          .setTitle('Add Due Date Reply')
+          .setTitle('Remove Due Date Reply')
           .setDescription(`Your server has no due date categories setup. Ask an admin to add some with ${surroundStringWithBackTick(
               settingsData.prefix + 'setCategories')}`);
       return message.reply({embeds: [embed]});
@@ -107,7 +106,7 @@ Make sure to run the displayDueDates command somewhere!`,
     if (settingsData.courses.length === 0) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
-          .setTitle('Add Due Date Reply')
+          .setTitle('Remove Due Date Reply')
           .setDescription(`Your server has no due date courses setup. Ask an admin to add some with ${surroundStringWithBackTick(
               settingsData.prefix + 'setCourses')}`);
       return message.reply({embeds: [embed]});
@@ -156,7 +155,7 @@ Make sure to run the displayDueDates command somewhere!`,
         ]);
 
     const embed = new BediEmbed()
-        .setTitle('Add Due Date Reply');
+        .setTitle('Remove Due Date Reply');
 
     if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
         `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full'})}`)}`);
@@ -176,7 +175,7 @@ Make sure to run the displayDueDates command somewhere!`,
       if (!interaction.isSelectMenu()) return;
       if (interaction.user.id != message.author.id) {
         const embed = new BediEmbed()
-            .setTitle('Add Due Date Reply')
+            .setTitle('Remove Due Date Reply')
             .setColor(colors.ERROR)
             .setDescription('You did not run this command');
 
@@ -204,7 +203,7 @@ Make sure to run the displayDueDates command somewhere!`,
       if (!interaction.isButton()) return;
       if (interaction.user.id != message.author.id) {
         const embed = new BediEmbed()
-            .setTitle('Add Due Date Reply')
+            .setTitle('Remove Due Date Reply')
             .setColor(colors.ERROR)
             .setDescription('You did not run this command');
 
@@ -216,7 +215,7 @@ Make sure to run the displayDueDates command somewhere!`,
 
       if (interaction.customId === 'dueDateCancel') {
         await reply.edit({
-          embeds: [embed.setDescription('Due date cancelled.')],
+          embeds: [embed.setDescription('Remove Due date cancelled.')],
           components: [],
         });
         return interaction.deferUpdate();
@@ -224,7 +223,7 @@ Make sure to run the displayDueDates command somewhere!`,
 
       if (!type || !category || !course) {
         const embed = new BediEmbed()
-            .setTitle('Add Due Date Reply')
+            .setTitle('Remove Due Date Reply')
             .setDescription('Please select a due date, category, and course first');
 
         return interaction.reply({
@@ -233,7 +232,16 @@ Make sure to run the displayDueDates command somewhere!`,
         });
       }
 
-      await addDueDate(guildId as string, title.value, date, type, category, course, dateOnly);
+      if (!(await removeDueDate(guildId as string, title.value, date, type, category, course, dateOnly))) {
+        const embed = new BediEmbed()
+            .setTitle('Remove Due Date Reply')
+            .setDescription('Due Date not found');
+
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [embed],
+        });
+      }
 
       const jobs = await agenda.jobs({
         name: DUE_DATE_UPDATE_JOB_NAME,
