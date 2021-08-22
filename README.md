@@ -2,6 +2,11 @@
 
 This is a rewrite of the BediBot Discord Bot written in TypeScript using the Sapphire Discord bot framework.
 
+## Adding the bot to a server
+- Ensure you have system messages enabled in your server
+- Click on this token link here: TO IMPLEMENT
+- Run $help to see the available commands
+
 ## Dev Environment Setup
 
 - Install [node.js](https://nodejs.org/en/) (16.6.1)
