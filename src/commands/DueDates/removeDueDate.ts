@@ -17,7 +17,7 @@ module.exports = class RemoveDueDateCommand extends Command {
       name: 'removeDueDate',
       aliases: ['rdd', 'removedue', 'removedate'],
       description: 'Removes a due date',
-      preconditions: ['GuildOnly', 'DueDatesEnabled'],
+      preconditions: ['GuildOnly', 'DueDatesEnabled', 'DueDatesSetup'],
       detailedDescription: `${'removeDueDate <title> <month> <day> <year> <time:optional>`'}
 The month can be long (January), short (Jan), or number (1).
 You can specify the (optional) time in most common time formats.`,
@@ -84,33 +84,6 @@ You can specify the (optional) time in most common time formats.`,
     }
 
     date = dateMoment.toDate();
-
-    if (settingsData.types.length === 0) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Remove Due Date Reply')
-          .setDescription(`Your server has no due date types setup. Ask an admin to add some with ${surroundStringWithBackTick(
-              settingsData.prefix + 'setTypes')}`);
-      return message.reply({embeds: [embed]});
-    }
-
-    if (settingsData.categories.length === 0) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Remove Due Date Reply')
-          .setDescription(`Your server has no due date categories setup. Ask an admin to add some with ${surroundStringWithBackTick(
-              settingsData.prefix + 'setCategories')}`);
-      return message.reply({embeds: [embed]});
-    }
-
-    if (settingsData.courses.length === 0) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Remove Due Date Reply')
-          .setDescription(`Your server has no due date courses setup. Ask an admin to add some with ${surroundStringWithBackTick(
-              settingsData.prefix + 'setCourses')}`);
-      return message.reply({embeds: [embed]});
-    }
 
     const typeSelectMenu = new MessageSelectMenu().setCustomId('typeSelect').setPlaceholder('Select a Type');
     for (const type of settingsData.types) {
