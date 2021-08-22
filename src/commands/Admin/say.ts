@@ -13,7 +13,7 @@ module.exports = class SayCommand extends Command {
       name: 'say',
       description: 'Sends a message from the bot',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'`say <title> <body> <#channel:optional>`'}`,
+      detailedDescription: `${'say <title> <body> <#channel:optional>`'}`,
     });
   }
 

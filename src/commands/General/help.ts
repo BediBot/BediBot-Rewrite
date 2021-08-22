@@ -3,6 +3,7 @@ import {Message, Permissions} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
+import logger from '../../utils/loggerUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -55,17 +56,18 @@ module.exports = class HelpCommand extends Command {
            .setDescription(command.description);
 
       embed.addField('Category', command.category, false);
+
       if (command.detailedDescription) embed.addField('Detailed Description',
           'Usage: `' + settingsData.prefix + command.detailedDescription, false);
-      if (command.aliases) {
-        let aliasString = '';
 
-        for (const alias of command.aliases) {
-          aliasString += `${surroundStringWithBackTick(`${settingsData.prefix}${alias}`)} `;
-        }
+      let aliasString = '';
 
-        embed.addField('Aliases', aliasString, false);
+      for (const alias of command.aliases) {
+        logger.info('this happened');
+        aliasString += `${surroundStringWithBackTick(`${settingsData.prefix}${alias}`)} `;
       }
+
+      if (aliasString.length != 0) embed.addField('Aliases', aliasString, false);
     }
 
     return message.reply({
