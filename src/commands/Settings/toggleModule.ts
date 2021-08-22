@@ -11,7 +11,7 @@ const {Command} = require('@sapphire/framework');
 module.exports = class SettingsCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
-      name: 'toggleModule',
+      name: 'togglemodule',
       aliases: ['tm', 'toggleModules'],
       description: 'Allows you to enable or disable BediBot modules',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],

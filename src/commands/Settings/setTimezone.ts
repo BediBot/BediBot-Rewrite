@@ -12,6 +12,7 @@ module.exports = class SetTimezoneCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'setTimezone',
+      aliases: ['settz'],
       description: 'Changes the timezone for BediBot',
       preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
       detailedDescription: `${'setTimezone <newTimezone>`'}
