@@ -16,6 +16,7 @@ module.exports = class GetBirthdays extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'getbirthdays',
+      aliases: ['gb'],
       description: 'Gets the birthdays for a month',
       preconditions: ['GuildOnly'],
       detailedDescription: `${'getBirthdays <month>`'}
