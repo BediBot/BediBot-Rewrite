@@ -18,7 +18,8 @@ module.exports = class BirthdayAnnouncementCommand extends Command {
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'birthdayAnnouncement <time> <role:optional>`'}
 You can specify the announcement time in most common time formats.
-If you make a mistake, simply run the command again, only one birthday announcement can be scheduled per day.`,
+If you make a mistake, simply run the command again, only one birthday announcement can be scheduled per day.
+If you specify a role, people will receive the role for the duration of their birthday.`,
     });
   }
 
@@ -26,7 +27,7 @@ If you make a mistake, simply run the command again, only one birthday announcem
     const {guildId, channelId} = message;
     const settingsData = await getSettings(guildId as string);
 
-    const announcementTime = await args.restResult('string');
+    const announcementTime = await args.pickResult('string');
 
     if (!announcementTime.success) {
       const embed = new BediEmbed()
