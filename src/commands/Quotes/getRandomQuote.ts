@@ -45,6 +45,8 @@ module.exports = class GetRandomQuoteCommand extends Command {
         .setTitle('Get Random Quote Reply');
 
     let quoteText = quoteDoc.quote;
+
+    // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
     if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
 
     if (quoteDoc.date) {

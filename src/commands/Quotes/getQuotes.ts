@@ -80,6 +80,7 @@ module.exports = class GetQuotesCommand extends Command {
         let quoteText = quotes[i + j].quote;
         if (quoteText.length > QUOTE_MAX_LENGTH) quoteText = quoteText.slice(QUOTE_MAX_LENGTH) + '...';
 
+        // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
         if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
 
         if (quotes[i + j].date) embed.addField(quotes[i + j].date.toDateString(), quoteText, false);
