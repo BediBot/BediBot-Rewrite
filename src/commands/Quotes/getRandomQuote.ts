@@ -44,22 +44,27 @@ module.exports = class GetRandomQuoteCommand extends Command {
     const embed = new BediEmbed()
         .setTitle('Get Random Quote Reply');
 
+    let quoteText = quoteDoc.quote;
+
+    // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
+    if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
+
     if (quoteDoc.date) {
       if (typeof quoteAuthor.value === 'string') {
-        embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
+        embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}
         Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
       } else {
-        embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
+        embed.setDescription(`Quote: ${quoteText}
         Author: ${quoteDoc.name}
         Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
       }
     } else {
       if (typeof quoteAuthor.value === 'string') {
-        embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
+        embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}`);
       } else {
-        embed.setDescription(`Quote: ${surroundStringWithBackTick(quoteDoc.quote)}
+        embed.setDescription(`Quote: ${quoteText}
         Author: ${quoteDoc.name}`);
       }
     }
