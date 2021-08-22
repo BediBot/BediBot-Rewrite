@@ -13,7 +13,7 @@ module.exports = class SetApprovalsCommand extends Command {
       name: 'setApprovals',
       aliases: ['sa', 'setapproval'],
       description: 'Changes the number of quote approvals required for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setApprovals <integer>`'}`,
     });
   }

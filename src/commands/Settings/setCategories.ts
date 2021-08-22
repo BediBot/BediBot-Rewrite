@@ -13,7 +13,7 @@ module.exports = class SetCategoriesCommand extends Command {
       name: 'setCategories',
       aliases: ['setcats', 'setcat'],
       description: 'Changes the due date categories for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setCategories <category> <category:optional> . . .`'}`,
     });
   }

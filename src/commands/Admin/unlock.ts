@@ -13,7 +13,7 @@ module.exports = class UnlockCommand extends Command {
     super(context, {
       name: 'unlock',
       description: 'Allows a role to speak in the channel',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'ManageRolesPerms'],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'ManageRolesPerms'],
       detailedDescription: `${'`unlock <role>`'}`,
     });
   }

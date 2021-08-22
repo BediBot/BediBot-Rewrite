@@ -12,7 +12,7 @@ module.exports = class StopBirthdayAnnouncementCommand extends Command {
       name: 'stopBirthdayAnnouncement',
       aliases: ['stopba', 'sba'],
       description: 'Stops any scheduled birthday announcements in this guild',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'stopBirthdayAnnouncement`'}`,
     });
   }

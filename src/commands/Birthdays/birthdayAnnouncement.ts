@@ -15,7 +15,7 @@ module.exports = class BirthdayAnnouncementCommand extends Command {
       name: 'birthdayAnnouncement',
       aliases: ['ba'],
       description: 'Schedules Birthday Announcements in the Current Channel',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'`birthdayAnnouncement <time> <role:optional>`'}
 You can specify the announcement time in most common time formats.
 If you make a mistake, simply run the command again, only one birthday announcement can be scheduled per day.`,

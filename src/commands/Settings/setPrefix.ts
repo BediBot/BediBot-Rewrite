@@ -13,7 +13,7 @@ module.exports = class SetPrefixCommand extends Command {
       name: 'setPrefix',
       aliases: ['sp'],
       description: 'Changes the prefix for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setPrefix <newPrefix>`'}`,
     });
   }

@@ -14,7 +14,7 @@ module.exports = class SetTimezoneCommand extends Command {
       name: 'setTimezone',
       aliases: ['settz'],
       description: 'Changes the timezone for BediBot',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'setTimezone <newTimezone>`'}
       The timezone must be the [TZ Database Name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) of the timezone.`,
     });

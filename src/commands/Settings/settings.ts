@@ -15,7 +15,7 @@ module.exports = class SettingsCommand extends Command {
       name: 'settings',
       aliases: ['setting'],
       description: 'Displays the current guild settings',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly']],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
       detailedDescription: `${'`settings`'}`,
     });
   }
@@ -40,8 +40,9 @@ module.exports = class SettingsCommand extends Command {
 
     if (!module.success) {
       embed.setDescription('Run `' + settingsData.prefix + 'settings <module>' + '` to see more detailed settings' +
-          '\nModules: ' + listModulesString() + `\n\nRun ${surroundStringWithBackTick(settingsData.prefix + "toggleModules")} to enable or disable any specific module` + 
-          `\nRun ${surroundStringWithBackTick(settingsData.prefix + "help")} to view commands to update settings` +
+          '\nModules: ' + listModulesString() +
+          `\n\nRun ${surroundStringWithBackTick(settingsData.prefix + 'toggleModules')} to enable or disable any specific module` +
+          `\nRun ${surroundStringWithBackTick(settingsData.prefix + 'help')} to view commands to update settings` +
           '\n\nHere are the settings for `' + guild.name + '`')
            .addField('Prefix', '`' + settingsData.prefix + '`', false)
            .addField('Timezone', '`' + settingsData.timezone + '`', false);

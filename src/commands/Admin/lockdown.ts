@@ -14,7 +14,7 @@ module.exports = class LockdownCommand extends Command {
       name: 'lockdown',
       aliases: ['ld'],
       description: 'Prevents a role from speaking in the channel',
-      preconditions: ['GuildOnly', ['AdminOnly', 'BotOwnerOnly'], 'ManageRolesPerms'],
+      preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'ManageRolesPerms'],
       detailedDescription: `${'lockdown <role> <durationOrTime>`'}
 You can either specify how long the channel should be locked down, or what time it should be unlocked.
 Possible units for duration are: seconds, minutes, hours, days, weeks, months (30 days), years (365 days).`,
