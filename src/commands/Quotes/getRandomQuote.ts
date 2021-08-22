@@ -4,6 +4,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getRandomQuote, getRandomQuoteFromAuthor} from '../../database/models/QuoteModel';
+import logger from '../../utils/loggerUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -50,7 +51,8 @@ module.exports = class GetRandomQuoteCommand extends Command {
     if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
 
     if (quoteDoc.date) {
-      if (typeof quoteAuthor.value === 'string') {
+      if ((typeof quoteAuthor.value) === 'string') {
+        logger.info('this happens');
         embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}
         Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);

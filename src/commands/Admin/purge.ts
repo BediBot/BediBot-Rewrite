@@ -15,7 +15,7 @@ module.exports = class PurgeCommand extends Command {
       name: 'purge',
       description: 'Purges a specific number of messages',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'AdminPerms'],
-      detailedDescription: `${'purge <number>`'}. 
+      detailedDescription: `${'purge <number>`'}
 The number represents the number of messages to purge. Maximum: 100`,
     });
   }
