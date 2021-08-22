@@ -6,6 +6,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
+import {QUOTE_MAX_LENGTH} from './addQuote';
 
 const {Command} = require('@sapphire/framework');
 
@@ -75,8 +76,14 @@ module.exports = class GetQuotesCommand extends Command {
 
       for (let j = 0; j < MAX_QUOTES_PER_PAGE; j++) {
         if ((i + j) >= quotes.length) break;
-        if (quotes[i + j].date) embed.addField(quotes[i + j].date.toDateString(), surroundStringWithBackTick(quotes[i + j].quote), false);
-        else embed.addField('Before Sep 2021', surroundStringWithBackTick(quotes[i + j].quote), false);
+
+        let quoteText = quotes[i + j].quote;
+        if (quoteText.length > QUOTE_MAX_LENGTH) quoteText = quoteText.slice(QUOTE_MAX_LENGTH) + '...';
+
+        if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
+
+        if (quotes[i + j].date) embed.addField(quotes[i + j].date.toDateString(), quoteText, false);
+        else embed.addField('Before Sep 2021', quoteText, false);
       }
 
       paginatedMessage.addPageEmbed(embed);

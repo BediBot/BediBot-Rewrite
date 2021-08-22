@@ -8,7 +8,7 @@ import {addQuote} from '../../database/models/QuoteModel';
 
 const {Command} = require('@sapphire/framework');
 
-const EMBED_FIELD_MAX_CHAR_LENGTH = 1000;
+export const QUOTE_MAX_LENGTH = 1000;
 const TITLE_BEFORE_NUM_APPROVALS = 'Add Quote Reply - Approvals: ';
 
 module.exports = class AddQuoteCommand extends Command {
@@ -45,7 +45,7 @@ module.exports = class AddQuoteCommand extends Command {
       quote = quote.value;
     }
 
-    if (quote.length > EMBED_FIELD_MAX_CHAR_LENGTH) {
+    if (quote.length > QUOTE_MAX_LENGTH) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Add Quote Reply')
