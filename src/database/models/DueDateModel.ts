@@ -50,6 +50,30 @@ export const addDueDate = async (
 };
 
 /**
+ * Removes a due date
+ * @param guildId
+ * @param title
+ * @param dateTime
+ * @param type
+ * @param category
+ * @param course
+ * @param dateOnly
+ * @returns {Promise<void>}
+ */
+export const removeDueDate = async (
+    guildId: string, title: string, dateTime: Date, type: string, category: string, course: string, dateOnly: boolean) => {
+  return dueDateModel.findOneAndDelete({
+    guildId: guildId,
+    title: title,
+    dateTime: dateTime,
+    type: type,
+    category: category,
+    course: course,
+    dateOnly: dateOnly,
+  });
+};
+
+/**
  * Removes old due dates in a guild
  * @param guildId
  * @returns {Promise<void>}
