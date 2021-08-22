@@ -68,8 +68,8 @@ module.exports = class GetAllQuotesCommand extends Command {
         if (quoteText.length > QUOTE_MAX_LENGTH) quoteText = quoteText.slice(QUOTE_MAX_LENGTH) + '...';
 
         // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
-        if (quoteText.includes('<')) field = `${quoteText} by`;
-        else field = `${surroundStringWithBackTick(quoteText)} by`;
+        if (quoteText.includes('<')) field = `${quoteText} by `;
+        else field = `${surroundStringWithBackTick(quoteText)} by `;
 
         if (user) field += `${user.toString()}`;
         else {
