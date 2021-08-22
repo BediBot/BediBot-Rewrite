@@ -5,6 +5,7 @@ import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getRandomQuote, getRandomQuoteFromAuthor} from '../../database/models/QuoteModel';
 import logger from '../../utils/loggerUtil';
+import {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
 
@@ -21,6 +22,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
 
   async run(message: Message, args: Args) {
     const {guildId} = message;
+    const settingsData = await getSettings(guildId as string);
 
     let quoteAuthor;
 
@@ -55,11 +57,11 @@ module.exports = class GetRandomQuoteCommand extends Command {
         logger.info('this happens');
         embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}
-        Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
+        Date: ${surroundStringWithBackTick(quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
       } else {
         embed.setDescription(`Quote: ${quoteText}
         Author: ${quoteDoc.name}
-        Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
+        Date: ${surroundStringWithBackTick(quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
       }
     } else {
       if (typeof quoteAuthor.value === 'string') {
