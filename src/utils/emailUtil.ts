@@ -50,7 +50,6 @@ const sendMail = (toAddress: string, subject: string, text: string, htmlText: st
       logger.error(error);
       response = error;
     } else {
-      logger.info('Email sent: ' + info.response);
       response = info;
     }
   });
