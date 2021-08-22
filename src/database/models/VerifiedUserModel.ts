@@ -12,7 +12,7 @@ export const VerifiedUser = new Schema({
   userId: String,
   guildId: String,
   emailHash: String,
-});
+}, {versionKey: false});
 
 const verifiedUserModel = model<VerifiedUserI>('VerifiedUser', VerifiedUser, 'VerifiedUsers');
 

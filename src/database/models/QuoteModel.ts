@@ -1,4 +1,5 @@
 import {model, Schema} from 'mongoose';
+import {reqDate, reqString} from '../../utils/databaseUtil';
 
 interface QuoteI {
   guildId: string,
@@ -8,11 +9,11 @@ interface QuoteI {
 }
 
 export const Quote = new Schema({
-  guildId: String,
-  quote: String,
-  name: String,
-  date: Date,
-});
+  guildId: reqString,
+  quote: reqString,
+  name: reqString,
+  date: reqDate,
+}, {versionKey: false});
 
 const quoteModel = model<QuoteI>('Quote', Quote, 'Quotes');
 

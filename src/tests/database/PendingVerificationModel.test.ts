@@ -26,10 +26,18 @@ describe('PendingVerification DB', () => {
 
   test('emailAddressLinkedToPendingVerificationUser', async () => {
     const email = 'randomString@gmail.com';
+    const uniqueKey = 'randomKey';
+    const guildId = 'randomGuildID';
+    const userId = 'randomUserId';
 
     expect(await emailAddressLinkedToPendingVerificationUser(email)).toBe(false);
 
-    await pendingVerificationUserModel.create({emailHash: await hashString(email.substring(0, email.indexOf('@')))});
+    await pendingVerificationUserModel.create({
+      emailHash: await hashString(email.substring(0, email.indexOf('@'))),
+      uniqueKey: uniqueKey,
+      guildId: guildId,
+      userId: userId,
+    });
 
     expect(await emailAddressLinkedToPendingVerificationUser(email)).toBe(true);
   });
@@ -37,12 +45,16 @@ describe('PendingVerification DB', () => {
   test('userPendingVerification', async () => {
     const userId = 'randomUserID';
     const guildId = 'randomGuildID';
+    const uniqueKey = 'randomKey';
+    const emailHash = 'randomHash';
 
     expect(await userPendingVerification(userId, guildId)).toBe(false);
 
     await pendingVerificationUserModel.create({
       userId: userId,
       guildId: guildId,
+      uniqueKey: uniqueKey,
+      emailHash: emailHash,
     });
 
     expect(await userPendingVerification(userId, guildId)).toBe(true);
@@ -52,6 +64,7 @@ describe('PendingVerification DB', () => {
     const userId = 'randomUserID';
     const guildId = 'randomGuildID';
     const uniqueKey = 'randomUniqueKey';
+    const emailHash = 'randomEmailHash';
 
     expect(await validUniqueKey(userId, guildId, uniqueKey)).toBe(false);
 
@@ -59,6 +72,7 @@ describe('PendingVerification DB', () => {
       userId: userId,
       guildId: guildId,
       uniqueKey: uniqueKey,
+      emailHash: emailHash,
     });
 
     expect(await validUniqueKey(userId, guildId, uniqueKey)).toBe(true);
@@ -68,11 +82,13 @@ describe('PendingVerification DB', () => {
     const userId = 'randomUserID';
     const guildId = 'randomGuildID';
     const emailHash = 'randomEmailHash';
+    const uniqueKey = 'randomUniqueKey';
 
     await pendingVerificationUserModel.create({
       userId: userId,
       guildId: guildId,
       emailHash: emailHash,
+      uniqueKey: uniqueKey,
     });
 
     expect(await emailHashFromPendingUser(userId, guildId)).toBe(emailHash);

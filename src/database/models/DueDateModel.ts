@@ -1,6 +1,7 @@
 import {model, Schema} from 'mongoose';
 import moment from 'moment-timezone/moment-timezone-utils';
 import {getSettings} from './SettingsModel';
+import {reqBoolean, reqDate, reqString} from '../../utils/databaseUtil';
 
 interface DueDateI {
   guildId: string,
@@ -13,14 +14,14 @@ interface DueDateI {
 }
 
 export const DueDate = new Schema({
-  guildId: String,
-  title: String,
-  dateTime: Date,
-  type: String,
-  category: String,
-  course: String,
-  dateOnly: Boolean,
-});
+  guildId: reqString,
+  title: reqString,
+  dateTime: reqDate,
+  type: reqString,
+  category: reqString,
+  course: reqString,
+  dateOnly: reqBoolean,
+}, {versionKey: false});
 
 const dueDateModel = model<DueDateI>('DueDate', DueDate, 'DueDates');
 

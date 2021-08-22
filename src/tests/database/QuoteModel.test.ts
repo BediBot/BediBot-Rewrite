@@ -22,6 +22,7 @@ describe('Settings DB', () => {
     const guildId = 'randomGuild';
     const name = 'randomAuthor';
     const quote = 'randomQuote';
+    const date = new Date();
     const numQuotes = 10;
 
     let result = await getQuotesFromAuthor(guildId, name);
@@ -32,6 +33,7 @@ describe('Settings DB', () => {
         guildId: guildId,
         name: name,
         quote: quote,
+        date: date,
       });
     }
 

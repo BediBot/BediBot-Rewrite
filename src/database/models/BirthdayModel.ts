@@ -1,4 +1,5 @@
 import {model, Schema} from 'mongoose';
+import {reqDate, reqString} from '../../utils/databaseUtil';
 
 interface BirthdayI {
   _id: string, // User ID
@@ -6,9 +7,9 @@ interface BirthdayI {
 }
 
 export const Birthday = new Schema({
-  _id: String,
-  birthDate: Date,
-});
+  _id: reqString,
+  birthDate: reqDate,
+}, {versionKey: false});
 
 const birthdayModel = model<BirthdayI>('Birthday', Birthday, 'Birthdays');
 
