@@ -25,7 +25,7 @@ module.exports = class DisplayDueDatesCommand extends Command {
     const {guildId, channelId} = message;
     const settingsData = await getSettings(guildId as string);
 
-    const categoryArg = await args.pickResult('string');
+    const categoryArg = await args.restResult('string');
 
     if (!categoryArg.success) {
       const embed = new BediEmbed()
@@ -60,11 +60,13 @@ module.exports = class DisplayDueDatesCommand extends Command {
       await jobs[0].remove();
     }
 
-    await agenda.every('10 seconds', DUE_DATE_UPDATE_JOB_NAME, {
+    const job = agenda.create(DUE_DATE_UPDATE_JOB_NAME, {
       guildId: guildId,
       channelId: channelId,
       messageId: reply.id,
       category: categoryArg.value,
     });
+
+    await job.repeatEvery('10 seconds').save();
   }
 };
