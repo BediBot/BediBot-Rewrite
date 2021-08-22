@@ -13,7 +13,7 @@ module.exports = class PurgeCommand extends Command {
   constructor(context: PieceContext) {
     super(context, {
       name: 'purge',
-      description: 'Purges a specific number of messages',
+      description: 'Purges a specific number of messages in the channel the command was executed in',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'AdminPerms'],
       detailedDescription: `${'purge <number>`'}
 The number represents the number of messages to purge. Maximum: 100`,
@@ -90,14 +90,14 @@ The number represents the number of messages to purge. Maximum: 100`,
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
-          .setDescription('Fatal error, please contact a Bedibot Dev');
+          .setDescription('Fatal error, please contact a BediBot Dev');
       return message.channel.send({embeds: [embed]});
     }
-
+    
     //Reply
     const embed = new BediEmbed()
         .setTitle('Purge Reply')
-        .setDescription('Successfully purged `' + numMessagesToDelete.value + '` messages from `' + message.guild?.name + '`');
+        .setDescription(`Successfully purged ${surroundStringWithBackTick(numMessagesToDelete.value.toString())} messages from ${surroundStringWithBackTick(message.guild?.name!)}`);
     return message.author.send({embeds: [embed]});
     //}
   }
