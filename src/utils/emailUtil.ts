@@ -60,7 +60,7 @@ const sendMail = (toAddress: string, subject: string, text: string, htmlText: st
   return response;
 };
 
-export const generateHTMLConfirmationEmail = async (serverName: string, serverPrefix: string, uniqueKey: string) => {
+const generateHTMLConfirmationEmail = async (serverName: string, serverPrefix: string, uniqueKey: string) => {
   const filePath = path.join(__dirname, './../../confirmTemplate.html');
   const response = await fs.readFileSync(filePath);
 
