@@ -48,7 +48,7 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
           .setTitle('Purge Reply')
           .setDescription('Purging messages in progress... please wait')
 
-    let loading_message = await message.reply({embeds: [loading_embed]}); 
+    const loading_message = await message.reply({embeds: [loading_embed]}); 
 
     /* //Commented out code to support purging messages from a specific user, rationale is because the current interface is unintutive
     if(!args.finished)
