@@ -25,7 +25,7 @@ We will never save your birth year, it is only used to validate your entry and e
 
   async run(message: Message, args: Args) {
     const {guild, guildId, author} = message;
-    const prefix = await fetchPrefix(message);
+    const prefix = (await fetchPrefix(message))[0];
 
     let month;
     month = await args.pickResult('integer');
