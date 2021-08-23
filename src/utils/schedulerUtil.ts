@@ -41,15 +41,15 @@ export const startAgenda = async () => {
 export const isValidDurationOrTime = (string: string) => {
   if (string.length === 0) return false;
   if (isValidTime(string)) return true;
-  return !isNaN(humanInterval(string).valueOf());
+  const value = humanInterval(string).valueOf();
+  return !isNaN(value) && value != 0;
 };
 
 export const isValidTime = (string: string) => {
-  const re12 = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/;
-  const re12Short = /(1[0-2]|0?[1-9] ?([AaPp][Mm]))/;
+  const re12 = /^(0?[1-9]|1[012])(:[0-5]\d) [APap][mM]$/;
+  const re12Short = /^(0?[1-9]|1[012]) [APap][mM]$/;
   const re24 = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-  if (re12.test(string) || re24.test(string) || re12Short.test(string)) return true;
-  return false;
+  return re12.test(string) || re24.test(string) || re12Short.test(string);
 };
 
 agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
