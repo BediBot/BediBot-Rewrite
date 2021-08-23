@@ -7,6 +7,9 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const {google} = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
+const fs = require('fs');
+const path = require('path');
+const Mustache = require('mustache');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -57,32 +60,28 @@ const sendMail = (toAddress: string, subject: string, text: string, htmlText: st
   return response;
 };
 
+const generateHTMLConfirmationEmail = async (serverName: string, serverPrefix: string, uniqueKey: string) => {
+  const filePath = path.join(__dirname, './../../confirmTemplate.html');
+  const response = await fs.readFileSync(filePath);
+
+  return Mustache.render(response.toString(), {
+    serverPrefix: serverPrefix,
+    uniqueKey: uniqueKey,
+    serverName: serverName,
+  });
+};
+
 /**
  * Sends a confirmation email with the specified parameters for verification
  * @param toAddress
- * @param userId
  * @param serverName
  * @param serverPrefix
  * @param uniqueKey
  */
-export const sendConfirmationEmail = (toAddress: string, userId: string, serverName: string, serverPrefix: string, uniqueKey: string) => {
+export const sendConfirmationEmail = async (toAddress: string, serverName: string, serverPrefix: string, uniqueKey: string) => {
   const text = `Please verify your email address by typing ${serverPrefix}confirm ${uniqueKey} in the ${serverName} server!`;
 
-  const htmlText = `
-<html>
-  <head></head>
-  <body>
-    <p>
-    HONK!
-    <br/>
-    Please verify your email address by typing ${serverPrefix}confirm ${uniqueKey} in the ${serverName} server!
-    <br/>
-    For any concerns, please contact a BediBot Dev :)
-    <br/>
-    </p>
-  </body>
-</html>
-`;
+  const htmlText = await generateHTMLConfirmationEmail(serverName, serverPrefix, uniqueKey);
 
   return sendMail(toAddress, 'BediBot Verification', text, htmlText);
 };
