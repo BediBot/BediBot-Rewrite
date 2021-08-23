@@ -14,7 +14,7 @@ module.exports = class CommandDenied extends Listener {
   public async run({context, message: content}: UserError, {message, command}: CommandDeniedPayload) {
     const commandName = capFirstLetter(command.name);
 
-    logger.warn('Command Denied: ' + commandName + ' - ' + content);
+    logger.debug('Command Denied: ' + commandName + ' - ' + content);
 
     // Does nothing if command has 'silent' flag
     if (Reflect.get(Object(context), 'silent')) return;
