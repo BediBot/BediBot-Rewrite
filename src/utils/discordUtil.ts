@@ -56,7 +56,7 @@ export const addRoleToUser = async (userId: string, guild: Guild | null, roleNam
  * @returns {Promise<any>}
  */
 export const fetchPrefix = async (message: Message) => {
-  if (!message.guild) return DEFAULT_PREFIX;
+  if (!message.guild) return [DEFAULT_PREFIX, ''];
 
   const {guildId} = message;
 

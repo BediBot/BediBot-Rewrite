@@ -17,8 +17,7 @@ module.exports = class HelpCommand extends Command {
 
   async run(message: Message, args: Args) {
     const {guildId} = message;
-
-    const prefix = await fetchPrefix(message);
+    const prefix = (await fetchPrefix(message))[0];
 
     const selectedCommand = await args.pickResult('string');
 
