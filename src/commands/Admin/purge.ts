@@ -21,6 +21,7 @@ The number represents the number of messages to purge. Maximum: 100`,
   }
 
   async run(message: Message, args: Args) {
+    await message.delete;
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
     //Check if args length is valid, and then read the number
@@ -42,6 +43,12 @@ The number represents the number of messages to purge. Maximum: 100`,
           .setDescription('Ensure that the number of messages is less than or equal to ' + MAX_MSGS_THAT_CAN_BE_DELETED);
       return message.reply({embeds: [embed]});
     }
+
+    const loading_embed = new BediEmbed()
+          .setTitle('Purge Reply')
+          .setDescription('Purging messages in progress... please wait')
+
+    let loading_message = await message.reply({embeds: [loading_embed]}); 
 
     /* //Commented out code to support purging messages from a specific user, rationale is because the current interface is unintutive
     if(!args.finished)
@@ -84,7 +91,11 @@ The number represents the number of messages to purge. Maximum: 100`,
     {
     */
     //Perform the deletion
-    const successful = await purge_messages(message, numMessagesToDelete.value + 1); //Delete purge command as well
+    const successful = await purge_messages(message, (numMessagesToDelete.value + 2)); //Delete purge command as well
+
+    //Cleanup messages that don't need to be there anymore
+    await message.delete
+    await loading_message.delete
 
     if (!successful) {
       const embed = new BediEmbed()
