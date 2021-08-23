@@ -91,6 +91,7 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
 
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
+  const autoDelete = job.attrs.data?.autoDelete;
 
   const guild = client.guilds.cache.get(guildId);
 
@@ -118,7 +119,22 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
       const embed = new BediEmbed()
           .setTitle('Good Morning!')
           .setDescription(description);
-      await channel.send({embeds: [embed]});
+      const newMessage = await channel.send({embeds: [embed]});
+
+      if (autoDelete) {
+        const messageId = job.attrs.data?.messageId;
+        if (messageId) {
+          try {
+            const messageToDelete = await channel.messages.fetch(messageId);
+            await messageToDelete.delete();
+          } catch {
+            logger.debug('Morning Announcement Job: Message was manually deleted before bot could get to it.');
+          }
+
+        }
+        job.attrs.data!.messageId = newMessage.id;
+        await job.save();
+      }
     } else {
       await job.fail('Channel not found. This means that the channel has been deleted.');
     }
@@ -133,6 +149,7 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
   const roleId = job.attrs.data?.roleId;
+  const autoDelete = job.attrs.data?.autoDelete;
 
   const guild = client.guilds.cache.get(guildId);
 
@@ -167,7 +184,22 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
           .setTitle('Happy Birthday!')
           .setDescription(mentions);
 
-      await channel.send({embeds: [embed]});
+      const newMessage = await channel.send({embeds: [embed]});
+
+      if (autoDelete) {
+        const messageId = job.attrs.data?.messageId;
+        if (messageId) {
+          try {
+            const messageToDelete = await channel.messages.fetch(messageId);
+            await messageToDelete.delete();
+          } catch {
+            logger.debug('Birthday Announcement Job: Message was manually deleted before bot could get to it.');
+          }
+
+        }
+        job.attrs.data!.messageId = newMessage.id;
+        await job.save();
+      }
 
     } else {
       await job.fail('Channel not found. This means that the channel has been deleted.');
