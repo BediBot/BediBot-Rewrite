@@ -6,7 +6,6 @@ import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, isValidDurationOrTime, isValidTime, UNLOCK_JOB_NAME} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
-import logger from '../../utils/loggerUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -85,10 +84,8 @@ Possible units for duration are: seconds, minutes, hours, days, weeks, months (3
       roleId: role.value.id,
       messageId: message.id,
     });
-    
-    if (isValidTime(durationOrTime.value)) {
-      logger.info('this ocvcured');
 
+    if (isValidTime(durationOrTime.value)) {
       const localRunTime = job.attrs.nextRunAt;
 
       const nextRun = moment.tz(moment().format('YYYY-MM-DD'), settingsData.timezone);
