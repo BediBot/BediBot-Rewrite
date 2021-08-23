@@ -112,13 +112,13 @@ If you specify a role, people will receive the role for the duration of their bi
         .setDescription(`Birthday Announcements have been scheduled for ${surroundStringWithBackTick(
             `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}
             
-            Do you want to auto delete birthday announcements after one day?`);
+            Do you want to auto delete each announcement after 24 hours?`);
     const reply = await message.reply({
       embeds: [embed],
       components: [buttonRow],
     });
 
-    const buttonCollector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 60000});
+    const buttonCollector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 15000});
     buttonCollector.on('collect', async interaction => {
       if (!interaction.isButton()) return;
 
@@ -144,6 +144,17 @@ If you specify a role, people will receive the role for the duration of their bi
           .setTitle('Birthday Announcement Reply')
           .setDescription(`Birthday Announcements have been scheduled for ${surroundStringWithBackTick(
               `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
+
+      await reply.edit({
+        embeds: [embed],
+        components: [],
+      });
+    });
+
+    buttonCollector.on('end', async interaction => {
+      const embed = new BediEmbed()
+          .setTitle('Birthday Announcement Reply')
+          .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
 
       await reply.edit({
         embeds: [embed],

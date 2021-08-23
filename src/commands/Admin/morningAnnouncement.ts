@@ -82,13 +82,13 @@ If you make a mistake, simply run the command again, only one morning announceme
         .setDescription(`Morning Announcements will be scheduled for ${surroundStringWithBackTick(
             `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}
             
-            Do you want to auto delete morning announcements after one day?`);
+            Do you want to auto delete each announcement after 24 hours?`);
     const reply = await message.reply({
       embeds: [embed],
       components: [buttonRow],
     });
 
-    const buttonCollector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 60000});
+    const buttonCollector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 15000});
     buttonCollector.on('collect', async interaction => {
       if (!interaction.isButton()) return;
 
@@ -114,6 +114,17 @@ If you make a mistake, simply run the command again, only one morning announceme
           .setTitle('Morning Announcement Reply')
           .setDescription(`Morning Announcements have been scheduled for ${surroundStringWithBackTick(
               `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
+
+      await reply.edit({
+        embeds: [embed],
+        components: [],
+      });
+    });
+
+    buttonCollector.on('end', async interaction => {
+      const embed = new BediEmbed()
+          .setTitle('Morning Announcement Reply')
+          .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
 
       await reply.edit({
         embeds: [embed],
