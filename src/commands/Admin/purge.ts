@@ -5,7 +5,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {purge_messages, surroundStringWithBackTick} from '../../utils/discordUtil';
 
-const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
+const MAX_MSGS_THAT_CAN_BE_DELETED = 50;
 
 const {Command} = require('@sapphire/framework');
 
@@ -16,7 +16,7 @@ module.exports = class PurgeCommand extends Command {
       description: 'Purges a specific number of messages in the channel the command was executed in',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'AdminPerms'],
       detailedDescription: `${'purge <number>`'}
-The number represents the number of messages to purge. Maximum: 100`,
+The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_CAN_BE_DELETED}`,
     });
   }
 
