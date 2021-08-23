@@ -5,7 +5,7 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {purge_messages, surroundStringWithBackTick} from '../../utils/discordUtil';
 
-const MAX_MSGS_THAT_CAN_BE_DELETED = 50;
+const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
 const {Command} = require('@sapphire/framework');
 
@@ -21,7 +21,6 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
   }
 
   async run(message: Message, args: Args) {
-    await message.delete;
     const {guild, guildId, author} = message;
     const settingsData = await getSettings(guildId as string);
     //Check if args length is valid, and then read the number
@@ -45,10 +44,10 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
     }
 
     const loading_embed = new BediEmbed()
-          .setTitle('Purge Reply')
-          .setDescription('Purging messages in progress... please wait')
+        .setTitle('Purge Reply')
+        .setDescription('Purging messages in progress... please wait');
 
-    const loading_message = await message.reply({embeds: [loading_embed]}); 
+    const loading_message = await message.reply({embeds: [loading_embed]});
 
     /* //Commented out code to support purging messages from a specific user, rationale is because the current interface is unintutive
     if(!args.finished)
@@ -91,11 +90,11 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
     {
     */
     //Perform the deletion
-    const successful = await purge_messages(message, (numMessagesToDelete.value + 2)); //Delete purge command as well
+    const successful = await purge_messages(message, (numMessagesToDelete.value)); //Delete purge command as well
 
     //Cleanup messages that don't need to be there anymore
-    await message.delete
-    await loading_message.delete
+    await message.delete();
+    await loading_message.delete();
 
     if (!successful) {
       const embed = new BediEmbed()
@@ -104,11 +103,14 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
           .setDescription('Fatal error, please contact a BediBot Dev');
       return message.channel.send({embeds: [embed]});
     }
-    
+
     //Reply
     const embed = new BediEmbed()
         .setTitle('Purge Reply')
-        .setDescription(`Successfully purged ${surroundStringWithBackTick(numMessagesToDelete.value.toString())} messages from ${surroundStringWithBackTick(message.guild?.name!)}`);
+        .setDescription(
+            `Successfully purged ${surroundStringWithBackTick(
+                numMessagesToDelete.value.toString())} messages in ${message.channel.toString()} from ${surroundStringWithBackTick(
+                message.guild?.name!)}`);
     return message.author.send({embeds: [embed]});
     //}
   }
