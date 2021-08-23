@@ -90,7 +90,7 @@ Possible units for duration are: seconds, minutes, hours, days, weeks, months (3
 
       const nextRun = moment.tz(moment().format('YYYY-MM-DD'), settingsData.timezone);
       nextRun.set({h: localRunTime?.getHours(), m: localRunTime?.getMinutes()});
-      if (nextRun < moment()) nextRun.add(1, 'd');
+      if (nextRun <= moment()) nextRun.add(1, 'd');
 
       await job.schedule(nextRun.toDate()).save();
     }
