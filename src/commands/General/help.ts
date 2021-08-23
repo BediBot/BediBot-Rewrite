@@ -1,8 +1,7 @@
 import {Args, CommandStore, PieceContext, PreconditionContainerArray} from '@sapphire/framework';
 import {Message, Permissions} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import {getSettings} from '../../database/models/SettingsModel';
+import {fetchPrefix, surroundStringWithBackTick} from '../../utils/discordUtil';
 import logger from '../../utils/loggerUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -18,7 +17,8 @@ module.exports = class HelpCommand extends Command {
 
   async run(message: Message, args: Args) {
     const {guildId} = message;
-    const settingsData = await getSettings(guildId as string);
+
+    const prefix = await fetchPrefix(message);
 
     const selectedCommand = await args.pickResult('string');
 
@@ -27,7 +27,7 @@ module.exports = class HelpCommand extends Command {
     if (!selectedCommand.success || !this.store.has(selectedCommand.value.toLowerCase())) {
       embed.setTitle('Help Reply')
            .setDescription(
-               `To get more detailed information about a command, type ${surroundStringWithBackTick(`${settingsData.prefix}help <commandName>`)}`);
+               `To get more detailed information about a command, type ${surroundStringWithBackTick(`${prefix}help <commandName>`)}`);
 
       for (const category of this.categories) {
         let fieldValue = '';
@@ -52,19 +52,19 @@ module.exports = class HelpCommand extends Command {
     } else {
       const command = this.store.get(selectedCommand.value.toLowerCase());
 
-      embed.setTitle(`Help Reply - ${settingsData.prefix}${command.name} command`)
+      embed.setTitle(`Help Reply - ${prefix}${command.name} command`)
            .setDescription(command.description);
 
       embed.addField('Category', command.category, false);
 
       if (command.detailedDescription) embed.addField('Detailed Description',
-          'Usage: `' + settingsData.prefix + command.detailedDescription, false);
+          'Usage: `' + prefix + command.detailedDescription, false);
 
       let aliasString = '';
 
       for (const alias of command.aliases) {
         logger.info('this happened');
-        aliasString += `${surroundStringWithBackTick(`${settingsData.prefix}${alias}`)} `;
+        aliasString += `${surroundStringWithBackTick(`${prefix}${alias}`)} `;
       }
 
       if (aliasString.length != 0) embed.addField('Aliases', aliasString, false);

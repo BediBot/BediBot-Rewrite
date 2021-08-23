@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
 import {Message, MessageActionRow, MessageButton} from 'discord.js';
-import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
+import {fetchPrefix, surroundStringWithBackTick} from '../../utils/discordUtil';
 import {updateBirthday} from '../../database/models/BirthdayModel';
 import {didDateChange, isValidMonth} from '../../utils/dateUtil';
 
@@ -26,7 +25,7 @@ We will never save your birth year, it is only used to validate your entry and e
 
   async run(message: Message, args: Args) {
     const {guild, guildId, author} = message;
-    const settingsData = await getSettings(guildId as string);
+    const prefix = await fetchPrefix(message);
 
     let month;
     month = await args.pickResult('integer');
@@ -36,12 +35,12 @@ We will never save your birth year, it is only used to validate your entry and e
 
     if (guild) await message.delete();
 
-    if (!month.success || !day.success || !year.success) return invalidSyntaxReply(message, settingsData);
+    if (!month.success || !day.success || !year.success) return invalidSyntaxReply(message, prefix);
 
     // If month is a string, parse it into a date and extract the month number. This works with full month and short forms as well.
     month = isValidMonth(month.value);
 
-    if (!month) return invalidSyntaxReply(message, settingsData);
+    if (!month) return invalidSyntaxReply(message, prefix);
 
     let birthday = new Date(year.value, (month as number) - 1, day.value);
 
@@ -128,12 +127,12 @@ We will never save your birth year, it is only used to validate your entry and e
  * @param settingsData
  * @returns {Promise<Message>}
  */
-const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
+const invalidSyntaxReply = async (message: Message, prefix: string) => {
   const embed = new BediEmbed()
       .setColor(colors.ERROR)
       .setTitle('Set Birthday Reply')
       .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-          settingsData.prefix + 'setbirthday <month> <day> <year>')}`,
+          prefix + 'setbirthday <month> <day> <year>')}`,
       );
   return message.channel.send({embeds: [embed]});
 };
