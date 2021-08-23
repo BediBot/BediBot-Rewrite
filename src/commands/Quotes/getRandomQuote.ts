@@ -33,8 +33,10 @@ module.exports = class GetRandomQuoteCommand extends Command {
 
     if (!quoteAuthor.success) {
       quoteDoc = await getRandomQuote(guildId as string);
+      quoteAuthor = quoteDoc?.name;
     } else {
       quoteDoc = await getRandomQuoteFromAuthor(guildId as string, quoteAuthor.value.toString());
+      quoteAuthor = quoteAuthor.value;
     }
 
     if (!quoteDoc) {
@@ -53,7 +55,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
     if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
 
     if (quoteDoc.date) {
-      if ((typeof quoteAuthor.value) === 'string') {
+      if (typeof quoteAuthor === 'string') {
         logger.info('this happens');
         embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}
@@ -64,7 +66,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
         Date: ${surroundStringWithBackTick(quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
       }
     } else {
-      if (typeof quoteAuthor.value === 'string') {
+      if (typeof quoteAuthor === 'string') {
         embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}`);
       } else {
