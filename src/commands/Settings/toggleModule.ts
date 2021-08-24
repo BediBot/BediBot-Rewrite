@@ -79,7 +79,7 @@ module.exports = class SettingsCommand extends Command {
       if (!interaction.isSelectMenu()) return;
       if (interaction.user.id != message.author.id) {
         const embed = new BediEmbed()
-            .setTitle('Add Due Date Reply')
+            .setTitle('Toggle Module Reply')
             .setColor(colors.ERROR)
             .setDescription('You did not run this command');
 
