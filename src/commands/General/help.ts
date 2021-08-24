@@ -1,10 +1,12 @@
 import {Args, CommandStore, PieceContext, PreconditionContainerArray} from '@sapphire/framework';
-import {Message, Permissions} from 'discord.js';
+import {Message, MessageActionRow, MessageSelectMenu, Permissions} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {fetchPrefix, surroundStringWithBackTick} from '../../utils/discordUtil';
 import logger from '../../utils/loggerUtil';
+import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
+const DEFAULT_PAGE = 'General';
 
 module.exports = class HelpCommand extends Command {
   constructor(context: PieceContext) {
@@ -21,14 +23,19 @@ module.exports = class HelpCommand extends Command {
 
     const selectedCommand = await args.pickResult('string');
 
-    const embed = new BediEmbed();
-
     if (!selectedCommand.success || !this.store.has(selectedCommand.value.toLowerCase())) {
-      embed.setTitle('Help Reply')
-           .setDescription(
-               `To get more detailed information about a command, type ${surroundStringWithBackTick(`${prefix}help <commandName>`)}`);
+      const helpPages = new Map();
+
+      const selectMenu = new MessageSelectMenu()
+          .setCustomId('helpSelect')
+          .setPlaceholder('Select a Category');
 
       for (const category of this.categories) {
+        const embed = new BediEmbed()
+            .setTitle('Help Reply - ' + category)
+            .setDescription(
+                `To get more detailed information about a command, type ${surroundStringWithBackTick(`${prefix}help <commandName>`)}`);
+
         let fieldValue = '';
 
         for (const command of this.store as CommandStore) {
@@ -42,17 +49,67 @@ module.exports = class HelpCommand extends Command {
 
           if (skip) continue;
 
-          if (command[1].category === category) fieldValue += `${surroundStringWithBackTick(command[1]?.name)} `;
+          if (command[1].category === category) embed.addField(`${prefix}${command[1].name}`, command[1].description, false);
         }
-        if (fieldValue.length === 0) continue;
+        if (embed.fields.length === 0) continue;
 
-        embed.addField(category, fieldValue, false);
+        selectMenu.addOptions([
+          {
+            label: category,
+            value: category,
+          },
+        ]);
+        helpPages.set(category, embed);
       }
+
+      const selectRow = new MessageActionRow().addComponents(selectMenu);
+
+      if (message.guild) {
+        const serverReplyEmbed = new BediEmbed()
+            .setTitle('Help Reply')
+            .setDescription('A list of commands has been sent to you via DM.');
+        await message.reply({embeds: [serverReplyEmbed]});
+      }
+
+      const helpMessage = await message.author.send({
+        embeds: [helpPages.get(DEFAULT_PAGE)],
+        components: [selectRow],
+      });
+
+      const selectCollector = helpMessage.createMessageComponentCollector({componentType: 'SELECT_MENU', time: 60000});
+      selectCollector.on('collect', async interaction => {
+        if (!interaction.isSelectMenu()) return;
+        if (interaction.user.id != message.author.id) {
+          const embed = new BediEmbed()
+              .setTitle('Help Reply')
+              .setColor(colors.ERROR)
+              .setDescription('You did not run this command');
+
+          return interaction.reply({
+            ephemeral: true,
+            embeds: [embed],
+          });
+        }
+        await interaction.deferUpdate();
+
+        await helpMessage.edit({
+          embeds: [helpPages.get(interaction.values[0])],
+        });
+
+      });
+
+      selectCollector.on('end', async collected => {
+        await helpMessage.edit({
+          components: [],
+        });
+      });
+
     } else {
       const command = this.store.get(selectedCommand.value.toLowerCase());
 
-      embed.setTitle(`Help Reply - ${prefix}${command.name} command`)
-           .setDescription(command.description);
+      const embed = new BediEmbed()
+          .setTitle(`Help Reply - ${prefix}${command.name} command`)
+          .setDescription(command.description);
 
       embed.addField('Category', command.category, false);
 
@@ -67,10 +124,10 @@ module.exports = class HelpCommand extends Command {
       }
 
       if (aliasString.length != 0) embed.addField('Aliases', aliasString, false);
-    }
 
-    return message.reply({
-      embeds: [embed],
-    });
+      return message.reply({
+        embeds: [embed],
+      });
+    }
   }
 };
