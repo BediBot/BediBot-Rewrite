@@ -69,6 +69,13 @@ We will never save your birth year, it is only used to validate your entry and e
 
     const birthdayString = surroundStringWithBackTick(`${birthday.toLocaleString('default', {month: 'long'})} ${birthday.getDate()}`);
 
+    if (message.guild) {
+      const serverReplyEmbed = new BediEmbed()
+          .setTitle('Set Birthday Reply')
+          .setDescription('A confirmation request has been sent to you via DM.');
+      await message.channel.send({embeds: [serverReplyEmbed]});
+    }
+
     const embed = new BediEmbed()
         .setTitle('Set Birthday Reply')
         .setDescription(`Birthday: ${birthdayString}
