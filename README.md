@@ -4,7 +4,7 @@ This is a rewrite of the BediBot Discord Bot written in TypeScript using the Sap
 
 ## Adding the bot to a server
 - Ensure you have system messages enabled in your server
-- Click on this token link here: TO IMPLEMENT
+- Click on this token link [here](https://discord.com/oauth2/authorize?client_id=873657761391587429&permissions=8&scope=bot%20applications.commands)
 - Run $help to see the available commands
 
 ## Dev Environment Setup
