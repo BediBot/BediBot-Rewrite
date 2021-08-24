@@ -122,16 +122,17 @@ If you make a mistake, simply run the command again, only one morning announceme
     });
 
     buttonCollector.on('end', async interaction => {
-      const embed = new BediEmbed()
-          .setTitle('Morning Announcement Reply')
-          .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
+      if (buttonCollector.total === 0) {
+        const embed = new BediEmbed()
+            .setTitle('Morning Announcement Reply')
+            .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
 
-      await reply.edit({
-        embeds: [embed],
-        components: [],
-      });
+        await reply.edit({
+          embeds: [embed],
+          components: [],
+        });
+      }
     });
-
   }
 };
 
