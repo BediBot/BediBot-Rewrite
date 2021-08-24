@@ -56,7 +56,7 @@ export const addRoleToUser = async (userId: string, guild: Guild | null, roleNam
  * @returns {Promise<any>}
  */
 export const fetchPrefix = async (message: Message) => {
-  if (!message.guild) return DEFAULT_PREFIX;
+  if (!message.guild) return [DEFAULT_PREFIX, ''];
 
   const {guildId} = message;
 
@@ -72,9 +72,9 @@ export const fetchPrefix = async (message: Message) => {
  */
 export const purge_messages = async (message: Message, number_of_msgs: number) => {
   if (message.channel.type == 'GUILD_TEXT') {
-    const fetched_messages = await message.channel.messages.fetch({limit: number_of_msgs});
-    const messages_to_delete = fetched_messages.filter((m) => !m.pinned);
-    await message.channel.bulkDelete(messages_to_delete);
+    const fetchedMessages = await message.channel.messages.fetch({limit: number_of_msgs, before: message.id});
+    const messagesToDelete = await fetchedMessages.filter((m: Message) => !m.pinned);
+    await message.channel.bulkDelete(messagesToDelete);
     return true;
   }
   return false;

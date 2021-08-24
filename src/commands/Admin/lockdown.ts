@@ -4,7 +4,8 @@ import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import {agenda, isValidDurationOrTime, UNLOCK_JOB_NAME} from '../../utils/schedulerUtil';
+import {agenda, isValidDurationOrTime, isValidTime, UNLOCK_JOB_NAME} from '../../utils/schedulerUtil';
+import moment from 'moment-timezone/moment-timezone-utils';
 
 const {Command} = require('@sapphire/framework');
 
@@ -83,6 +84,16 @@ Possible units for duration are: seconds, minutes, hours, days, weeks, months (3
       roleId: role.value.id,
       messageId: message.id,
     });
+
+    if (isValidTime(durationOrTime.value)) {
+      const localRunTime = job.attrs.nextRunAt;
+
+      const nextRun = moment.tz(moment().format('YYYY-MM-DD'), settingsData.timezone);
+      nextRun.set({h: localRunTime?.getHours(), m: localRunTime?.getMinutes()});
+      if (nextRun <= moment()) nextRun.add(1, 'd');
+
+      await job.schedule(nextRun.toDate()).save();
+    }
 
     // Response message with next run time
     const nextRun = job.attrs.nextRunAt;

@@ -9,7 +9,7 @@ import {
   userPendingVerification,
   validUniqueKey,
 } from '../../database/models/PendingVerificationuserModel';
-import {addRoleToAuthor, surroundStringWithBackTick} from '../../utils/discordUtil';
+import {addRoleToAuthor} from '../../utils/discordUtil';
 import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -64,6 +64,12 @@ module.exports = class ConfirmCommand extends Command {
     await addRoleToAuthor(message, settingsData.verifiedRole);
     await addVerifiedUser(author.id, guildId as string, await emailHashFromPendingUser(author.id, guildId as string));
     await removePendingVerificationUser(author.id, guildId as string);
+
+    const serverReplyEmbed = new BediEmbed()
+        .setTitle('Confirm Reply')
+        .setDescription('A confirmation has been sent to you via DM.');
+    await message.reply({embeds: [serverReplyEmbed]});
+
     const embed = new BediEmbed()
         .setColor(colors.PRIMARY)
         .setTitle('Confirm Reply')

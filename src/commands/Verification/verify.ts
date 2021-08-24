@@ -3,7 +3,7 @@ import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {getSettings} from '../../database/models/SettingsModel';
 import {addVerifiedUser, emailAddressLinkedToUser, userVerifiedAnywhereEmailHash, userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
-import {addRoleToAuthor, surroundStringWithBackTick} from '../../utils/discordUtil';
+import {addRoleToAuthor} from '../../utils/discordUtil';
 import {createUniqueKey, isEmailValid, sendConfirmationEmail} from '../../utils/emailUtil';
 import {addPendingVerificationUser, emailAddressLinkedToPendingVerificationUser} from '../../database/models/PendingVerificationuserModel';
 import {hashString} from '../../utils/hashUtil';
@@ -81,17 +81,23 @@ module.exports = class VerifyCommand extends Command {
     }
 
     const uniqueKey = createUniqueKey();
-    const response = await sendConfirmationEmail(emailAddress.value, author.id, guild!.name, settingsData.prefix, uniqueKey);
+    const response = await sendConfirmationEmail(emailAddress.value, guild!.name, settingsData.prefix, uniqueKey);
 
     if (Object.prototype.toString.call(response) === '[object Error]') {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Verify Reply')
           .setDescription('Sorry, something went wrong. Please contact a BediBot Dev.');
+      return message.channel.send({embeds: [embed]});
     }
 
     await addPendingVerificationUser(author.id, guildId as string, await hashString(emailAddress.value.substring(0, emailAddress.value.indexOf('@'))),
         uniqueKey);
+
+    const serverReplyEmbed = new BediEmbed()
+        .setTitle('Verify Reply')
+        .setDescription('Instructions have been sent to you via DM.');
+    await message.channel.send({embeds: [serverReplyEmbed]});
 
     const embed = new BediEmbed()
         .setTitle('Verify Reply')

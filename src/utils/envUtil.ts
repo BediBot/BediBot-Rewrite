@@ -38,5 +38,11 @@ export const validateEnv = () => {
     console.warn('Missing Email Refresh Token');
     return false;
   }
+
+  if (!process.env.LOG_LEVEL)
+  {
+    console.warn('Missing log level');
+    return false;
+  }
   return true;
 };

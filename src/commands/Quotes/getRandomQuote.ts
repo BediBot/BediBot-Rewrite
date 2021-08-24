@@ -4,6 +4,8 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getRandomQuote, getRandomQuoteFromAuthor} from '../../database/models/QuoteModel';
+import logger from '../../utils/loggerUtil';
+import {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
 
@@ -20,6 +22,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
 
   async run(message: Message, args: Args) {
     const {guildId} = message;
+    const settingsData = await getSettings(guildId as string);
 
     let quoteAuthor;
 
@@ -30,8 +33,10 @@ module.exports = class GetRandomQuoteCommand extends Command {
 
     if (!quoteAuthor.success) {
       quoteDoc = await getRandomQuote(guildId as string);
+      quoteAuthor = quoteDoc?.name;
     } else {
       quoteDoc = await getRandomQuoteFromAuthor(guildId as string, quoteAuthor.value.toString());
+      quoteAuthor = quoteAuthor.value;
     }
 
     if (!quoteDoc) {
@@ -50,17 +55,18 @@ module.exports = class GetRandomQuoteCommand extends Command {
     if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
 
     if (quoteDoc.date) {
-      if (typeof quoteAuthor.value === 'string') {
+      if (typeof quoteAuthor === 'string') {
+        logger.info('this happens');
         embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}
-        Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
+        Date: ${surroundStringWithBackTick(quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
       } else {
         embed.setDescription(`Quote: ${quoteText}
         Author: ${quoteDoc.name}
-        Date: ${surroundStringWithBackTick(quoteDoc.date.toDateString())}`);
+        Date: ${surroundStringWithBackTick(quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
       }
     } else {
-      if (typeof quoteAuthor.value === 'string') {
+      if (typeof quoteAuthor === 'string') {
         embed.setDescription(`Quote: ${quoteText}
         Author: ${surroundStringWithBackTick(quoteDoc.name)}`);
       } else {

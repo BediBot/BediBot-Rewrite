@@ -61,15 +61,15 @@ module.exports = class GetAllQuotesCommand extends Command {
         let title: string;
         let field: string;
 
-        if (quotes[i + j].date) title = quotes[i + j].date.toDateString();
+        if (quotes[i + j].date) title = quotes[i + j].date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'});
         else title = 'Before Sep 2021';
 
         let quoteText = quotes[i + j].quote;
         if (quoteText.length > QUOTE_MAX_LENGTH) quoteText = quoteText.slice(QUOTE_MAX_LENGTH) + '...';
 
         // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
-        if (quoteText.includes('<')) field = `${quoteText} by`;
-        else field = `${surroundStringWithBackTick(quoteText)} by`;
+        if (quoteText.includes('<')) field = `${quoteText} by `;
+        else field = `${surroundStringWithBackTick(quoteText)} by `;
 
         if (user) field += `${user.toString()}`;
         else {

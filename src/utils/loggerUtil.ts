@@ -13,7 +13,7 @@ const logConfig = {
   format: logFormat,
   'transports': [
     new winston.transports.Console({
-      level: 'info',
+      level: process.env.LOG_LEVEL,
       format: winston.format.combine(
           logFormat,
           winston.format.colorize({

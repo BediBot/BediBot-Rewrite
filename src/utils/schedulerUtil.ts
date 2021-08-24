@@ -32,23 +32,24 @@ export const startAgenda = async () => {
     logger.verbose(`Job ${job.attrs.name} succeeded`);
   });
 
-  agenda.on('fail', (err, job) => {
-    logger.error(`Job ${job.attrs.name} failed with error: ${err.message}`);
+  agenda.on('fail', async (err, job) => {
+    logger.error(`Job ${job.attrs.name} failed with error: ${err.nessage}`);
+    await job.remove();
   });
 };
 
 export const isValidDurationOrTime = (string: string) => {
   if (string.length === 0) return false;
   if (isValidTime(string)) return true;
-  return !isNaN(humanInterval(string).valueOf());
+  const value = humanInterval(string).valueOf();
+  return !isNaN(value) && value != 0;
 };
 
 export const isValidTime = (string: string) => {
-  const re12 = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/;
-  const re12Short = /(1[0-2]|0?[1-9] ?([AaPp][Mm]))/;
+  const re12 = /^(0?[1-9]|1[012])(:[0-5]\d) [APap][mM]$/;
+  const re12Short = /^(0?[1-9]|1[012]) [APap][mM]$/;
   const re24 = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-  if (re12.test(string) || re24.test(string) || re12Short.test(string)) return true;
-  return false;
+  return re12.test(string) || re24.test(string) || re12Short.test(string);
 };
 
 agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
@@ -67,20 +68,23 @@ agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
     if (channel && role) {
       await channel.permissionOverwrites.edit(role, {SEND_MESSAGES: true});
 
-      const message = await channel.messages.fetch(messageId);
-      if (message) {
-        const embed = new BediEmbed()
-            .setTitle('Lockdown Reply')
-            .setDescription(`Channel has been unlocked for ${role.toString()}`);
+      const embed = new BediEmbed()
+          .setTitle('Lockdown Reply')
+          .setDescription(`Channel has been unlocked for ${role.toString()}`);
+
+      try {
+        const message = await channel.messages.fetch(messageId);
         await message.reply({embeds: [embed]});
-      } else {
-        job.fail('Message not found. This means either the message has been deleted.');
+      } catch {
+        logger.debug('Unlock Role Job: Unable to find invoking message so can not reply to it');
+        await channel.send({embeds: [embed]});
       }
+
     } else {
-      job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
+      await job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
     }
   } else {
-    job.fail('Guild not found. This means BediBot is no longer in this guild.');
+    await job.fail('Guild not found. This means BediBot is no longer in this guild.');
   }
   await job.remove();
 });
@@ -90,6 +94,7 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
 
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
+  const autoDelete = job.attrs.data?.autoDelete;
 
   const guild = client.guilds.cache.get(guildId);
 
@@ -117,14 +122,27 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
       const embed = new BediEmbed()
           .setTitle('Good Morning!')
           .setDescription(description);
-      await channel.send({embeds: [embed]});
+      const newMessage = await channel.send({embeds: [embed]});
+
+      if (autoDelete) {
+        const messageId = job.attrs.data?.messageId;
+        if (messageId) {
+          try {
+            const messageToDelete = await channel.messages.fetch(messageId);
+            await messageToDelete.delete();
+          } catch {
+            logger.debug('Morning Announcement Job: Message was manually deleted before bot could get to it.');
+          }
+
+        }
+        job.attrs.data!.messageId = newMessage.id;
+        await job.save();
+      }
     } else {
-      job.fail('Channel not found. This means that the channel has been deleted.');
-      await job.remove();
+      await job.fail('Channel not found. This means that the channel has been deleted.');
     }
   } else {
-    job.fail('Guild not found. This means BediBot is no longer in this guild.');
-    await job.remove();
+    await job.fail('Guild not found. This means BediBot is no longer in this guild.');
   }
 });
 
@@ -134,6 +152,7 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
   const guildId = job.attrs.data?.guildId;
   const channelId = job.attrs.data?.channelId;
   const roleId = job.attrs.data?.roleId;
+  const autoDelete = job.attrs.data?.autoDelete;
 
   const guild = client.guilds.cache.get(guildId);
 
@@ -168,15 +187,28 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
           .setTitle('Happy Birthday!')
           .setDescription(mentions);
 
-      await channel.send({embeds: [embed]});
+      const newMessage = await channel.send({embeds: [embed]});
+
+      if (autoDelete) {
+        const messageId = job.attrs.data?.messageId;
+        if (messageId) {
+          try {
+            const messageToDelete = await channel.messages.fetch(messageId);
+            await messageToDelete.delete();
+          } catch {
+            logger.debug('Birthday Announcement Job: Message was manually deleted before bot could get to it.');
+          }
+
+        }
+        job.attrs.data!.messageId = newMessage.id;
+        await job.save();
+      }
 
     } else {
-      job.fail('Channel not found. This means that the channel has been deleted.');
-      await job.remove();
+      await job.fail('Channel not found. This means that the channel has been deleted.');
     }
   } else {
-    job.fail('Guild not found. This means BediBot is no longer in this guild.');
-    await job.remove();
+    await job.fail('Guild not found. This means BediBot is no longer in this guild.');
   }
 });
 
@@ -258,15 +290,12 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
         }
         await message.edit({embeds: [embed]});
       } else {
-        job.fail('Message not found. This means either the message has been deleted.');
-        await job.remove();
+        await job.fail('Message not found. This means either the message has been deleted.');
       }
     } else {
-      job.fail('Channel not found. This means that the channel has been deleted.');
-      await job.remove();
+      await job.fail('Channel not found. This means that the channel has been deleted.');
     }
   } else {
-    job.fail('Guild not found. This means BediBot is no longer in this guild.');
-    await job.remove();
+    await job.fail('Guild not found. This means BediBot is no longer in this guild.');
   }
 });

@@ -31,17 +31,41 @@ module.exports = class AddQuoteCommand extends Command {
     let quoteAuthor: Result<string, UserError> | Result<User, UserError>;
 
     if (message.reference) {
+      //This implies that this is a reply
       quote = (await message.channel.messages.fetch(message.reference.messageId as Snowflake)).content;
+      if(quote.length === 0) 
+      {
+        const embed = new BediEmbed()
+        .setColor(colors.ERROR)
+        .setTitle('Add Quote Reply')
+        .setDescription(`Please ensure that the message you're replying to contains text content (i.e. No embeds)`);
+       return message.reply({embeds: [embed]});
+      }
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
-      if (!quoteAuthor.success) return invalidSyntaxReply(message, settingsData);
+      if (!quoteAuthor.success){
+        const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Add Quote Reply')
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+              settingsData.prefix + 'addquote <author>')}`);
+        return message.reply({embeds: [embed]});
+      }
     } else {
       quote = await args.pickResult('string');
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
-      if (!quote.success || !quoteAuthor.success) return invalidSyntaxReply(message, settingsData);
+      if (!quote.success || !quoteAuthor.success)
+      {
+        const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Add Quote Reply')
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+              settingsData.prefix + 'addquote <quote> <author>')}`);
+        return message.reply({embeds: [embed]});
+      }
       quote = quote.value;
     }
 
@@ -60,13 +84,13 @@ module.exports = class AddQuoteCommand extends Command {
     if (typeof quoteAuthor.value === 'string') {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
         Author: ${surroundStringWithBackTick(quoteAuthor.value as string)}
-        Date: ${surroundStringWithBackTick(date.toDateString())}
+        Date: ${surroundStringWithBackTick(date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}
         Submitted By: ${author}
         Approved By:`);
     } else {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
         Author (Mention): ${quoteAuthor.value}
-        Date: ${surroundStringWithBackTick(date.toDateString())}
+        Date: ${surroundStringWithBackTick(date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}
         Submitted By: ${author}
         Approved By:`);
     }
@@ -153,10 +177,5 @@ module.exports = class AddQuoteCommand extends Command {
  * @returns {Promise<Message>}
  */
 const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
-  const embed = new BediEmbed()
-      .setColor(colors.ERROR)
-      .setTitle('Add Quote Reply')
-      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-          settingsData.prefix + 'addquote <quote> <author>')}`);
-  return message.reply({embeds: [embed]});
+
 };

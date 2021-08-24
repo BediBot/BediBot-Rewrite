@@ -20,6 +20,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.LOG_LEVEL = 'info';
 
     expect(validateEnv()).toBe(true);
   });
@@ -31,6 +32,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.LOG_LEVEL = 'info';
 
     expect(validateEnv()).toBe(false);
   });
@@ -42,6 +44,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.LOG_LEVEL = 'info';
 
     expect(validateEnv()).toBe(false);
   });
@@ -53,6 +56,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.LOG_LEVEL = 'info';
 
     expect(validateEnv()).toBe(false);
   });
@@ -64,6 +68,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.LOG_LEVEL = 'info';
 
     expect(validateEnv()).toBe(false);
   });
@@ -75,6 +80,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_ID = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.LOG_LEVEL = 'info';
 
     expect(validateEnv()).toBe(false);
   });
@@ -86,6 +92,7 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_ID = 'randomString';
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.BOT_OWNERS = 'randomString';
+    process.env.LOG_LEVEL = 'info';
 
     expect(validateEnv()).toBe(false);
   });
@@ -97,6 +104,19 @@ describe('Environment Variables', () => {
     process.env.EMAIL_CLIENT_ID = 'randomString';
     process.env.EMAIL_CLIENT_SECRET = 'randomString';
     process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.LOG_LEVEL = 'info';
+
+    expect(validateEnv()).toBe(false);
+  });
+
+  test('ENV Log Level', () => {
+    process.env.BOT_TOKEN = 'randomString';
+    process.env.MONGO_URI = 'randomString';
+    process.env.EMAIL_USER = 'randomString';
+    process.env.EMAIL_CLIENT_ID = 'randomString';
+    process.env.EMAIL_CLIENT_SECRET = 'randomString';
+    process.env.EMAIL_CLIENT_REFRESH = 'randomString';
+    process.env.BOT_OWNERS = 'randomString';
 
     expect(validateEnv()).toBe(false);
   });

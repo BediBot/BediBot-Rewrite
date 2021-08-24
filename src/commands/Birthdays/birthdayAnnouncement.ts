@@ -1,5 +1,5 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Message, MessageActionRow, MessageButton} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
@@ -16,9 +16,10 @@ module.exports = class BirthdayAnnouncementCommand extends Command {
       aliases: ['ba'],
       description: 'Schedules Birthday Announcements in the Current Channel',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'`birthdayAnnouncement <time> <role:optional>`'}
+      detailedDescription: `${'birthdayAnnouncement <time> <role:optional>`'}
 You can specify the announcement time in most common time formats.
-If you make a mistake, simply run the command again, only one birthday announcement can be scheduled per day.`,
+If you make a mistake, simply run the command again, only one birthday announcement can be scheduled per day.
+If you specify a role, people will receive the role for the duration of their birthday.`,
     });
   }
 
@@ -26,7 +27,7 @@ If you make a mistake, simply run the command again, only one birthday announcem
     const {guildId, channelId} = message;
     const settingsData = await getSettings(guildId as string);
 
-    const announcementTime = await args.restResult('string');
+    const announcementTime = await args.pickResult('string');
 
     if (!announcementTime.success) {
       const embed = new BediEmbed()
@@ -72,20 +73,21 @@ If you make a mistake, simply run the command again, only one birthday announcem
       data = {
         guildId: guildId,
         channelId: channelId,
+        autoDelete: false,
         roleId: role.id,
       };
     } else {
       data = {
         guildId: guildId,
         channelId: channelId,
+        autoDelete: false,
       };
     }
 
     const job = await agenda.create(BIRTH_ANNOUNCE_JOB_NAME, data);
 
     await job.repeatEvery('one day', {skipImmediate: true})
-             .schedule(announcementTime.value)
-             .save();
+             .schedule(announcementTime.value);
 
     const localRunTime = job.attrs.nextRunAt;
 
@@ -93,13 +95,74 @@ If you make a mistake, simply run the command again, only one birthday announcem
     nextRun.set({h: localRunTime?.getHours(), m: localRunTime?.getMinutes()});
     if (nextRun < moment()) nextRun.add(1, 'd');
 
-    await job.schedule(nextRun.toDate()).save();
+    const buttonRow = new MessageActionRow()
+        .addComponents([
+          new MessageButton()
+              .setCustomId('birthDeleteYes')
+              .setLabel('Yes')
+              .setStyle('SUCCESS'),
+          new MessageButton()
+              .setCustomId('birthDeleteNo')
+              .setLabel('No')
+              .setStyle('DANGER'),
+        ]);
 
     const embed = new BediEmbed()
         .setTitle('Birthday Announcement Reply')
         .setDescription(`Birthday Announcements have been scheduled for ${surroundStringWithBackTick(
-            `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
-    return message.reply({embeds: [embed]});
+            `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}
+            
+            Do you want to auto delete each announcement after 24 hours?`);
+    const reply = await message.reply({
+      embeds: [embed],
+      components: [buttonRow],
+    });
+
+    const buttonCollector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 15000});
+    buttonCollector.on('collect', async interaction => {
+      if (!interaction.isButton()) return;
+
+      if (interaction.user.id != message.author.id) {
+        const embed = new BediEmbed()
+            .setTitle('Birthday Announcement Reply')
+            .setColor(colors.ERROR)
+            .setDescription('You did not run this command');
+
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [embed],
+        });
+      }
+
+      if (interaction.customId === 'birthDeleteYes') {
+        job.attrs.data!.autoDelete = true;
+      }
+
+      await job.schedule(nextRun.toDate()).save();
+
+      const embed = new BediEmbed()
+          .setTitle('Birthday Announcement Reply')
+          .setDescription(`Birthday Announcements have been scheduled for ${surroundStringWithBackTick(
+              `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
+
+      await reply.edit({
+        embeds: [embed],
+        components: [],
+      });
+    });
+
+    buttonCollector.on('end', async interaction => {
+      if (buttonCollector.total === 0) {
+        const embed = new BediEmbed()
+            .setTitle('Birthday Announcement Reply')
+            .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
+
+        await reply.edit({
+          embeds: [embed],
+          components: [],
+        });
+      }
+    });
   }
 };
 
