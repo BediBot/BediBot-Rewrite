@@ -4,6 +4,7 @@ import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {purge_messages, surroundStringWithBackTick} from '../../utils/discordUtil';
+import logger from '../../utils/loggerUtil';
 
 const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
@@ -100,7 +101,7 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
-          .setDescription('No messages found, please contact a BediBot Dev');
+          .setDescription('No messages found - note that pinned messages or messages older than 14 days cannot be purged');
       return message.channel.send({embeds: [embed]});
     }
 
