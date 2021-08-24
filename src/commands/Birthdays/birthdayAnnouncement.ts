@@ -86,7 +86,7 @@ If you specify a role, people will receive the role for the duration of their bi
 
     const job = await agenda.create(BIRTH_ANNOUNCE_JOB_NAME, data);
 
-    await job.repeatEvery('5 seconds', {skipImmediate: true})
+    await job.repeatEvery('one day', {skipImmediate: true})
              .schedule(announcementTime.value);
 
     const localRunTime = job.attrs.nextRunAt;
