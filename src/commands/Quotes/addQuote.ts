@@ -57,7 +57,15 @@ module.exports = class AddQuoteCommand extends Command {
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
-      if (!quote.success || !quoteAuthor.success) return invalidSyntaxReply(message, settingsData);
+      if (!quote.success || !quoteAuthor.success)
+      {
+        const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Add Quote Reply')
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+              settingsData.prefix + 'addquote <quote> <author>')}`);
+        return message.reply({embeds: [embed]});
+      }
       quote = quote.value;
     }
 
@@ -169,10 +177,5 @@ module.exports = class AddQuoteCommand extends Command {
  * @returns {Promise<Message>}
  */
 const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
-  const embed = new BediEmbed()
-      .setColor(colors.ERROR)
-      .setTitle('Add Quote Reply')
-      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-          settingsData.prefix + 'addquote <quote> <author>')}`);
-  return message.reply({embeds: [embed]});
+
 };
