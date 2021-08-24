@@ -4,7 +4,6 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {removeVerifiedUser, userVerifiedInGuild} from '../../database/models/VerifiedUserModel';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -29,6 +28,11 @@ module.exports = class UnverifyCommand extends Command {
           .setDescription(`You are not verified on this server! Run ${settingsData.prefix}verify if necessary.`);
       return message.reply({embeds: [embed]});
     }
+
+    const serverReplyEmbed = new BediEmbed()
+        .setTitle('Unverify Reply')
+        .setDescription('A confirmation has been sent to you via DM.');
+    await message.reply({embeds: [serverReplyEmbed]});
 
     await removeVerifiedUser(author.id, guildId as string);
     const embed = new BediEmbed()
