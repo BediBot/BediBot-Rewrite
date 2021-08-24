@@ -152,14 +152,16 @@ If you specify a role, people will receive the role for the duration of their bi
     });
 
     buttonCollector.on('end', async interaction => {
-      const embed = new BediEmbed()
-          .setTitle('Birthday Announcement Reply')
-          .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
+      if (buttonCollector.total === 0) {
+        const embed = new BediEmbed()
+            .setTitle('Birthday Announcement Reply')
+            .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
 
-      await reply.edit({
-        embeds: [embed],
-        components: [],
-      });
+        await reply.edit({
+          embeds: [embed],
+          components: [],
+        });
+      }
     });
   }
 };
