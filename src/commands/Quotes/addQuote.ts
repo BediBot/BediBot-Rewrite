@@ -32,6 +32,14 @@ module.exports = class AddQuoteCommand extends Command {
 
     if (message.reference) {
       //This implies that this is a reply
+      if(message.attachments) //This implies there is something attached (embed, photo, etc)
+      {
+        const embed = new BediEmbed()
+        .setColor(colors.ERROR)
+        .setTitle('Add Quote Reply')
+        .setDescription(`Bedibot does not support quoting attachments - please ensure the message is clear of embeds, photos, etc`);
+       return message.reply({embeds: [embed]});
+      }
       quote = (await message.channel.messages.fetch(message.reference.messageId as Snowflake)).content;
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
@@ -42,7 +50,7 @@ module.exports = class AddQuoteCommand extends Command {
           .setTitle('Add Quote Reply')
           .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
               settingsData.prefix + 'addquote <author>')}`);
-      return message.reply({embeds: [embed]});
+        return message.reply({embeds: [embed]});
       }
     } else {
       quote = await args.pickResult('string');
