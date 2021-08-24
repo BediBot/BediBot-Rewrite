@@ -73,7 +73,7 @@ We will never save your birth year, it is only used to validate your entry and e
       const serverReplyEmbed = new BediEmbed()
           .setTitle('Set Birthday Reply')
           .setDescription('A confirmation request has been sent to you via DM.');
-      await message.reply({embeds: [serverReplyEmbed]});
+      await message.channel.send({embeds: [serverReplyEmbed]});
     }
 
     const embed = new BediEmbed()

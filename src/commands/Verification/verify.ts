@@ -96,8 +96,8 @@ module.exports = class VerifyCommand extends Command {
 
     const serverReplyEmbed = new BediEmbed()
         .setTitle('Verify Reply')
-        .setDescription('Instructions has been sent to you via DM.');
-    await message.reply({embeds: [serverReplyEmbed]});
+        .setDescription('Instructions have been sent to you via DM.');
+    await message.channel.send({embeds: [serverReplyEmbed]});
 
     const embed = new BediEmbed()
         .setTitle('Verify Reply')
