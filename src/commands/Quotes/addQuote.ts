@@ -31,11 +31,19 @@ module.exports = class AddQuoteCommand extends Command {
     let quoteAuthor: Result<string, UserError> | Result<User, UserError>;
 
     if (message.reference) {
+      //This implies that this is a reply
       quote = (await message.channel.messages.fetch(message.reference.messageId as Snowflake)).content;
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
-      if (!quoteAuthor.success) return invalidSyntaxReply(message, settingsData);
+      if (!quoteAuthor.success){
+        const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Add Quote Reply')
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+              settingsData.prefix + 'addquote <author>')}`);
+      return message.reply({embeds: [embed]});
+      }
     } else {
       quote = await args.pickResult('string');
       quoteAuthor = await args.pickResult('user');
