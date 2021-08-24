@@ -80,7 +80,7 @@ export const purge_messages = async (message: Message, number_of_msgs: number) =
     await message.channel.bulkDelete(messagesToDelete);
     return messagesToDelete.size;
   }
-  return 0;
+  return false;
 };
 
 /**
