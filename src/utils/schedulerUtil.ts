@@ -68,15 +68,18 @@ agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
     if (channel && role) {
       await channel.permissionOverwrites.edit(role, {SEND_MESSAGES: true});
 
-      const message = await channel.messages.fetch(messageId);
-      if (message) {
-        const embed = new BediEmbed()
-            .setTitle('Lockdown Reply')
-            .setDescription(`Channel has been unlocked for ${role.toString()}`);
+      const embed = new BediEmbed()
+          .setTitle('Lockdown Reply')
+          .setDescription(`Channel has been unlocked for ${role.toString()}`);
+
+      try {
+        const message = await channel.messages.fetch(messageId);
         await message.reply({embeds: [embed]});
-      } else {
-        await job.fail('Message not found. This means either the message has been deleted.');
+      } catch {
+        logger.debug('Unlock Role Job: Unable to find invoking message so can not reply to it');
+        await channel.send({embeds: [embed]});
       }
+
     } else {
       await job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
     }
