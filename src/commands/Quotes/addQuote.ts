@@ -32,15 +32,15 @@ module.exports = class AddQuoteCommand extends Command {
 
     if (message.reference) {
       //This implies that this is a reply
-      if(message.attachments) //This implies there is something attached (embed, photo, etc)
+      quote = (await message.channel.messages.fetch(message.reference.messageId as Snowflake)).content;
+      if(quote.length === 0) 
       {
         const embed = new BediEmbed()
         .setColor(colors.ERROR)
         .setTitle('Add Quote Reply')
-        .setDescription(`Bedibot does not support quoting attachments - please ensure the message is clear of embeds, photos, etc`);
+        .setDescription(`Please ensure that the message you're replying to contains text content (i.e. No embeds)`);
        return message.reply({embeds: [embed]});
       }
-      quote = (await message.channel.messages.fetch(message.reference.messageId as Snowflake)).content;
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
