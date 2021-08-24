@@ -90,7 +90,7 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
     {
     */
     //Perform the deletion
-    const numMessagesActuallyDeleted = await purgeMessages(message, (numMessagesToDelete.value)); //Delete purge command as well
+    const numMessagesActuallyDeleted = await purgeMessages(message, numMessagesToDelete.value);
 
     //Cleanup messages that don't need to be there anymore
     await message.delete();
