@@ -5,7 +5,6 @@ import {DEFAULT_PREFIX} from '../config';
 import {container, SapphireClient} from '@sapphire/framework';
 
 const ms = require('ms');
-const fourteenDaysInMs = 14*24*3600*1000;
 
 /**
  * Adds role to the author of a given message
@@ -76,7 +75,7 @@ export const fetchPrefix = async (message: Message) => {
 export const purge_messages = async (message: Message, number_of_msgs: number) => {
   if (message.channel.type == 'GUILD_TEXT') {
     const fetchedMessages = await message.channel.messages.fetch({limit: number_of_msgs, before: message.id});
-    const messagesToDelete = await fetchedMessages.filter((m: Message) => !m.pinned || m.createdTimestamp < (message.createdTimestamp - fourteenDaysInMs));
+    const messagesToDelete = await fetchedMessages.filter((m: Message) => !m.pinned || m.createdTimestamp < (message.createdTimestamp - ms('14d')));
     await message.channel.bulkDelete(messagesToDelete);
     return messagesToDelete.size;
   }
@@ -94,7 +93,7 @@ export const purge_messages_from_specific_user = async (message: Message, number
   let number_of_messages_deleted = 0;
   if (message.channel.type == 'GUILD_TEXT') {
     const fetched_messages = await message.channel.messages.fetch({limit: number_of_msgs_to_search});
-    const messages_to_delete = fetched_messages.filter((m) => m.author.id == userId || m.createdTimestamp < (message.createdTimestamp - fourteenDaysInMs));
+    const messages_to_delete = fetched_messages.filter((m) => m.author.id == userId || m.createdTimestamp < (message.createdTimestamp - ms('14d')));
     await message.channel.bulkDelete(messages_to_delete);
     number_of_messages_deleted = messages_to_delete.size;
   }

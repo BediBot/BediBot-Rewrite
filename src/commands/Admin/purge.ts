@@ -91,20 +91,20 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
     {
     */
     //Perform the deletion
-    let numberOfMessagesActuallyDeleted = await purge_messages(message, (numMessagesToDelete.value)); //Delete purge command as well
+    const numMessagesActuallyDeleted = await purge_messages(message, (numMessagesToDelete.value)); //Delete purge command as well
 
     //Cleanup messages that don't need to be there anymore
     await message.delete();
     await loading_message.delete();
 
-    if (numberOfMessagesActuallyDeleted === false) {
+    if (numMessagesActuallyDeleted === false) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Fatal error, please contact a BediBot Dev');
       return message.channel.send({embeds: [embed]});
     }
-    else if (numberOfMessagesActuallyDeleted === 0) {
+    else if (numMessagesActuallyDeleted === 0) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
@@ -117,7 +117,7 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
         .setTitle('Purge Reply')
         .setDescription(
             `Successfully purged ${surroundStringWithBackTick(
-                numberOfMessagesActuallyDeleted.toString())} messages in ${message.channel.toString()} from ${surroundStringWithBackTick(
+                numMessagesActuallyDeleted.toString())} messages in ${message.channel.toString()} from ${surroundStringWithBackTick(
                 message.guild?.name!)}`);
     return message.author.send({embeds: [embed]});
     //}
