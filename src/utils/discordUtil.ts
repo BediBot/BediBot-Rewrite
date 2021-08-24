@@ -75,9 +75,9 @@ export const purge_messages = async (message: Message, number_of_msgs: number) =
     const fetchedMessages = await message.channel.messages.fetch({limit: number_of_msgs, before: message.id});
     const messagesToDelete = await fetchedMessages.filter((m: Message) => !m.pinned);
     await message.channel.bulkDelete(messagesToDelete);
-    return true;
+    return messagesToDelete.size;
   }
-  return false;
+  return 0;
 };
 
 /**
