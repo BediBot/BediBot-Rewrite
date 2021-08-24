@@ -4,11 +4,11 @@ import colors from '../utils/colorUtil';
 import {Message} from 'discord.js';
 import {fetchPrefix, surroundStringWithBackTick} from '../utils/discordUtil';
 
-export class UserEvent extends Listener<'mentionPrefixOnly'> {
+module.exports = class MentionPrefixOnlyListener extends Listener<'mentionPrefixOnly'> {
 	public async run(message: Message) {
-		const prefix = await fetchPrefix(message);
     if(message.guild)
     {
+      const prefix = await fetchPrefix(message);
       const embed = new BediEmbed()
         .setTitle(`Type ${surroundStringWithBackTick(prefix + "help")} to see a list of commands!`);
       
