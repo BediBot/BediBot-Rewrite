@@ -57,12 +57,12 @@ module.exports = class RemoveQuoteCommand extends Command {
     if (typeof quoteAuthor.value === 'string') {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote.value)}
         Author: ${surroundStringWithBackTick(quoteAuthor.value as string)}
-        Date: ${surroundStringWithBackTick(dateString)}
+        Date: <t:${Math.round(response.date.valueOf() / 1000)}:D>
         Removed By: ${author}`);
     } else {
       embed.setDescription(`Quote: ${surroundStringWithBackTick(quote.value)}
         Author: ${quoteAuthor.value}
-        Date: ${surroundStringWithBackTick(dateString)}
+        Date: <t:${Math.round(response.date.valueOf() / 1000)}:D>
         Removed By: ${author}`);
     }
 
