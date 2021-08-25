@@ -3,7 +3,7 @@ import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
-import {getRandomQuote, getRandomQuoteFromAuthor} from '../../database/models/QuoteModel';
+import {getRandomQuoteFromAuthor, getRandomQuoteInGuild} from '../../database/models/QuoteModel';
 import {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
@@ -31,7 +31,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
     let quoteDoc;
 
     if (!quoteAuthor.success) {
-      quoteDoc = await getRandomQuote(guildId as string);
+      quoteDoc = await getRandomQuoteInGuild(guildId as string);
       quoteAuthor = quoteDoc?.name;
     } else {
       quoteDoc = await getRandomQuoteFromAuthor(guildId as string, quoteAuthor.value.toString());
