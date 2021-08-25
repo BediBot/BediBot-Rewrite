@@ -1,7 +1,7 @@
 import {capFirstLetterEveryWord} from './stringsUtil';
 
 // Array of settings modules
-const modules = ['verification', 'quotes', 'pins'];
+const modules = ['verification', 'quotes', 'pins', 'due dates'];
 
 /**
  * Creates a pretty string to represent modules in the $settings command embed.
