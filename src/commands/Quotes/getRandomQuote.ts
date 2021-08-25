@@ -57,11 +57,10 @@ module.exports = class GetRandomQuoteCommand extends Command {
     if (quoteDoc.date) {
       if (typeof quoteAuthor === 'string') {
         logger.info('this happens');
-        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}\nDate: ${surroundStringWithBackTick(
-            quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
+        embed.setDescription(
+            `Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:D>`);
       } else {
-        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: ${surroundStringWithBackTick(
-            quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
+        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:D>`);
       }
     } else {
       if (typeof quoteAuthor === 'string') {

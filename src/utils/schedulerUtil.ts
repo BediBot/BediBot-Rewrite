@@ -108,10 +108,10 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
       if (quote?.date) {
         if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
         Author: ${quote?.name}
-        Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
+        Date: <t:${Math.round(quote.date.valueOf() / 1000)}:D>`;
         else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
         Author: ${surroundStringWithBackTick(quote?.name as string)}
-        Date: ${surroundStringWithBackTick(quote?.date.toDateString() as string)}`;
+        Date: <t:${Math.round(quote.date.valueOf() / 1000)}:D>`;
       } else {
         if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
         Author: ${quote?.name}`;
@@ -276,11 +276,10 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
 
             let fieldValue: string;
             if (dueDate.dateOnly) fieldValue = `**Type:** ${surroundStringWithBackTick(dueDate.type)}
-            **Date:** ${surroundStringWithBackTick(dueDate.dateTime.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full'}))}
+            **Date:** <t:${Math.round(dueDate.dateTime.valueOf() / 1000)}:D>
             \u200b`;
             else fieldValue = `**Type:** ${surroundStringWithBackTick(dueDate.type)}
-            **Date:** ${surroundStringWithBackTick(
-                dueDate.dateTime.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'}))}
+            **Date:** <t:${Math.round(dueDate.dateTime.valueOf() / 1000)}:f>
             \u200b`;
 
             if (embed.fields.length === (MAX_NUM_EMBED_FIELDS - 1)) {
