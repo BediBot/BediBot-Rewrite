@@ -3,7 +3,7 @@ import logger from './loggerUtil';
 import Agenda, {Job} from 'agenda/dist/index';
 import {BaseGuildTextChannel} from 'discord.js';
 import {BediEmbed} from '../lib/BediEmbed';
-import {getRandomQuote} from '../database/models/QuoteModel';
+import {getRandomQuoteInGuild} from '../database/models/QuoteModel';
 import {getUserFromMention, surroundStringWithBackTick} from './discordUtil';
 import {getBirthdaysToday} from '../database/models/BirthdayModel';
 import {getSettings} from '../database/models/SettingsModel';
@@ -101,7 +101,7 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
   if (guild) {
     const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
     if (channel) {
-      const quote = await getRandomQuote(guildId);
+      const quote = await getRandomQuoteInGuild(guildId);
       const user = await getUserFromMention(quote?.name as string);
 
       let description: string;
