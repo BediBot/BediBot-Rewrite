@@ -57,24 +57,19 @@ module.exports = class GetRandomQuoteCommand extends Command {
     if (quoteDoc.date) {
       if (typeof quoteAuthor === 'string') {
         logger.info('this happens');
-        embed.setDescription(`Quote: ${quoteText}
-        Author: ${surroundStringWithBackTick(quoteDoc.name)}
-        Date: ${surroundStringWithBackTick(quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
+        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}\nDate: ${surroundStringWithBackTick(
+            quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
       } else {
-        embed.setDescription(`Quote: ${quoteText}
-        Author: ${quoteDoc.name}
-        Date: ${surroundStringWithBackTick(quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
+        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: ${surroundStringWithBackTick(
+            quoteDoc.date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}`);
       }
     } else {
       if (typeof quoteAuthor === 'string') {
-        embed.setDescription(`Quote: ${quoteText}
-        Author: ${surroundStringWithBackTick(quoteDoc.name)}`);
+        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}`);
       } else {
-        embed.setDescription(`Quote: ${quoteText}
-        Author: ${quoteDoc.name}`);
+        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}`);
       }
     }
-
     return message.reply({embeds: [embed]});
   };
 };
