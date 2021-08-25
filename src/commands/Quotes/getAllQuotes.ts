@@ -61,7 +61,7 @@ module.exports = class GetAllQuotesCommand extends Command {
         let title: string;
         let field: string;
 
-        if (quotes[i + j].date) title = quotes[i + j].date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'});
+        if (quotes[i + j].date) title = `<t:${Math.round(quotes[i + j].date.valueOf() / 1000)}:f>`;
         else title = 'Before Sep 2021';
 
         let quoteText = quotes[i + j].quote;
@@ -85,10 +85,8 @@ module.exports = class GetAllQuotesCommand extends Command {
 
         embed.addField(title, field);
       }
-
       paginatedMessage.addPageEmbed(embed);
     }
-
     return paginatedMessage.run(response, message.author);
   };
 };

@@ -130,10 +130,8 @@ You can specify the (optional) time in most common time formats.`,
     const embed = new BediEmbed()
         .setTitle('Remove Due Date Reply');
 
-    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
-        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full'})}`)}`);
-    else embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
-        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'})}`)}`);
+    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} due <t:${Math.round(date.valueOf() / 1000)}:D>`);
+    else embed.setDescription(`${surroundStringWithBackTick(title.value)} due <t:${Math.round(date.valueOf() / 1000)}:F>`);
     const reply = await message.reply({
       embeds: [embed],
       components: [typeSelect, categorySelect, courseSelect, buttons],
@@ -225,6 +223,8 @@ You can specify the (optional) time in most common time formats.`,
       if (jobs.length != 0) {
         await jobs[0].run();
       }
+
+      embed.setDescription(embed.description += ' has been removed');
 
       await reply.edit({
         embeds: [embed],

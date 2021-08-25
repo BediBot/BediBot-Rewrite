@@ -100,7 +100,7 @@ Possible units for duration are: seconds, minutes, hours, days, weeks, months (3
     const embed = new BediEmbed()
         .setTitle('Lockdown Reply')
         .setDescription(`Channel has been locked for ${role.value.toString()}
-        Unlock scheduled for ${surroundStringWithBackTick(`${nextRun?.toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
+        Unlock scheduled <t:${Math.round(nextRun!.valueOf() / 1000)}:R>`);
     return message.reply({embeds: [embed]});
   }
 };
