@@ -4,7 +4,6 @@ import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getRandomQuote, getRandomQuoteFromAuthor} from '../../database/models/QuoteModel';
-import logger from '../../utils/loggerUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
@@ -56,11 +55,10 @@ module.exports = class GetRandomQuoteCommand extends Command {
 
     if (quoteDoc.date) {
       if (typeof quoteAuthor === 'string') {
-        logger.info('this happens');
         embed.setDescription(
-            `Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:D>`);
+            `Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
       } else {
-        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:D>`);
+        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
       }
     } else {
       if (typeof quoteAuthor === 'string') {
