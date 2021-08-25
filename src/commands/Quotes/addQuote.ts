@@ -1,10 +1,11 @@
 import {Args, PieceContext, Result, UserError} from '@sapphire/framework';
-import {Interaction, Message, MessageActionRow, MessageButton, Snowflake, User} from 'discord.js';
+import {Message, MessageActionRow, MessageButton, Snowflake, User} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {addQuote} from '../../database/models/QuoteModel';
+import moment from 'moment-timezone/moment-timezone-utils';
 
 const {Command} = require('@sapphire/framework');
 
@@ -33,23 +34,22 @@ module.exports = class AddQuoteCommand extends Command {
     if (message.reference) {
       //This implies that this is a reply
       quote = (await message.channel.messages.fetch(message.reference.messageId as Snowflake)).content;
-      if(quote.length === 0) 
-      {
+      if (quote.length === 0) {
         const embed = new BediEmbed()
-        .setColor(colors.ERROR)
-        .setTitle('Add Quote Reply')
-        .setDescription(`Please ensure that the message you're replying to contains text content (i.e. No embeds)`);
-       return message.reply({embeds: [embed]});
+            .setColor(colors.ERROR)
+            .setTitle('Add Quote Reply')
+            .setDescription(`Please ensure that the message you're replying to contains text content (i.e. No embeds)`);
+        return message.reply({embeds: [embed]});
       }
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
-      if (!quoteAuthor.success){
+      if (!quoteAuthor.success) {
         const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Add Quote Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-              settingsData.prefix + 'addquote <author>')}`);
+            .setColor(colors.ERROR)
+            .setTitle('Add Quote Reply')
+            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+                settingsData.prefix + 'addquote <author>')}`);
         return message.reply({embeds: [embed]});
       }
     } else {
@@ -57,13 +57,12 @@ module.exports = class AddQuoteCommand extends Command {
       quoteAuthor = await args.pickResult('user');
       if (!quoteAuthor.success) quoteAuthor = await args.pickResult('string');
 
-      if (!quote.success || !quoteAuthor.success)
-      {
+      if (!quote.success || !quoteAuthor.success) {
         const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Add Quote Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-              settingsData.prefix + 'addquote <quote> <author>')}`);
+            .setColor(colors.ERROR)
+            .setTitle('Add Quote Reply')
+            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+                settingsData.prefix + 'addquote <quote> <author>')}`);
         return message.reply({embeds: [embed]});
       }
       quote = quote.value;
@@ -79,20 +78,16 @@ module.exports = class AddQuoteCommand extends Command {
     const embed = new BediEmbed()
         .setTitle(`${TITLE_BEFORE_NUM_APPROVALS}0/${settingsData.quoteApprovalsRequired}`);
 
-    const date = new Date(Date.now());
+    const date = moment().toDate();
+
+    if (!quote.includes('<')) quote = surroundStringWithBackTick(quote);
 
     if (typeof quoteAuthor.value === 'string') {
-      embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
-        Author: ${surroundStringWithBackTick(quoteAuthor.value as string)}
-        Date: ${surroundStringWithBackTick(date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}
-        Submitted By: ${author}
-        Approved By:`);
+      embed.setDescription(`Quote: ${quote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+          date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By:`);
     } else {
-      embed.setDescription(`Quote: ${surroundStringWithBackTick(quote)}
-        Author (Mention): ${quoteAuthor.value}
-        Date: ${surroundStringWithBackTick(date.toLocaleDateString('en-US', {timeZone: settingsData.timezone, dateStyle: 'long'}))}
-        Submitted By: ${author}
-        Approved By:`);
+      embed.setDescription(`Quote: ${quote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
+          date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By:`);
     }
 
     const row = new MessageActionRow()
@@ -107,16 +102,17 @@ module.exports = class AddQuoteCommand extends Command {
       embeds: [embed],
       components: [row],
     });
-  }
 
-  // This function is called when the command is added to the command store. It is a useful place to add the listener for the button interactions.
-  async onLoad() {
-    super.onLoad();
+    let numApprovals = 0;
+    let approvedByString = '';
 
-    this.container.client.on('interactionCreate', async (interaction: Interaction) => {
+    const collector = response.createMessageComponentCollector({componentType: 'BUTTON', time: 1800000});
+    collector.on('collect', async interaction => {
       if (!interaction.isButton() || interaction.customId != 'QuoteApprove') return;
 
       await interaction.deferUpdate();
+
+      collector.resetTimer(); // If someone interacts, reset the timer to give more time for approvals to come in
 
       const message = interaction.message;
       if (!(message instanceof Message)) return;
@@ -125,57 +121,56 @@ module.exports = class AddQuoteCommand extends Command {
 
       if (description?.includes(interaction.user.toString())) return;
 
-      const title = message.embeds[0].title;
-
-      let numApprovals = parseInt(title?.substring(TITLE_BEFORE_NUM_APPROVALS.length, title.indexOf('/')) as string, 10);
       numApprovals++;
 
-      description += ` ${interaction.user}`;
+      approvedByString += ` ${interaction.user}`;
 
       const settingsData = await getSettings(interaction.guildId as string);
 
       if (numApprovals < settingsData.quoteApprovalsRequired) {
         const embed = new BediEmbed()
-            .setTitle(`Add Quote Reply - Approvals: ${numApprovals}/${settingsData.quoteApprovalsRequired}`)
-            .setDescription(description as string);
+            .setTitle(`Add Quote Reply - Approvals: ${numApprovals}/${settingsData.quoteApprovalsRequired}`);
+
+        if (typeof quoteAuthor.value === 'string') {
+          embed.setDescription(`Quote: ${quote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+              date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
+        } else {
+          embed.setDescription(`Quote: ${quote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
+              date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
+        }
 
         await message.edit({embeds: [embed]});
       } else {
         const embed = new BediEmbed()
-            .setTitle('Add Quote Reply - Approved')
-            .setDescription(description as string);
+            .setTitle('Add Quote Reply - Approved');
 
-        const quote = description?.substring('Quote: `'.length, description?.indexOf('`', 'Quote: `'.length + 1));
-
-        let author: string;
-
-        if (description?.includes('Author (Mention)')) {
-          author = description?.substring(description?.indexOf('<'), description?.indexOf('>') + 1) as string;
+        if (typeof quoteAuthor.value === 'string') {
+          embed.setDescription(`Quote: ${quote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+              date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         } else {
-          const authorIndex = (description?.indexOf('Author: `') as number) + 'Author: `'.length;
-          author = description?.substring(authorIndex, description?.indexOf('`', authorIndex + 1)) as string;
+          embed.setDescription(`Quote: ${quote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
+              date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         }
 
-        const dateIndex = (description?.indexOf('Date: `') as number) + 'Date: `'.length;
-        const date = new Date(Date.parse(description?.substring(dateIndex, description?.indexOf('`', dateIndex + 1)) as string));
-
-        await addQuote(interaction.guildId as string, quote as string, author, date);
+        await addQuote(interaction.guildId as string, quote as string, quoteAuthor.value!.toString(), date);
 
         await message.edit({
+          embeds: [embed],
+          components: [],
+        });
+        collector.stop();
+      }
+    });
+    collector.on('end', async interaction => {
+      if (numApprovals < settingsData.quoteApprovalsRequired) {
+        const embed = response.embeds[0];
+        embed.setTitle('Add Quote Reply - Timed Out');
+
+        await response.edit({
           embeds: [embed],
           components: [],
         });
       }
     });
   }
-};
-
-/**
- * Replies with the invalid syntax message - This function is purely to avoid repeated code
- * @param message
- * @param settingsData
- * @returns {Promise<Message>}
- */
-const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
-
 };
