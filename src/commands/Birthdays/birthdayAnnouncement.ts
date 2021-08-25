@@ -42,7 +42,7 @@ If you specify a role, people will receive the role for the duration of their bi
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Birthday Announcement Reply')
-          .setDescription('That is not a valid time.');
+          .setDescription('That is not a valid time. Remember that a time like "12 am" must be surrounded in quotes');
       return message.reply({embeds: [embed]});
     }
 
@@ -109,8 +109,7 @@ If you specify a role, people will receive the role for the duration of their bi
 
     const embed = new BediEmbed()
         .setTitle('Birthday Announcement Reply')
-        .setDescription(`Birthday Announcements have been scheduled for ${surroundStringWithBackTick(
-            `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}
+        .setDescription(`Birthday Announcements have been scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>
             
             Do you want to auto delete each announcement after 24 hours?`);
     const reply = await message.reply({
@@ -142,8 +141,7 @@ If you specify a role, people will receive the role for the duration of their bi
 
       const embed = new BediEmbed()
           .setTitle('Birthday Announcement Reply')
-          .setDescription(`Birthday Announcements have been scheduled for ${surroundStringWithBackTick(
-              `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
+          .setDescription(`Birthday Announcements have been scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>`);
 
       await reply.edit({
         embeds: [embed],

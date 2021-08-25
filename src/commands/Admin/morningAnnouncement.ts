@@ -79,8 +79,7 @@ If you make a mistake, simply run the command again, only one morning announceme
 
     const embed = new BediEmbed()
         .setTitle('Morning Announcement Reply')
-        .setDescription(`Morning Announcements will be scheduled for ${surroundStringWithBackTick(
-            `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}
+        .setDescription(`Morning Announcements will be scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>
             
             Do you want to auto delete each announcement after 24 hours?`);
     const reply = await message.reply({
@@ -112,8 +111,7 @@ If you make a mistake, simply run the command again, only one morning announceme
 
       const embed = new BediEmbed()
           .setTitle('Morning Announcement Reply')
-          .setDescription(`Morning Announcements have been scheduled for ${surroundStringWithBackTick(
-              `${nextRun.toDate().toLocaleTimeString('en-US', {timeZone: settingsData.timezone})}`)}`);
+          .setDescription(`Morning Announcements have been scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>`);
 
       await reply.edit({
         embeds: [embed],

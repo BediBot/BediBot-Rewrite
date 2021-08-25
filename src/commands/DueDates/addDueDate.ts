@@ -131,10 +131,8 @@ Make sure to run the displayDueDates command somewhere!`,
     const embed = new BediEmbed()
         .setTitle('Add Due Date Reply');
 
-    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
-        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full'})}`)}`);
-    else embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due ${surroundStringWithBackTick(
-        `${date.toLocaleString('en-US', {timeZone: settingsData.timezone, dateStyle: 'full', timeStyle: 'short'})}`)}`);
+    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:D>`);
+    else embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:F>`);
     const reply = await message.reply({
       embeds: [embed],
       components: [typeSelect, categorySelect, courseSelect, buttons],
