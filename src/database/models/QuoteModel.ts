@@ -40,7 +40,7 @@ export const removeQuote = async (guildId: string, quote: string, name: string) 
  * @returns {Promise<Query<(QuoteI & Document<any, any, QuoteI>) | null, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
  */
 export const getRandomQuoteInGuild = async (guildId: string) => {
-  const random = Math.floor(Math.random() * (await quoteModel.countDocuments()));
+  const random = Math.floor(Math.random() * (await quoteModel.find({guildId: guildId}).countDocuments()));
 
   return quoteModel.findOne({guildId: guildId}).skip(random);
 };
