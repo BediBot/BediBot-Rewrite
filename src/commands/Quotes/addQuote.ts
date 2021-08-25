@@ -68,6 +68,14 @@ module.exports = class AddQuoteCommand extends Command {
       quote = quote.value;
     }
 
+    if (quote.length === 0) {
+      const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Add Quote Reply')
+          .setDescription('You cannot submit an empty quote.');
+      return message.reply({embeds: [embed]});
+    }
+
     if (quote.length > QUOTE_MAX_LENGTH) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
