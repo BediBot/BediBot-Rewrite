@@ -14,7 +14,7 @@ This is a rewrite of the BediBot Discord Bot written in TypeScript using the Sap
 - Update environment variables in `.env`
 
 ## Architecture 
-![ArchitectureDoc](docs/bedibotarchitecture.png)
+![ArchitectureDoc](docs\bedibotarchitecture.png)
 
 The bot's architecture revolves around using Sapphire's discord bot framework to provide structure for command handling. This framework is built on top of discord.js. 
 
