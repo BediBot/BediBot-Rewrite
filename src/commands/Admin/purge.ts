@@ -3,7 +3,7 @@ import {Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {purge_messages, surroundStringWithBackTick} from '../../utils/discordUtil';
+import {purgeMessages, surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const MAX_MSGS_THAT_CAN_BE_DELETED = 100;
 
@@ -90,17 +90,23 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
     {
     */
     //Perform the deletion
-    const successful = await purge_messages(message, (numMessagesToDelete.value)); //Delete purge command as well
+    const numMessagesActuallyDeleted = await purgeMessages(message, numMessagesToDelete.value);
 
     //Cleanup messages that don't need to be there anymore
     await message.delete();
     await loading_message.delete();
 
-    if (!successful) {
+    if (numMessagesActuallyDeleted === false) {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Purge Reply')
           .setDescription('Fatal error, please contact a BediBot Dev');
+      return message.channel.send({embeds: [embed]});
+    } else if (numMessagesActuallyDeleted === 0) {
+      const embed = new BediEmbed()
+          .setColor(colors.ERROR)
+          .setTitle('Purge Reply')
+          .setDescription('No messages found - note that pinned messages or messages older than 14 days cannot be purged');
       return message.channel.send({embeds: [embed]});
     }
 
@@ -109,7 +115,7 @@ The number represents the number of messages to purge. Maximum: ${MAX_MSGS_THAT_
         .setTitle('Purge Reply')
         .setDescription(
             `Successfully purged ${surroundStringWithBackTick(
-                numMessagesToDelete.value.toString())} messages in ${message.channel.toString()} from ${surroundStringWithBackTick(
+                numMessagesActuallyDeleted.toString())} messages in ${message.channel.toString()} from ${surroundStringWithBackTick(
                 message.guild?.name!)}`);
     return message.author.send({embeds: [embed]});
     //}

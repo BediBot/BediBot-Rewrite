@@ -3,6 +3,7 @@ import logger from './loggerUtil';
 import {getSettings} from '../database/models/SettingsModel';
 import {DEFAULT_PREFIX} from '../config';
 import {container, SapphireClient} from '@sapphire/framework';
+import moment from 'moment-timezone/moment-timezone-utils';
 
 /**
  * Adds role to the author of a given message
@@ -66,16 +67,17 @@ export const fetchPrefix = async (message: Message) => {
 /**
  * Purge messages in a specific channel
  * @param message Discord JS message object
- * @param number_of_msgs Number of messages to fetch and delete
+ * @param numMessages Number of messages to fetch and delete
  * @note This command will purposely ignore pinned messages
  * @returns whether the message was actually deleted or not
  */
-export const purge_messages = async (message: Message, number_of_msgs: number) => {
+export const purgeMessages = async (message: Message, numMessages: number) => {
   if (message.channel.type == 'GUILD_TEXT') {
-    const fetchedMessages = await message.channel.messages.fetch({limit: number_of_msgs, before: message.id});
-    const messagesToDelete = await fetchedMessages.filter((m: Message) => !m.pinned);
+    const fetchedMessages = await message.channel.messages.fetch({limit: numMessages, before: message.id});
+    const messagesToDelete = await fetchedMessages.filter(
+        (m: Message) => !m.pinned || m.createdTimestamp < moment().subtract(14, 'd').toDate().valueOf());
     await message.channel.bulkDelete(messagesToDelete);
-    return true;
+    return messagesToDelete.size;
   }
   return false;
 };
@@ -83,19 +85,20 @@ export const purge_messages = async (message: Message, number_of_msgs: number) =
 /**
  * Purges messages from specific user with a specified search depth
  * @param message
- * @param number_of_msgs_to_search
+ * @param numMessagesToSearch
  * @param userId user ID as a string to filter out messages for
  * @returns number of messages deleted
  */
-export const purge_messages_from_specific_user = async (message: Message, number_of_msgs_to_search: number, userId: string) => {
-  let number_of_messages_deleted = 0;
+export const purgeMessagesFromUser = async (message: Message, numMessagesToSearch: number, userId: string) => {
+  let numMessagesDeleted = 0;
   if (message.channel.type == 'GUILD_TEXT') {
-    const fetched_messages = await message.channel.messages.fetch({limit: number_of_msgs_to_search});
-    const messages_to_delete = fetched_messages.filter((m) => m.author.id == userId);
-    await message.channel.bulkDelete(messages_to_delete);
-    number_of_messages_deleted = messages_to_delete.size;
+    const fetched_messages = await message.channel.messages.fetch({limit: numMessagesToSearch});
+    const messagesToDelete = fetched_messages.filter(
+        (m: Message) => m.author.id == userId || m.createdTimestamp < moment().subtract(14, 'd').toDate().valueOf());
+    await message.channel.bulkDelete(messagesToDelete);
+    numMessagesDeleted = messagesToDelete.size;
   }
-  return number_of_messages_deleted;
+  return numMessagesDeleted;
 };
 
 /**

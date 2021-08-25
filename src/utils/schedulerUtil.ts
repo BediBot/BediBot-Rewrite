@@ -174,6 +174,20 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
         }
       }
 
+      if (autoDelete) {
+        const messageId = job.attrs.data?.messageId;
+        if (messageId) {
+          try {
+            const messageToDelete = await channel.messages.fetch(messageId);
+            await messageToDelete.delete();
+          } catch {
+            logger.debug('Birthday Announcement Job: Message was manually deleted before bot could get to it.');
+          }
+          job.attrs.data!.messageId = null;
+          await job.save();
+        }
+      }
+
       if (birthdays.length === 0) return;
 
       let mentions = '';
@@ -190,20 +204,9 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
       const newMessage = await channel.send({embeds: [embed]});
 
       if (autoDelete) {
-        const messageId = job.attrs.data?.messageId;
-        if (messageId) {
-          try {
-            const messageToDelete = await channel.messages.fetch(messageId);
-            await messageToDelete.delete();
-          } catch {
-            logger.debug('Birthday Announcement Job: Message was manually deleted before bot could get to it.');
-          }
-
-        }
         job.attrs.data!.messageId = newMessage.id;
         await job.save();
       }
-
     } else {
       await job.fail('Channel not found. This means that the channel has been deleted.');
     }
