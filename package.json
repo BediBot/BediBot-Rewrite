@@ -26,7 +26,8 @@
     "jest": "^27.0.6",
     "jest-junit": "^12.2.0",
     "mongodb": "^3.6.11",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "clang-format" : "^1.5.0"
   },
   "dependencies": {
     "@sapphire/discord.js-utilities": "^3.0.0-next.a35c1cca.0",
