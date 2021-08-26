@@ -2,36 +2,35 @@ import {model, Schema} from 'mongoose';
 import {reqDate, reqString} from '../../utils/databaseUtil';
 
 interface QuoteI {
-  guildId: string,
-  quote: string,
-  name: string,
-  date: Date,
+    guildId: string, quote: string, name: string, date: Date,
 }
 
-export const Quote = new Schema({
-  guildId: reqString,
-  quote: reqString,
-  name: reqString,
-  date: reqDate,
-}, {versionKey: false});
+export const Quote = new Schema(
+    {
+        guildId: reqString,
+        quote: reqString,
+        name: reqString,
+        date: reqDate,
+    },
+    {versionKey: false});
 
 const quoteModel = model<QuoteI>('Quote', Quote, 'Quotes');
 
 export const addQuote = async (guildId: string, quote: string, name: string, date: Date) => {
-  await quoteModel.create({
-    guildId: guildId,
-    quote: quote,
-    name: name,
-    date: date,
-  });
+    await quoteModel.create({
+        guildId: guildId,
+        quote: quote,
+        name: name,
+        date: date,
+    });
 };
 
 export const removeQuote = async (guildId: string, quote: string, name: string) => {
-  return quoteModel.findOneAndDelete({
-    guildId: guildId,
-    quote: quote,
-    name: name,
-  });
+    return quoteModel.findOneAndDelete({
+        guildId: guildId,
+        quote: quote,
+        name: name,
+    });
 };
 
 /**
@@ -40,9 +39,9 @@ export const removeQuote = async (guildId: string, quote: string, name: string) 
  * @returns {Promise<Query<(QuoteI & Document<any, any, QuoteI>) | null, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
  */
 export const getRandomQuoteInGuild = async (guildId: string) => {
-  const random = Math.floor(Math.random() * (await quoteModel.find({guildId: guildId}).countDocuments()));
+    const random = Math.floor(Math.random() * (await quoteModel.find({guildId: guildId}).countDocuments()));
 
-  return quoteModel.findOne({guildId: guildId}).skip(random);
+    return quoteModel.findOne({guildId: guildId}).skip(random);
 };
 
 /**
@@ -52,9 +51,9 @@ export const getRandomQuoteInGuild = async (guildId: string) => {
  * @returns {Promise<Query<(QuoteI & Document<any, any, QuoteI>) | null, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
  */
 export const getRandomQuoteFromAuthor = async (guildId: string, name: string) => {
-  const random = Math.floor(Math.random() * (await quoteModel.find({name: name}).countDocuments()));
+    const random = Math.floor(Math.random() * (await quoteModel.find({name: name}).countDocuments()));
 
-  return quoteModel.findOne({name: name}).skip(random);
+    return quoteModel.findOne({name: name}).skip(random);
 };
 
 /**
@@ -64,12 +63,12 @@ export const getRandomQuoteFromAuthor = async (guildId: string, name: string) =>
  * @returns {Promise<Query<Array<EnforceDocument<QuoteI, {}>>, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
  */
 export const getQuotesFromAuthor = async (guildId: string, name: string) => {
-  return quoteModel.find({
-    guildId: guildId,
-    name: {
-      $regex: new RegExp(`^${name}$`, 'i'),
-    },
-  });
+    return quoteModel.find({
+        guildId: guildId,
+        name: {
+            $regex: new RegExp(`^${name}$`, 'i'),
+        },
+    });
 };
 
 /**
@@ -78,9 +77,9 @@ export const getQuotesFromAuthor = async (guildId: string, name: string) => {
  * @returns {Promise<Query<Array<EnforceDocument<QuoteI, {}>>, QuoteI & Document<any, any, QuoteI>, {}, QuoteI>>}
  */
 export const getQuotesInGuild = async (guildId: string) => {
-  return quoteModel.find({
-    guildId: guildId,
-  });
+    return quoteModel.find({
+        guildId: guildId,
+    });
 };
 
 export default quoteModel;

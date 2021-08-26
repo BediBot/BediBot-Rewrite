@@ -1,22 +1,23 @@
 import {model, Schema} from 'mongoose';
-import {hashString} from '../../utils/hashUtil';
+
 import {reqString} from '../../utils/databaseUtil';
+import {hashString} from '../../utils/hashUtil';
 
 interface PendingVerificationUserI {
-  userId: string,
-  guildId: string,
-  emailHash: string,
-  uniqueKey: string
+    userId: string, guildId: string, emailHash: string, uniqueKey: string
 }
 
-export const PendingVerificationUser = new Schema({
-  userId: reqString,
-  guildId: reqString,
-  emailHash: reqString,
-  uniqueKey: reqString,
-}, {versionKey: false});
+export const PendingVerificationUser = new Schema(
+    {
+        userId: reqString,
+        guildId: reqString,
+        emailHash: reqString,
+        uniqueKey: reqString,
+    },
+    {versionKey: false});
 
-const pendingVerificationUserModel = model<PendingVerificationUserI>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
+const pendingVerificationUserModel =
+    model<PendingVerificationUserI>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
 
 /**
  * Checks if a given email address is already linked to a pending verification user
@@ -24,14 +25,14 @@ const pendingVerificationUserModel = model<PendingVerificationUserI>('PendingVer
  * @returns {Promise<boolean>}
  */
 export const emailAddressLinkedToPendingVerificationUser = async (emailAddress: string) => {
-  const docs = await pendingVerificationUserModel.find();
+    const docs = await pendingVerificationUserModel.find();
 
-  for (const doc of docs) {
-    const emailHash = await hashString(emailAddress.substring(0, emailAddress.indexOf('@')));
+    for (const doc of docs) {
+        const emailHash = await hashString(emailAddress.substring(0, emailAddress.indexOf('@')));
 
-    if (emailHash === doc.emailHash) return true;
-  }
-  return false;
+        if (emailHash === doc.emailHash) return true;
+    }
+    return false;
 };
 
 /**
@@ -43,12 +44,12 @@ export const emailAddressLinkedToPendingVerificationUser = async (emailAddress: 
  * @returns {Promise<void>}
  */
 export const addPendingVerificationUser = async (userId: string, guildId: string, emailHash: string, uniqueKey: string) => {
-  await pendingVerificationUserModel.create({
-    userId: userId,
-    guildId: guildId,
-    emailHash: emailHash,
-    uniqueKey: uniqueKey,
-  });
+    await pendingVerificationUserModel.create({
+        userId: userId,
+        guildId: guildId,
+        emailHash: emailHash,
+        uniqueKey: uniqueKey,
+    });
 };
 
 /**
@@ -58,10 +59,10 @@ export const addPendingVerificationUser = async (userId: string, guildId: string
  * @returns {Promise<void>}
  */
 export const removePendingVerificationUser = async (userId: string, guildId: string) => {
-  await pendingVerificationUserModel.deleteOne({
-    userId: userId,
-    guildId: guildId,
-  });
+    await pendingVerificationUserModel.deleteOne({
+        userId: userId,
+        guildId: guildId,
+    });
 };
 
 /**
@@ -71,10 +72,10 @@ export const removePendingVerificationUser = async (userId: string, guildId: str
  * @returns {Promise<boolean>}
  */
 export const userPendingVerification = async (userId: string, guildId: string) => {
-  return pendingVerificationUserModel.exists({
-    userId: userId,
-    guildId: guildId,
-  });
+    return pendingVerificationUserModel.exists({
+        userId: userId,
+        guildId: guildId,
+    });
 };
 
 /**
@@ -85,25 +86,26 @@ export const userPendingVerification = async (userId: string, guildId: string) =
  * @returns {Promise<boolean>}
  */
 export const validUniqueKey = async (userId: string, guildId: string, uniqueKey: string) => {
-  return pendingVerificationUserModel.exists({
-    userId: userId,
-    guildId: guildId,
-    uniqueKey: uniqueKey,
-  });
+    return pendingVerificationUserModel.exists({
+        userId: userId,
+        guildId: guildId,
+        uniqueKey: uniqueKey,
+    });
 };
 
 /**
- * Gets the hashed email of a pending verification user. Do not call this function unless you are certain the user exists in the DB.
+ * Gets the hashed email of a pending verification user. Do not call this function unless you are certain the user exists in the
+ * DB.
  * @param userId
  * @param guildId
  * @returns {Promise<any>}
  */
 export const emailHashFromPendingUser = async (userId: string, guildId: string) => {
-  const doc = await pendingVerificationUserModel.findOne({
-    userId: userId,
-    guildId: guildId,
-  });
-  return doc!.emailHash;
+    const doc = await pendingVerificationUserModel.findOne({
+        userId: userId,
+        guildId: guildId,
+    });
+    return doc!.emailHash;
 };
 
 export default pendingVerificationUserModel;

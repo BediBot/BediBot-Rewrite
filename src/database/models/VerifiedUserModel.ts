@@ -1,18 +1,20 @@
 import {model, Schema} from 'mongoose';
-import {getSettings} from './SettingsModel';
+
 import {hashString} from '../../utils/hashUtil';
 
+import {getSettings} from './SettingsModel';
+
 interface VerifiedUserI {
-  userId: string,
-  guildId: string,
-  emailHash: string,
+    userId: string, guildId: string, emailHash: string,
 }
 
-export const VerifiedUser = new Schema({
-  userId: String,
-  guildId: String,
-  emailHash: String,
-}, {versionKey: false});
+export const VerifiedUser = new Schema(
+    {
+        userId: String,
+        guildId: String,
+        emailHash: String,
+    },
+    {versionKey: false});
 
 const verifiedUserModel = model<VerifiedUserI>('VerifiedUser', VerifiedUser, 'VerifiedUsers');
 
@@ -23,10 +25,10 @@ const verifiedUserModel = model<VerifiedUserI>('VerifiedUser', VerifiedUser, 'Ve
  * @returns {Promise<boolean>}
  */
 export const userVerifiedInGuild = async (userId: string, guildId: string) => {
-  return verifiedUserModel.exists({
-    userId: userId,
-    guildId: guildId,
-  });
+    return verifiedUserModel.exists({
+        userId: userId,
+        guildId: guildId,
+    });
 };
 
 /**
@@ -36,16 +38,16 @@ export const userVerifiedInGuild = async (userId: string, guildId: string) => {
  * @returns {Promise<any>}
  */
 export const userVerifiedAnywhereEmailHash = async (userId: string, guildId: string) => {
-  const docs = await verifiedUserModel.find({userId: userId});
-  for (const doc of docs) {
-    const origSettingsData = await getSettings(guildId);
-    const otherSettingsData = await getSettings(guildId);
+    const docs = await verifiedUserModel.find({userId: userId});
+    for (const doc of docs) {
+        const origSettingsData = await getSettings(guildId);
+        const otherSettingsData = await getSettings(guildId);
 
-    if (origSettingsData.emailDomain === otherSettingsData.emailDomain) {
-      return doc.emailHash;
+        if (origSettingsData.emailDomain === otherSettingsData.emailDomain) {
+            return doc.emailHash;
+        }
     }
-  }
-  return null;
+    return null;
 };
 
 /**
@@ -56,11 +58,11 @@ export const userVerifiedAnywhereEmailHash = async (userId: string, guildId: str
  * @returns {Promise<void>}
  */
 export const addVerifiedUser = async (userId: string, guildId: string, emailHash: string) => {
-  await verifiedUserModel.create({
-    userId: userId,
-    guildId: guildId,
-    emailHash: emailHash,
-  });
+    await verifiedUserModel.create({
+        userId: userId,
+        guildId: guildId,
+        emailHash: emailHash,
+    });
 };
 
 /**
@@ -70,10 +72,10 @@ export const addVerifiedUser = async (userId: string, guildId: string, emailHash
  * @returns {Promise<void>}
  */
 export const removeVerifiedUser = async (userId: string, guildId: string) => {
-  await verifiedUserModel.deleteOne({
-    userId: userId,
-    guildId: guildId,
-  });
+    await verifiedUserModel.deleteOne({
+        userId: userId,
+        guildId: guildId,
+    });
 };
 
 /**
@@ -83,14 +85,14 @@ export const removeVerifiedUser = async (userId: string, guildId: string) => {
  * @returns {Promise<boolean>}
  */
 export const emailAddressLinkedToUser = async (emailAddress: string, guildId: string) => {
-  const docs = await verifiedUserModel.find({guildId: guildId});
+    const docs = await verifiedUserModel.find({guildId: guildId});
 
-  for (const doc of docs) {
-    const emailHash = await hashString(emailAddress.substring(0, emailAddress.indexOf('@')));
+    for (const doc of docs) {
+        const emailHash = await hashString(emailAddress.substring(0, emailAddress.indexOf('@')));
 
-    if (emailHash === doc.emailHash) return true;
-  }
-  return false;
+        if (emailHash === doc.emailHash) return true;
+    }
+    return false;
 };
 
 export default verifiedUserModel;

@@ -1,5 +1,6 @@
-import {capFirstLetterEveryWord} from './stringsUtil';
 import {Formatters} from 'discord.js';
+
+import {capFirstLetterEveryWord} from './stringsUtil';
 
 // Array of settings modules
 const modules = ['verification', 'quotes', 'pins', 'due dates'];
@@ -10,11 +11,11 @@ const modules = ['verification', 'quotes', 'pins', 'due dates'];
  * @return {string} A pretty string representation of all settings modules.
  */
 export const listModulesString = () => {
-  const copy = [...modules];
+    const copy = [...modules];
 
-  for (let i = 0; i < copy.length; i++) {
-    copy[i] = Formatters.inlineCode(capFirstLetterEveryWord(copy[i]));
-  }
+    for (let i = 0; i < copy.length; i++) {
+        copy[i] = Formatters.inlineCode(capFirstLetterEveryWord(copy[i]));
+    }
 
-  return copy.join(' ');
+    return copy.join(' ');
 };
