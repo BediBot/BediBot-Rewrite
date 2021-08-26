@@ -265,9 +265,7 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
 	    new BediEmbed().setTitle(`Due Dates for Category: ${category}`);
 
 	for (const course of settingsData.courses) {
-	  if (embed.fields.length === MAX_NUM_EMBED_FIELDS) {
-	    break;
-	  }
+	  if (embed.fields.length === MAX_NUM_EMBED_FIELDS) { break; }
 
 	  const dueDates = await getDueDatesInGuildForCategoryAndCourse(
 	      guildId, category, course);

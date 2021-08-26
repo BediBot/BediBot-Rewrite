@@ -49,9 +49,7 @@ export const addRoleToUser =
 
   try {
     await member!.roles.add(role as Role);
-  } catch (error) {
-    logger.error(error);
-  }
+  } catch (error) { logger.error(error); }
 };
 
 /**
@@ -154,9 +152,7 @@ export const getUserFromMention = (mention: string) => {
   if (mention.startsWith('<@') && mention.endsWith('>')) {
     mention = mention.slice(2, -1);
 
-    if (mention.startsWith('!')) {
-      mention = mention.slice(1);
-    }
+    if (mention.startsWith('!')) { mention = mention.slice(1); }
 
     return container.client.users.fetch(mention);
   }
