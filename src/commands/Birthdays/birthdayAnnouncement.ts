@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageButton} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, BIRTH_ANNOUNCE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 
@@ -16,10 +15,10 @@ module.exports = class BirthdayAnnouncementCommand extends Command {
       aliases: ['ba'],
       description: 'Schedules Birthday Announcements in the Current Channel',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'birthdayAnnouncement <time> <role:optional>`'}
-You can specify the announcement time in most common time formats.
-If you make a mistake, simply run the command again, only one birthday announcement can be scheduled per day.
-If you specify a role, people will receive the role for the duration of their birthday.`,
+      detailedDescription: 'birthdayAnnouncement <time> <role:optional>`' +
+          '\nYou can specify the announcement time in most common time formats.' +
+          '\nIf you make a mistake, simply run the command again, only one birthday announcement can be scheduled per day.' +
+          '\nIf you specify a role, people will receive the role for the duration of their birthday.',
     });
   }
 
@@ -33,8 +32,8 @@ If you specify a role, people will receive the role for the duration of their bi
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Birthday Announcement Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'birthdayAnnouncement <time> <role:optional>')}`);
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+              settingsData.prefix + 'birthdayAnnouncement <time> <role:optional>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -109,9 +108,9 @@ If you specify a role, people will receive the role for the duration of their bi
 
     const embed = new BediEmbed()
         .setTitle('Birthday Announcement Reply')
-        .setDescription(`Birthday Announcements have been scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>
-            
-            Do you want to auto delete each announcement after 24 hours?`);
+        .setColor(colors.ACTION)
+        .setDescription(`Birthday Announcements have been scheduled for <t:${Math.round(
+            nextRun.valueOf() / 1000)}:t>\n\nDo you want to auto delete each announcement after 24 hours?`);
     const reply = await message.reply({
       embeds: [embed],
       components: [buttonRow],
@@ -141,6 +140,7 @@ If you specify a role, people will receive the role for the duration of their bi
 
       const embed = new BediEmbed()
           .setTitle('Birthday Announcement Reply')
+          .setColor(colors.SUCCESS)
           .setDescription(`Birthday Announcements have been scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>`);
 
       await reply.edit({
@@ -153,6 +153,7 @@ If you specify a role, people will receive the role for the duration of their bi
       if (buttonCollector.total === 0) {
         const embed = new BediEmbed()
             .setTitle('Birthday Announcement Reply')
+            .setColor(colors.ERROR)
             .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
 
         await reply.edit({

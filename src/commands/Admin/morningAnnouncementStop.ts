@@ -1,8 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, MORN_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
+import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -13,7 +13,7 @@ module.exports = class StopMorningAnnouncementCommand extends Command {
       aliases: ['stopma', 'sma'],
       description: 'Stops any scheduled morning announcements in this server',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'stopMorningAnnouncement`'}`,
+      detailedDescription: 'stopMorningAnnouncement`',
     });
   }
 
@@ -26,8 +26,9 @@ module.exports = class StopMorningAnnouncementCommand extends Command {
     });
 
     const embed = new BediEmbed()
+        .setColor(colors.SUCCESS)
         .setTitle('Stop Morning Announcement Reply')
-        .setDescription(`Morning Announcements have been cancelled for ${surroundStringWithBackTick(guild?.name as string)}`);
+        .setDescription(`Morning Announcements have been cancelled for ${Formatters.inlineCode(guild?.name as string)}`);
     return message.reply({embeds: [embed]});
   }
 };

@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import settingsModel, {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
@@ -14,7 +13,7 @@ module.exports = class SetPrefixCommand extends Command {
       aliases: ['sp'],
       description: 'Changes the prefix for BediBot',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'setPrefix <newPrefix>`'}`,
+      detailedDescription: 'setPrefix <newPrefix>`',
     });
   }
 
@@ -28,8 +27,9 @@ module.exports = class SetPrefixCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Set Prefix Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'setPrefix <newPrefix>')}`);
+          .setDescription(
+              `Invalid Syntax!\n\nMake sure your command is in the format ` +
+              `${Formatters.inlineCode(settingsData.prefix + 'setPrefix <newPrefix>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -37,7 +37,8 @@ module.exports = class SetPrefixCommand extends Command {
 
     const embed = new BediEmbed()
         .setTitle('Set Prefix Reply')
-        .setDescription(`The prefix has been updated to ${surroundStringWithBackTick(newValue.value)}`);
+        .setColor(colors.SUCCESS)
+        .setDescription(`The prefix has been updated to ${Formatters.inlineCode(newValue.value)}`);
     return message.reply({embeds: [embed]});
   };
 };

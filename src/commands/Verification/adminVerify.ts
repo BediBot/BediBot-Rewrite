@@ -14,7 +14,7 @@ module.exports = class AdminVerifyCommand extends Command {
       name: 'adminVerify',
       description: 'Forcibly verifies a user in the server.',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'VerificationEnabled'],
-      detailedDescription: `${'adminVerify <@User>`'}`,
+      detailedDescription: 'adminVerify <@User>`',
     });
   }
 
@@ -35,7 +35,7 @@ module.exports = class AdminVerifyCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Admin Verify Reply')
-          .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'adminverify <@User>`');
+          .setDescription('Invalid Syntax!\n\nMake sure your command is in the format `' + settingsData.prefix + 'adminVerify <@User>`');
       return message.reply({embeds: [embed]});
     }
 
@@ -43,6 +43,7 @@ module.exports = class AdminVerifyCommand extends Command {
     await addVerifiedUser(user.value.id, guildId as string, 'Admin Verified');
     const embed = new BediEmbed()
         .setTitle('Admin Verify Reply')
+        .setColor(colors.SUCCESS)
         .setDescription(`${user.value} has been verified.`);
     return message.reply({embeds: [embed]});
   }

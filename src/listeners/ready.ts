@@ -12,7 +12,7 @@ module.exports = class ReadyListener extends Listener {
   }
 
   public async run() {
-    logger.info('The bot is up and running!');
+    logger.warn('The bot is up and running!');
 
     await connectDatabase();
 

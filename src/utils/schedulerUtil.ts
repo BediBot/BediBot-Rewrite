@@ -1,10 +1,10 @@
 import logger from './loggerUtil';
 
 import Agenda, {Job} from 'agenda/dist/index';
-import {BaseGuildTextChannel} from 'discord.js';
+import {BaseGuildTextChannel, Formatters} from 'discord.js';
 import {BediEmbed} from '../lib/BediEmbed';
 import {getRandomQuoteInGuild} from '../database/models/QuoteModel';
-import {getUserFromMention, surroundStringWithBackTick} from './discordUtil';
+import {getUserFromMention} from './discordUtil';
 import {getBirthdaysToday} from '../database/models/BirthdayModel';
 import {getSettings} from '../database/models/SettingsModel';
 import {getDueDatesInGuildForCategoryAndCourse, removeOldDueDatesInGuild} from '../database/models/DueDateModel';
@@ -22,7 +22,7 @@ export const agenda = new Agenda();
 export const startAgenda = async () => {
   agenda.database(process.env.MONGO_URI as string);
   await agenda.start();
-  logger.info('Agenda Started!');
+  logger.warn('Agenda Started!');
 
   agenda.on('start', (job) => {
     logger.verbose(`Job ${job.attrs.name} started`);
@@ -106,17 +106,13 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
 
       let description: string;
       if (quote?.date) {
-        if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${quote?.name}
-        Date: <t:${Math.round(quote.date.valueOf() / 1000)}:D>`;
-        else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${surroundStringWithBackTick(quote?.name as string)}
-        Date: <t:${Math.round(quote.date.valueOf() / 1000)}:D>`;
+        if (user) description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${quote?.name}\nDate: <t:${Math.round(
+            quote.date.valueOf() / 1000)}:D>`;
+        else description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${Formatters.inlineCode(
+            quote?.name as string)}\nDate: <t:${Math.round(quote.date.valueOf() / 1000)}:D>`;
       } else {
-        if (user) description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${quote?.name}`;
-        else description = `Quote: ${surroundStringWithBackTick(quote?.quote as string)}
-        Author: ${surroundStringWithBackTick(quote?.name as string)}`;
+        if (user) description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${quote?.name}`;
+        else description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${Formatters.inlineCode(quote?.name as string)}`;
       }
 
       const embed = new BediEmbed()
@@ -275,12 +271,10 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
             else fieldName = `${emoji} ${dueDate.title}`;
 
             let fieldValue: string;
-            if (dueDate.dateOnly) fieldValue = `**Type:** ${surroundStringWithBackTick(dueDate.type)}
-            **Date:** <t:${Math.round(dueDate.dateTime.valueOf() / 1000)}:D>
-            \u200b`;
-            else fieldValue = `**Type:** ${surroundStringWithBackTick(dueDate.type)}
-            **Date:** <t:${Math.round(dueDate.dateTime.valueOf() / 1000)}:f>
-            \u200b`;
+            if (dueDate.dateOnly) fieldValue = `**Type:** ${Formatters.inlineCode(dueDate.type)}\n**Date:** <t:${Math.round(
+                dueDate.dateTime.valueOf() / 1000)}:D>\n\u200b`;
+            else fieldValue = `**Type:** ${Formatters.inlineCode(dueDate.type)}\n**Date:** <t:${Math.round(
+                dueDate.dateTime.valueOf() / 1000)}:f>\n\u200b`;
 
             if (embed.fields.length === (MAX_NUM_EMBED_FIELDS - 1)) {
               embed.addField('Maximum Limit Reached', 'Remaining Due Dates hidden');

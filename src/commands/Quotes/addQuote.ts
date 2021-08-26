@@ -1,9 +1,8 @@
 import {Args, PieceContext, Result, UserError} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton, Snowflake, User} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageButton, Snowflake, User} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {addQuote} from '../../database/models/QuoteModel';
 import moment from 'moment-timezone/moment-timezone-utils';
 
@@ -19,8 +18,8 @@ module.exports = class AddQuoteCommand extends Command {
       aliases: ['aq', 'addq', 'aquote'],
       description: 'Adds a quote from an individual of your choice.',
       preconditions: ['GuildOnly', 'QuotesEnabled'],
-      detailedDescription: `${'addQuote <quote> <author>`'}
-      This command supports both regular names as well as mention's for the author parameter.`,
+      detailedDescription: 'addQuote <quote> <author>`' +
+          '\nThis command supports both regular names and mentions for the author parameter.',
     });
   }
 
@@ -48,8 +47,8 @@ module.exports = class AddQuoteCommand extends Command {
         const embed = new BediEmbed()
             .setColor(colors.ERROR)
             .setTitle('Add Quote Reply')
-            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-                settingsData.prefix + 'addquote <author>')}`);
+            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+                settingsData.prefix + 'addQuote <author>')}`);
         return message.reply({embeds: [embed]});
       }
     } else {
@@ -61,8 +60,8 @@ module.exports = class AddQuoteCommand extends Command {
         const embed = new BediEmbed()
             .setColor(colors.ERROR)
             .setTitle('Add Quote Reply')
-            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-                settingsData.prefix + 'addquote <quote> <author>')}`);
+            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+                settingsData.prefix + 'addQuote <quote> <author>')}`);
         return message.reply({embeds: [embed]});
       }
       quote = quote.value;
@@ -84,16 +83,17 @@ module.exports = class AddQuoteCommand extends Command {
       return message.reply({embeds: [embed]});
     }
     const embed = new BediEmbed()
+        .setColor(colors.ACTION)
         .setTitle(`${TITLE_BEFORE_NUM_APPROVALS}0/${settingsData.quoteApprovalsRequired}`);
 
     const date = moment().toDate();
 
     // displayQuote will be the string that is displayed, as this will have different formatting depending on quote content
     let displayQuote = quote;
-    if (!displayQuote.includes('<')) displayQuote = surroundStringWithBackTick(quote);
+    if (!displayQuote.includes('<')) displayQuote = Formatters.inlineCode(quote);
 
     if (typeof quoteAuthor.value === 'string') {
-      embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+      embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${Formatters.inlineCode(quoteAuthor.value as string)}\nDate: <t:${Math.round(
           date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By:`);
     } else {
       embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
@@ -142,7 +142,7 @@ module.exports = class AddQuoteCommand extends Command {
             .setTitle(`Add Quote Reply - Approvals: ${numApprovals}/${settingsData.quoteApprovalsRequired}`);
 
         if (typeof quoteAuthor.value === 'string') {
-          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${Formatters.inlineCode(quoteAuthor.value as string)}\nDate: <t:${Math.round(
               date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         } else {
           embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
@@ -152,10 +152,11 @@ module.exports = class AddQuoteCommand extends Command {
         await message.edit({embeds: [embed]});
       } else {
         const embed = new BediEmbed()
+            .setColor(colors.SUCCESS)
             .setTitle('Add Quote Reply - Approved');
 
         if (typeof quoteAuthor.value === 'string') {
-          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${Formatters.inlineCode(quoteAuthor.value as string)}\nDate: <t:${Math.round(
               date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         } else {
           embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
@@ -174,7 +175,8 @@ module.exports = class AddQuoteCommand extends Command {
     collector.on('end', async interaction => {
       if (numApprovals < settingsData.quoteApprovalsRequired) {
         const embed = response.embeds[0];
-        embed.setTitle('Add Quote Reply - Timed Out');
+        embed.setTitle('Add Quote Reply - Timed Out')
+             .setColor(colors.ERROR);
 
         await response.edit({
           embeds: [embed],

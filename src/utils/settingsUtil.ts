@@ -1,4 +1,5 @@
 import {capFirstLetterEveryWord} from './stringsUtil';
+import {Formatters} from 'discord.js';
 
 // Array of settings modules
 const modules = ['verification', 'quotes', 'pins', 'due dates'];
@@ -12,7 +13,7 @@ export const listModulesString = () => {
   const copy = [...modules];
 
   for (let i = 0; i < copy.length; i++) {
-    copy[i] = '`' + capFirstLetterEveryWord(copy[i]) + '`';
+    copy[i] = Formatters.inlineCode(capFirstLetterEveryWord(copy[i]));
   }
 
   return copy.join(' ');

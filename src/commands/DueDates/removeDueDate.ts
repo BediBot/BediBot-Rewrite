@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton, MessageSelectMenu} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageButton, MessageSelectMenu} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 import {removeDueDate} from '../../database/models/DueDateModel';
@@ -18,14 +17,14 @@ module.exports = class RemoveDueDateCommand extends Command {
       aliases: ['rdd', 'removedue', 'removedate'],
       description: 'Removes a due date',
       preconditions: ['GuildOnly', 'DueDatesEnabled', 'DueDatesSetup'],
-      detailedDescription: `${'removeDueDate <title> <month> <day> <year> <time:optional>`'}
-The month can be long (January), short (Jan), or number (1).
-You can specify the (optional) time in most common time formats.`,
+      detailedDescription: 'removeDueDate <title> <month> <day> <year> <time:optional>`' +
+          '\nThe month can be long (January), short (Jan), or number (1).' +
+          '\nYou can specify the (optional) time in most common time formats.',
     });
   }
 
   async run(message: Message, args: Args) {
-    const {guild, guildId, author} = message;
+    const {guildId} = message;
     const settingsData = await getSettings(guildId as string);
 
     const title = await args.pickResult('string');
@@ -128,10 +127,11 @@ You can specify the (optional) time in most common time formats.`,
         ]);
 
     const embed = new BediEmbed()
+        .setColor(colors.ACTION)
         .setTitle('Remove Due Date Reply');
 
-    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} due <t:${Math.round(date.valueOf() / 1000)}:D>`);
-    else embed.setDescription(`${surroundStringWithBackTick(title.value)} due <t:${Math.round(date.valueOf() / 1000)}:F>`);
+    if (dateOnly) embed.setDescription(`${Formatters.inlineCode(title.value)} due <t:${Math.round(date.valueOf() / 1000)}:D>`);
+    else embed.setDescription(`${Formatters.inlineCode(title.value)} due <t:${Math.round(date.valueOf() / 1000)}:F>`);
     const reply = await message.reply({
       embeds: [embed],
       components: [typeSelect, categorySelect, courseSelect, buttons],
@@ -185,8 +185,11 @@ You can specify the (optional) time in most common time formats.`,
       }
 
       if (interaction.customId === 'dueDateCancel') {
+        embed.setColor(colors.ERROR)
+             .setDescription('Remove Due Date cancelled.');
+
         await reply.edit({
-          embeds: [embed.setDescription('Remove Due date cancelled.')],
+          embeds: [embed],
           components: [],
         });
         return interaction.deferUpdate();
@@ -195,6 +198,7 @@ You can specify the (optional) time in most common time formats.`,
       if (!type || !category || !course) {
         const embed = new BediEmbed()
             .setTitle('Remove Due Date Reply')
+            .setColor(colors.ERROR)
             .setDescription('Please select a due date, category, and course first');
 
         return interaction.reply({
@@ -206,6 +210,7 @@ You can specify the (optional) time in most common time formats.`,
       if (!(await removeDueDate(guildId as string, title.value, date, type, category, course, dateOnly))) {
         const embed = new BediEmbed()
             .setTitle('Remove Due Date Reply')
+            .setColor(colors.ERROR)
             .setDescription('Due Date not found');
 
         return interaction.reply({
@@ -224,7 +229,8 @@ You can specify the (optional) time in most common time formats.`,
         await jobs[0].run();
       }
 
-      embed.setDescription(embed.description += ' has been removed');
+      embed.setColor(colors.SUCCESS)
+           .setDescription(embed.description += ' has been removed');
 
       await reply.edit({
         embeds: [embed],
@@ -246,8 +252,8 @@ const invalidSyntaxReply = async (message: Message, settingsData: { prefix: stri
   const embed = new BediEmbed()
       .setColor(colors.ERROR)
       .setTitle('Add Due Date Reply')
-      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-          settingsData.prefix + 'addDueDate <title> <month> <day> <year> <time:optional>')}`,
+      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+          settingsData.prefix + 'removeDueDate <title> <month> <day> <year> <time:optional>')}`,
       );
   return message.channel.send({embeds: [embed]});
 };

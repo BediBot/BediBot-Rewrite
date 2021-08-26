@@ -1,8 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageButton} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {fetchPrefix, surroundStringWithBackTick} from '../../utils/discordUtil';
+import {fetchPrefix} from '../../utils/discordUtil';
 import {updateBirthday} from '../../database/models/BirthdayModel';
 import {didDateChange, isValidMonth} from '../../utils/dateUtil';
 
@@ -16,15 +16,15 @@ module.exports = class SetBirthdayCommand extends Command {
       name: 'setbirthday',
       aliases: ['sb'],
       description: 'Sets the users birthday.',
-      detailedDescription: `${'setBirthday <month> <day> <year>`'}
-The month can be long (January), short (Jan), or number (1).
-If you choose to set your birthday, anyone in a BediBot server will be able to find your birthday (month and day).
-We will never save your birth year, it is only used to validate your entry and ensure it is a real date.`,
+      detailedDescription: 'setBirthday <month> <day> <year>`' +
+          '\nThe month can be long (January), short (Jan), or number (1).' +
+          '\nIf you choose to set your birthday, anyone in a BediBot server will be able to find your birthday (month and day).' +
+          '\nWe will never save your birth year, it is only used to validate your entry and ensure it is a real date.',
     });
   }
 
   async run(message: Message, args: Args) {
-    const {guild, guildId, author} = message;
+    const {guild, author} = message;
     const prefix = (await fetchPrefix(message))[0];
 
     let month;
@@ -67,21 +67,21 @@ We will never save your birth year, it is only used to validate your entry and e
             .setStyle('DANGER'),
     );
 
-    const birthdayString = surroundStringWithBackTick(`${birthday.toLocaleString('default', {month: 'long'})} ${birthday.getDate()}`);
+    const birthdayString = Formatters.inlineCode(`${birthday.toLocaleString('default', {month: 'long'})} ${birthday.getDate()}`);
 
     if (message.guild) {
       const serverReplyEmbed = new BediEmbed()
           .setTitle('Set Birthday Reply')
+          .setColor(colors.ACTION)
           .setDescription('A confirmation request has been sent to you via DM.');
       await message.channel.send({embeds: [serverReplyEmbed]});
     }
 
     const embed = new BediEmbed()
         .setTitle('Set Birthday Reply')
-        .setDescription(`Birthday: ${birthdayString}
-        \nBirthdays saved by BediBot can be seen by **anyone** that shares a server with BediBot.
-        We will **never** save your birth year, only the month and day.
-        Do you agree to save your birthday?`);
+        .setColor(colors.ACTION)
+        .setDescription(`Birthday: ${birthdayString}\n\nBirthdays saved by BediBot can be seen by **anyone** that shares a server with BediBot.` +
+            `\nWe will **never** save your birth year, only the month and day.\nDo you agree to save your birthday?`);
     const reply = await message.author.send({
       embeds: [embed],
       components: [row],
@@ -109,9 +109,9 @@ We will never save your birth year, it is only used to validate your entry and e
     const collector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 15000});
     collector.on('collect', async interaction => {
       await interaction.deferUpdate();
+      updateEmbed.setColor(colors.SUCCESS);
       if (interaction.customId === 'birthdayAgree') {
-        updateEmbed.setDescription(`Your birthday has been saved as ${birthdayString}`)
-                   .setColor(colors.PRIMARY);
+        updateEmbed.setDescription(`Your birthday has been saved as ${birthdayString}`);
         await updateBirthday(author.id, birthday);
       } else {
         updateEmbed.setDescription('Your birthday has **NOT** been saved');
@@ -138,7 +138,7 @@ const invalidSyntaxReply = async (message: Message, prefix: string) => {
   const embed = new BediEmbed()
       .setColor(colors.ERROR)
       .setTitle('Set Birthday Reply')
-      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
           prefix + 'setbirthday <month> <day> <year>')}`,
       );
   return message.channel.send({embeds: [embed]});

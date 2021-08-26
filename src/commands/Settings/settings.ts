@@ -1,11 +1,10 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import {capFirstLetterEveryWord} from '../../utils/stringsUtil';
 import {listModulesString} from '../../utils/settingsUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -16,7 +15,7 @@ module.exports = class SettingsCommand extends Command {
       aliases: ['setting'],
       description: 'Displays the current guild settings',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'settings`'}`,
+      detailedDescription: 'settings`',
     });
   }
 
@@ -41,8 +40,8 @@ module.exports = class SettingsCommand extends Command {
     if (!module.success) {
       embed.setDescription('Run `' + settingsData.prefix + 'settings <module>' + '` to see more detailed settings' +
           '\nModules: ' + listModulesString() +
-          `\n\nRun ${surroundStringWithBackTick(settingsData.prefix + 'toggleModules')} to enable or disable any specific module` +
-          `\nRun ${surroundStringWithBackTick(settingsData.prefix + 'help')} to view commands to update settings` +
+          `\n\nRun ${Formatters.inlineCode(settingsData.prefix + 'toggleModules')} to enable or disable any specific module` +
+          `\nRun ${Formatters.inlineCode(settingsData.prefix + 'help')} to view commands to update settings` +
           '\n\nHere are the settings for `' + guild.name + '`')
            .addField('Prefix', '`' + settingsData.prefix + '`', false)
            .addField('Timezone', '`' + settingsData.timezone + '`', false);

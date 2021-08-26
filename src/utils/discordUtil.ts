@@ -102,15 +102,6 @@ export const purgeMessagesFromUser = async (message: Message, numMessagesToSearc
 };
 
 /**
- * Surrounds a string with back ticks to be used in bot messages.
- * @param string
- * @returns {string}
- */
-export const surroundStringWithBackTick = (string: string) => {
-  return '`' + string + '`';
-};
-
-/**
  * Gets the number of guilds that the client is a member in
  * @param client
  * @returns {number}

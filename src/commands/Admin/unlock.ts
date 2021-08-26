@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {GuildChannel, Message} from 'discord.js';
+import {Formatters, GuildChannel, Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, UNLOCK_JOB_NAME} from '../../utils/schedulerUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -14,7 +13,7 @@ module.exports = class UnlockCommand extends Command {
       name: 'unlock',
       description: 'Allows a role to speak in the channel',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'ManageRolesPerms'],
-      detailedDescription: `${'unlock <role>`'}`,
+      detailedDescription: 'unlock <role>`',
     });
   }
 
@@ -28,8 +27,8 @@ module.exports = class UnlockCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Unlock Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'unlock <role>')}`);
+          .setDescription(
+              `Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(settingsData.prefix + 'unlock <role>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -58,6 +57,7 @@ module.exports = class UnlockCommand extends Command {
 
     const embed = new BediEmbed()
         .setTitle('Unlock Reply')
+        .setColor(colors.SUCCESS)
         .setDescription(`Channel has been unlocked for ${role.value.toString()}`);
     return message.reply({embeds: [embed]});
   }

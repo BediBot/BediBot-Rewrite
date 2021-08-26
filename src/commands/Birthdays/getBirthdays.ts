@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {MemberMention, Message} from 'discord.js';
+import {Formatters, MemberMention, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {getBirthdaysFromMonth} from '../../database/models/BirthdayModel';
 import {PaginatedMessage} from '@sapphire/discord.js-utilities';
@@ -19,8 +18,8 @@ module.exports = class GetBirthdays extends Command {
       aliases: ['gb'],
       description: 'Gets the birthdays for a month',
       preconditions: ['GuildOnly'],
-      detailedDescription: `${'getBirthdays <month>`'}
-The month can be long (January), short (Jan), or number (1).`,
+      detailedDescription: 'getBirthdays <month>`' +
+          'The month can be long (January), short (Jan), or a number (1).',
     });
   }
 
@@ -57,7 +56,7 @@ The month can be long (January), short (Jan), or number (1).`,
     const response = await message.reply({embeds: [embed]});
 
     const monthString = birthdays[0].birthDate.toLocaleString('default', {month: 'long'});
-    const templateDescription = `Here are the birthdays for the month of ${surroundStringWithBackTick(monthString)}`;
+    const templateDescription = `Here are the birthdays for the month of ${Formatters.inlineCode(monthString)}`;
 
     const paginatedMessage = new PaginatedMessage();
 
@@ -65,7 +64,7 @@ The month can be long (January), short (Jan), or number (1).`,
       let embed = new BediEmbed()
           .setTitle('Get Birthdays Reply')
           .setDescription(templateDescription)
-          .setFooter('  For any concerns, contact a BediBot Dev');
+          .setFooter('  For any concerns, contact a BediBot Dev'); // The spaces before 'For' here are intentional
 
       for (let j = 0; j < MAX_BIRTHDAYS_PER_PAGE; j++) {
         if ((i + j) >= birthdays.length) break;
@@ -88,8 +87,8 @@ const invalidSyntaxReply = async (message: Message, settingsData: { prefix: stri
   const embed = new BediEmbed()
       .setColor(colors.ERROR)
       .setTitle('Get Birthdays Reply')
-      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
-          settingsData.prefix + 'getbirthdays <month> <day> <year>')}`,
+      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+          settingsData.prefix + 'getbirthdays <month>')}`,
       );
   return message.channel.send({embeds: [embed]});
 };

@@ -1,8 +1,7 @@
 import {Args, CommandStore, PieceContext, PreconditionContainerArray} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageSelectMenu, Permissions} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageSelectMenu, Permissions} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import {fetchPrefix, surroundStringWithBackTick} from '../../utils/discordUtil';
-import logger from '../../utils/loggerUtil';
+import {fetchPrefix} from '../../utils/discordUtil';
 import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -13,12 +12,11 @@ module.exports = class HelpCommand extends Command {
     super(context, {
       name: 'help',
       description: 'Shows helpful information about commands',
-      detailedDescription: `${'help`'}`,
+      detailedDescription: 'help`',
     });
   }
 
   async run(message: Message, args: Args) {
-    const {guildId} = message;
     const prefix = (await fetchPrefix(message))[0];
 
     const selectedCommand = await args.pickResult('string');
@@ -34,7 +32,7 @@ module.exports = class HelpCommand extends Command {
         const embed = new BediEmbed()
             .setTitle('Help Reply - ' + category)
             .setDescription(
-                `To get more detailed information about a command, type ${surroundStringWithBackTick(`${prefix}help <commandName>`)}`);
+                `To get more detailed information about a command, type ${Formatters.inlineCode(`${prefix}help <commandName>`)}`);
 
         let fieldValue = '';
 
@@ -119,8 +117,7 @@ module.exports = class HelpCommand extends Command {
       let aliasString = '';
 
       for (const alias of command.aliases) {
-        logger.info('this happened');
-        aliasString += `${surroundStringWithBackTick(`${prefix}${alias}`)} `;
+        aliasString += `${Formatters.inlineCode(`${prefix}${alias}`)} `;
       }
 
       if (aliasString.length != 0) embed.addField('Aliases', aliasString, false);

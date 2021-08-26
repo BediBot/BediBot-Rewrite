@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import settingsModel, {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
@@ -14,7 +13,7 @@ module.exports = class SetPinEmojiCommand extends Command {
       aliases: ['spe'],
       description: 'Changes the pin emoji for BediBot',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'setPinEmoji <:emoji:>`'}`,
+      detailedDescription: 'setPinEmoji <:emoji:>`',
     });
   }
 
@@ -28,8 +27,8 @@ module.exports = class SetPinEmojiCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Set Pin Emoji Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'setPinEmoji <:emoji:>')}`);
+          .setDescription(
+              `Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(settingsData.prefix + 'setPinEmoji <:emoji:>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -37,7 +36,8 @@ module.exports = class SetPinEmojiCommand extends Command {
 
     const embed = new BediEmbed()
         .setTitle('Set Pin Emoji Reply')
-        .setDescription(`The pin emoji has been updated to ${newValue.value}`);
+        .setColor(colors.SUCCESS)
+        .setDescription(`The pin emoji has been updated to ${newValue.value}. If this isn't an actual emoji, reaction pinning will not work.`);
     return message.reply({embeds: [embed]});
   };
 };

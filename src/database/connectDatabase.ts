@@ -7,5 +7,5 @@ export const connectDatabase = async () => {
     useUnifiedTopology: true,
     useFindAndModify: false,
   });
-  logger.info('Connected to database!');
+  logger.warn('Connected to database!');
 };

@@ -1,8 +1,7 @@
 import {Precondition} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {userVerifiedInGuild} from '../database/models/VerifiedUserModel';
 import {getSettings} from '../database/models/SettingsModel';
-import {surroundStringWithBackTick} from '../utils/discordUtil';
 
 export class UserVerifiedPrecondition extends Precondition {
   public async run(message: Message) {
@@ -12,6 +11,6 @@ export class UserVerifiedPrecondition extends Precondition {
 
     if (!settingsData.verificationEnabled || await userVerifiedInGuild(author.id, guildId as string)) return this.ok();
     return this.error(
-        {message: `You are not verified on this server! Run ${surroundStringWithBackTick(settingsData.prefix + 'verify <emailAddress>')}`});
+        {message: `You are not verified on this server! Run ${Formatters.inlineCode(settingsData.prefix + 'verify <emailAddress>')}`});
   }
 }

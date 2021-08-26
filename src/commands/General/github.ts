@@ -10,7 +10,7 @@ module.exports = class GithubCommand extends Command {
       name: 'github',
       aliases: ['git'],
       description: 'Shows the GitHub Repository for BediBot',
-      detailedDescription: `${'github`'}`,
+      detailedDescription: 'github`',
     });
   }
 
@@ -18,7 +18,7 @@ module.exports = class GithubCommand extends Command {
     const embed = new BediEmbed()
         .setTitle('GitHub Reply')
         .setDescription(
-            `BediBot is an open source project managed by Tron 2025s. If you would like to contribute (or star!), head over to our repository.`);
+            'BediBot is an open source project managed by Tron 2025s. If you would like to contribute (or star!), head over to our repository.');
 
     const row = new MessageActionRow()
         .addComponents(

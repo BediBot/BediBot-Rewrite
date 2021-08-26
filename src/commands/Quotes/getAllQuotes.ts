@@ -1,10 +1,10 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {PaginatedMessage} from '@sapphire/discord.js-utilities';
 import {getQuotesInGuild} from '../../database/models/QuoteModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {getUserFromMention, surroundStringWithBackTick} from '../../utils/discordUtil';
+import {getUserFromMention} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {QUOTE_MAX_LENGTH} from './addQuote';
 
@@ -20,7 +20,7 @@ module.exports = class GetAllQuotesCommand extends Command {
       aliases: ['gaq', 'getaq', 'getaquote', 'gaquote', 'gaquotes'],
       description: 'Displays all quotes',
       preconditions: ['GuildOnly', 'QuotesEnabled'],
-      detailedDescription: `${'getAllQuotes`'}`,
+      detailedDescription: 'getAllQuotes`',
     });
   }
 
@@ -44,7 +44,7 @@ module.exports = class GetAllQuotesCommand extends Command {
 
     const response = await message.reply({embeds: [embed]});
 
-    const templateDescription = `Quotes from ${surroundStringWithBackTick(guild?.name as string)}`;
+    const templateDescription = `Quotes from ${Formatters.inlineCode(guild?.name as string)}`;
 
     // Creates a PaginatedMessage Object (built into Sapphire framework)
     const paginatedMessage = new PaginatedMessage();
@@ -53,7 +53,7 @@ module.exports = class GetAllQuotesCommand extends Command {
       let embed = new BediEmbed()
           .setTitle('Get All Quotes Reply')
           .setDescription(templateDescription)
-          .setFooter('  For any concerns, contact a BediBot Dev');
+          .setFooter('  For any concerns, contact a BediBot Dev'); // Space before 'For' is intentional
 
       for (let j = 0; j < MAX_QUOTES_PER_PAGE; j++) {
         if ((i + j) >= quotes.length) break;
@@ -69,7 +69,7 @@ module.exports = class GetAllQuotesCommand extends Command {
 
         // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
         if (quoteText.includes('<')) field = `${quoteText} by `;
-        else field = `${surroundStringWithBackTick(quoteText)} by `;
+        else field = `${Formatters.inlineCode(quoteText)} by `;
 
         if (user) field += `${user.toString()}`;
         else {
@@ -77,7 +77,7 @@ module.exports = class GetAllQuotesCommand extends Command {
 
           // Subtract 2 because of 2 characters from back ticks
           if (name.length > (EMBED_MAX_CHAR_LENGTH - field.length - 2)) name.slice(EMBED_MAX_CHAR_LENGTH - field.length - 2);
-          field += `${surroundStringWithBackTick(quotes[i + j].name)}`;
+          field += `${Formatters.inlineCode(quotes[i + j].name)}`;
         }
 
         // Just in case the field length is somehow too big, this will prevent an error from stopping the command from working

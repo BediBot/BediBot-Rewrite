@@ -31,12 +31,14 @@ module.exports = class UnverifyCommand extends Command {
 
     const serverReplyEmbed = new BediEmbed()
         .setTitle('Unverify Reply')
+        .setColor(colors.SUCCESS)
         .setDescription('A confirmation has been sent to you via DM.');
     await message.reply({embeds: [serverReplyEmbed]});
 
     await removeVerifiedUser(author.id, guildId as string);
     const embed = new BediEmbed()
         .setTitle('Unverify Reply')
+        .setColor(colors.SUCCESS)
         .setDescription('You have been unverified on `' + guild!.name + '`');
     return message.author.send({embeds: [embed]});
   }
