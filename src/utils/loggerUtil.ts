@@ -11,25 +11,25 @@ const logFormat = winston.format.combine(
 );
 
 const logConfig = {
-        format: logFormat,
-        'transports': [
-                new winston.transports.Console({
-                        level: process.env.LOG_LEVEL,
-                        format: winston.format.combine(
-                            logFormat,
-                            winston.format.colorize({
-                                    all: true,
-                            }),
-                            ),
+    format: logFormat,
+    'transports': [
+        new winston.transports.Console({
+            level: process.env.LOG_LEVEL,
+            format: winston.format.combine(
+                logFormat,
+                winston.format.colorize({
+                    all: true,
                 }),
-                new winston.transports.File({
-                        filename: errorLogsPath,
-                        level: 'error',
-                }),
-                new winston.transports.File({
-                        filename: allLogsPath,
-                }),
-        ],
+                ),
+        }),
+        new winston.transports.File({
+            filename: errorLogsPath,
+            level: 'error',
+        }),
+        new winston.transports.File({
+            filename: allLogsPath,
+        }),
+    ],
 };
 
 const logger = winston.createLogger(logConfig);
