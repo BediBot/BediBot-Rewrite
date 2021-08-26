@@ -10,7 +10,7 @@ This is a rewrite of the BediBot Discord Bot written in TypeScript using the Sap
 ## Dev Environment Setup
 
 - Install [node.js](https://nodejs.org/en/) (16.6.1)
-- Install [clang-format](https://www.npmjs.com/package/clang-format)
+- Install clang-format globally by running `npm install -g clang-format`
 - Run `npm install` in the project directory to automatically install dependencies in `package.json`
 - Update environment variables in `.env`
 
@@ -25,9 +25,9 @@ The bot's architecture revolves around using Sapphire's discord bot framework to
 
 ## Workflow
 
-Do NOT commit to master under any circumstances.
+Do NOT commit to main under any circumstances.
 
-- Open a PR against master and request reviews if desired.
+- Open a PR against main and request reviews if desired.
 - Run the `format.sh` script in the scripts folder to format the code appropriately.
 - Squash and merge is the preferred method of merging code
 - Resolve merge conflicts on local before PR'ing
