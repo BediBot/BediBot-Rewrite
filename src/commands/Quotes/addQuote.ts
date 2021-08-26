@@ -92,7 +92,7 @@ module.exports = class AddQuoteCommand extends Command {
 
         // displayQuote will be the string that is displayed, as this will have different formatting depending on quote
         // content
-        let displayQuote = quote;
+                         let displayQuote = quote;
         if (!displayQuote.includes('<')) displayQuote = Formatters.inlineCode(quote);
 
         if (typeof quoteAuthor.value === 'string') {
