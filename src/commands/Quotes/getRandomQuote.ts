@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getRandomQuoteFromAuthor, getRandomQuoteInGuild} from '../../database/models/QuoteModel';
 import {getSettings} from '../../database/models/SettingsModel';
 
@@ -15,7 +14,7 @@ module.exports = class GetRandomQuoteCommand extends Command {
       aliases: ['grq'],
       description: 'Gets a random quote',
       preconditions: ['GuildOnly', 'QuotesEnabled'],
-      detailedDescription: `${'getRandomQuote <author:optional>`'}`,
+      detailedDescription: 'getRandomQuote <author:optional>`',
     });
   }
 
@@ -51,18 +50,18 @@ module.exports = class GetRandomQuoteCommand extends Command {
     let quoteText = quoteDoc.quote;
 
     // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
-    if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
+    if (!quoteText.includes('<')) quoteText = Formatters.inlineCode(quoteText);
 
     if (quoteDoc.date) {
       if (typeof quoteAuthor === 'string') {
         embed.setDescription(
-            `Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
+            `Quote: ${quoteText}\nAuthor: ${Formatters.inlineCode(quoteDoc.name)}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
       } else {
         embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
       }
     } else {
       if (typeof quoteAuthor === 'string') {
-        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${surroundStringWithBackTick(quoteDoc.name)}`);
+        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${Formatters.inlineCode(quoteDoc.name)}`);
       } else {
         embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}`);
       }

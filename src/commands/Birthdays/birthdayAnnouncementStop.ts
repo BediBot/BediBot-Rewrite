@@ -1,8 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, BIRTH_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
+import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -13,7 +13,7 @@ module.exports = class StopBirthdayAnnouncementCommand extends Command {
       aliases: ['stopba', 'sba'],
       description: 'Stops any scheduled birthday announcements in this guild',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'stopBirthdayAnnouncement`'}`,
+      detailedDescription: 'stopBirthdayAnnouncement`',
     });
   }
 
@@ -27,7 +27,8 @@ module.exports = class StopBirthdayAnnouncementCommand extends Command {
 
     const embed = new BediEmbed()
         .setTitle('Stop Birthday Announcement Reply')
-        .setDescription(`Birthday Announcements have been cancelled for ${surroundStringWithBackTick(guild?.name as string)}`);
+        .setColor(colors.SUCCESS)
+        .setDescription(`Birthday Announcements have been cancelled for ${Formatters.inlineCode(guild?.name as string)}`);
     return message.reply({embeds: [embed]});
   }
 };

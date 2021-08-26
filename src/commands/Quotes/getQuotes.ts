@@ -1,10 +1,9 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {PaginatedMessage} from '@sapphire/discord.js-utilities';
 import {getQuotesFromAuthor} from '../../database/models/QuoteModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {QUOTE_MAX_LENGTH} from './addQuote';
 
@@ -19,7 +18,7 @@ module.exports = class GetQuotesCommand extends Command {
       aliases: ['gq', 'getq', 'getquote', 'gquote', 'gquotes'],
       description: `Displays an author's quotes`,
       preconditions: ['GuildOnly', 'QuotesEnabled'],
-      detailedDescription: `${'getQuotes <author>`'}`,
+      detailedDescription: 'getQuotes <author>`',
     });
   }
 
@@ -36,7 +35,7 @@ module.exports = class GetQuotesCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Get Quotes Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
               settingsData.prefix + 'getquotes <author>')}`);
       return message.reply({embeds: [embed]});
     }
@@ -53,6 +52,7 @@ module.exports = class GetQuotesCommand extends Command {
 
     const embed = new BediEmbed()
         .setTitle('Get Quotes Reply')
+        .setColor(colors.ACTION)
         .setDescription('Searching for Quotes');
 
     const response = await message.reply({embeds: [embed]});
@@ -60,7 +60,7 @@ module.exports = class GetQuotesCommand extends Command {
     let templateDescription;
 
     if (typeof quoteAuthor.value === 'string') {
-      templateDescription = `Quotes by ${surroundStringWithBackTick(quoteAuthor.value)}`;
+      templateDescription = `Quotes by ${Formatters.inlineCode(quoteAuthor.value)}`;
     } else {
       templateDescription = `Quotes by ${quoteAuthor.value}`;
     }
@@ -81,7 +81,7 @@ module.exports = class GetQuotesCommand extends Command {
         if (quoteText.length > QUOTE_MAX_LENGTH) quoteText = quoteText.slice(QUOTE_MAX_LENGTH) + '...';
 
         // If a quote contains a '<' then it probably contains a mention, so don't surround it with back ticks
-        if (!quoteText.includes('<')) quoteText = surroundStringWithBackTick(quoteText);
+        if (!quoteText.includes('<')) quoteText = Formatters.inlineCode(quoteText);
 
         if (quotes[i + j].date) embed.addField(`<t:${Math.round(quotes[i + j].date.valueOf() / 1000)}:f>`, quoteText, false);
         else embed.addField('Before Sep 2021', quoteText, false);

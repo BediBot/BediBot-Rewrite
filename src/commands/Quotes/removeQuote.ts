@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {getSettings} from '../../database/models/SettingsModel';
 import {removeQuote} from '../../database/models/QuoteModel';
 
@@ -15,7 +14,7 @@ module.exports = class RemoveQuoteCommand extends Command {
       aliases: ['rq'],
       description: 'Removes a quote from an individual of your choice',
       preconditions: ['GuildOnly', 'QuotesEnabled', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'removeQuote <quote> <author>`'}`,
+      detailedDescription: 'removeQuote <quote> <author>`',
     });
   }
 
@@ -34,7 +33,7 @@ module.exports = class RemoveQuoteCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Remove Quote Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
               settingsData.prefix + 'removeQuote <quote> <author>')}`);
       return message.reply({embeds: [embed]});
     }
@@ -55,15 +54,12 @@ module.exports = class RemoveQuoteCommand extends Command {
         .setTitle('Remove Quote Reply');
 
     if (typeof quoteAuthor.value === 'string') {
-      embed.setDescription(`Quote: ${surroundStringWithBackTick(quote.value)}
-        Author: ${surroundStringWithBackTick(quoteAuthor.value as string)}
-        Date: <t:${Math.round(response.date.valueOf() / 1000)}:f>
-        Removed By: ${author}`);
+      embed.setDescription(
+          `Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${Formatters.inlineCode(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+              response.date.valueOf() / 1000)}:f>\nRemoved By: ${author}`);
     } else {
-      embed.setDescription(`Quote: ${surroundStringWithBackTick(quote.value)}
-        Author: ${quoteAuthor.value}
-        Date: <t:${Math.round(response.date.valueOf() / 1000)}:f>
-        Removed By: ${author}`);
+      embed.setDescription(`Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
+          response.date.valueOf() / 1000)}:f>\nRemoved By: ${author}`);
     }
 
     return message.reply({embeds: [embed]});

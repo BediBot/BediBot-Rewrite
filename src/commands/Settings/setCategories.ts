@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import settingsModel, {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
@@ -14,7 +13,7 @@ module.exports = class SetCategoriesCommand extends Command {
       aliases: ['setcats', 'setcat'],
       description: 'Changes the due date categories for BediBot',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'setCategories <category> <category:optional> . . .`'}`,
+      detailedDescription: 'setCategories <category> <category:optional> . . .`',
     });
   }
 
@@ -27,8 +26,8 @@ module.exports = class SetCategoriesCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Set Categories Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'setCategories <category> <category:optional> . . .')}`);
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+              settingsData.prefix + 'setCategories <category> <category:optional> . . .')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -45,11 +44,12 @@ module.exports = class SetCategoriesCommand extends Command {
     let description = 'The due date categories have been updated to: ';
 
     for (const value of newValues.value) {
-      description += `${surroundStringWithBackTick(value)} `;
+      description += `${Formatters.inlineCode(value)} `;
     }
 
     const embed = new BediEmbed()
         .setTitle('Set Categories Reply')
+        .setColor(colors.SUCCESS)
         .setDescription(description);
     return message.reply({embeds: [embed]});
   };

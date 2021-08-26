@@ -67,11 +67,12 @@ module.exports = class ConfirmCommand extends Command {
 
     const serverReplyEmbed = new BediEmbed()
         .setTitle('Confirm Reply')
+        .setColor(colors.SUCCESS)
         .setDescription('A confirmation has been sent to you via DM.');
     await message.reply({embeds: [serverReplyEmbed]});
 
     const embed = new BediEmbed()
-        .setColor(colors.PRIMARY)
+        .setColor(colors.SUCCESS)
         .setTitle('Confirm Reply')
         .setDescription('You have been verified on `' + guild!.name + '`');
     return message.author.send({embeds: [embed]});

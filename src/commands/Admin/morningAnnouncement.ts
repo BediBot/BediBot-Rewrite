@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageButton} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, isValidTime, MORN_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 
@@ -16,9 +15,9 @@ module.exports = class MorningAnnouncementCommand extends Command {
       aliases: ['ma'],
       description: 'Schedules Morning Announcements in the Current Channel',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'morningAnnouncement <time>`'}
-You can specify the announcement time in most common time formats.
-If you make a mistake, simply run the command again, only one morning announcement can be scheduled per day.`,
+      detailedDescription: 'morningAnnouncement <time>`' +
+          '\nYou can specify the announcement time in most common time formats.' +
+          '\nIf you make a mistake, simply run the command again, only one morning announcement can be scheduled per day.',
     });
   }
 
@@ -32,8 +31,8 @@ If you make a mistake, simply run the command again, only one morning announceme
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Morning Announcement Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'morningAnnouncement <time>')}`);
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+              settingsData.prefix + 'morningAnnouncement <time>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -79,9 +78,9 @@ If you make a mistake, simply run the command again, only one morning announceme
 
     const embed = new BediEmbed()
         .setTitle('Morning Announcement Reply')
-        .setDescription(`Morning Announcements will be scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>
-            
-            Do you want to auto delete each announcement after 24 hours?`);
+        .setColor(colors.ACTION)
+        .setDescription(`Morning Announcements will be scheduled for <t:${Math.round(
+            nextRun.valueOf() / 1000)}:t>\n\nDo you want to auto delete each announcement after 24 hours?`);
     const reply = await message.reply({
       embeds: [embed],
       components: [buttonRow],
@@ -111,6 +110,7 @@ If you make a mistake, simply run the command again, only one morning announceme
 
       const embed = new BediEmbed()
           .setTitle('Morning Announcement Reply')
+          .setColor(colors.SUCCESS)
           .setDescription(`Morning Announcements have been scheduled for <t:${Math.round(nextRun.valueOf() / 1000)}:t>`);
 
       await reply.edit({
@@ -123,8 +123,8 @@ If you make a mistake, simply run the command again, only one morning announceme
       if (buttonCollector.total === 0) {
         const embed = new BediEmbed()
             .setTitle('Morning Announcement Reply')
-            .setDescription(`You took too long to choose. Announcements have not been scheduled.`);
-
+            .setColor(colors.ERROR)
+            .setDescription('You took too long to choose. Announcements have not been scheduled.');
         await reply.edit({
           embeds: [embed],
           components: [],

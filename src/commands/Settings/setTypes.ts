@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import settingsModel, {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
@@ -14,7 +13,7 @@ module.exports = class SetTypesCommand extends Command {
       aliases: ['settype'],
       description: 'Changes the due date types for BediBot',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'setTypes <type> <type:optional> . . .`'}`,
+      detailedDescription: 'setTypes <type> <type:optional> . . .`',
     });
   }
 
@@ -27,8 +26,8 @@ module.exports = class SetTypesCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Set Types Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'setTypes <type> <type:optional> . . .')}`);
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+              settingsData.prefix + 'setTypes <type> <type:optional> . . .')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -45,11 +44,12 @@ module.exports = class SetTypesCommand extends Command {
     let description = 'The due date types have been updated to: ';
 
     for (const value of newValues.value) {
-      description += `${surroundStringWithBackTick(value)} `;
+      description += `${Formatters.inlineCode(value)} `;
     }
 
     const embed = new BediEmbed()
         .setTitle('Set Types Reply')
+        .setColor(colors.SUCCESS)
         .setDescription(description);
     return message.reply({embeds: [embed]});
   };

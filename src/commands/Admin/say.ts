@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -13,12 +12,12 @@ module.exports = class SayCommand extends Command {
       name: 'say',
       description: 'Sends a message from the bot',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'say <title> <body> <#channel:optional>`'}`,
+      detailedDescription: 'say <title> <body> <#channel:optional>`',
     });
   }
 
   async run(message: Message, args: Args) {
-    const {guild, guildId, author} = message;
+    const {guildId} = message;
     const settingsData = await getSettings(guildId as string);
 
     //Pick the title and content from args, return error if invalid
@@ -28,7 +27,7 @@ module.exports = class SayCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Say Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
               settingsData.prefix + 'say <title> <body> <#channel:optional>')}`);
       return message.reply({embeds: [embed]});
     }
@@ -42,7 +41,7 @@ module.exports = class SayCommand extends Command {
         const embed = new BediEmbed()
             .setColor(colors.ERROR)
             .setTitle('Say Reply')
-            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
                 settingsData.prefix + 'say <title> <body> <#channel:optional>')}`);
         return message.reply({embeds: [embed]});
       }

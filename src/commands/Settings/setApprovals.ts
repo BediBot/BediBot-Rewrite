@@ -1,8 +1,7 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message} from 'discord.js';
+import {Formatters, Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import settingsModel, {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
@@ -14,7 +13,7 @@ module.exports = class SetApprovalsCommand extends Command {
       aliases: ['sa', 'setapproval'],
       description: 'Changes the number of quote approvals required for BediBot',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'setApprovals <integer>`'}`,
+      detailedDescription: 'setApprovals <integer>`',
     });
   }
 
@@ -28,8 +27,8 @@ module.exports = class SetApprovalsCommand extends Command {
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Set Quote Approvals Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'setApprovals <integer>')}`);
+          .setDescription(
+              `Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(settingsData.prefix + 'setApprovals <integer>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -37,7 +36,8 @@ module.exports = class SetApprovalsCommand extends Command {
 
     const embed = new BediEmbed()
         .setTitle('Set Quote Approvals Reply')
-        .setDescription(`The number of quote approvals required has been updated to ${surroundStringWithBackTick(newValue.value.toString())}`);
+        .setColor(colors.SUCCESS)
+        .setDescription(`The number of quote approvals required has been updated to ${Formatters.inlineCode(newValue.value.toString())}`);
     return message.reply({embeds: [embed]});
   };
 };

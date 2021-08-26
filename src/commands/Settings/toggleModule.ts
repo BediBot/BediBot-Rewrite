@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton, MessageSelectMenu} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageButton, MessageSelectMenu} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
 import settingsModel from '../../database/models/SettingsModel';
 import logger from '../../utils/loggerUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -15,7 +14,7 @@ module.exports = class SettingsCommand extends Command {
       aliases: ['tm', 'toggleModules'],
       description: 'Allows you to enable or disable BediBot modules',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly']],
-      detailedDescription: `${'toggleModule`'}`,
+      detailedDescription: 'toggleModule`',
     });
   }
 
@@ -146,8 +145,10 @@ module.exports = class SettingsCommand extends Command {
       const embed = new BediEmbed()
           .setTitle('Toggle Modules Reply');
 
-      if (toggleValue) embed.setColor('GREEN').setDescription(`The ${surroundStringWithBackTick(module)} module has been enabled`);
-      else embed.setColor('RED').setDescription(`The ${surroundStringWithBackTick(module)} module has been disabled`);
+      if (toggleValue) embed.setColor(colors.SUCCESS)
+                            .setDescription(`The ${Formatters.inlineCode(module)} module has been enabled`);
+      else embed.setColor('RED')
+                .setDescription(`The ${Formatters.inlineCode(module)} module has been disabled`);
 
       return interaction.reply({
         ephemeral: true,

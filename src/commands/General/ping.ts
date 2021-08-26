@@ -1,7 +1,6 @@
 import {PieceContext} from '@sapphire/framework';
 import {Message} from 'discord.js';
 import {BediEmbed} from '../../lib/BediEmbed';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -10,7 +9,7 @@ module.exports = class PingCommand extends Command {
     super(context, {
       name: 'ping',
       description: 'Send back the ping of the bot',
-      detailedDescription: `${'ping`'}`,
+      detailedDescription: 'ping`',
     });
   }
 

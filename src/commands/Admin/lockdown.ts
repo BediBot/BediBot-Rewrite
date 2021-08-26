@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {GuildChannel, Message} from 'discord.js';
+import {Formatters, GuildChannel, Message} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, isValidDurationOrTime, isValidTime, UNLOCK_JOB_NAME} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 
@@ -16,9 +15,9 @@ module.exports = class LockdownCommand extends Command {
       aliases: ['ld'],
       description: 'Prevents a role from speaking in the channel',
       preconditions: ['GuildOnly', ['BotOwnerOnly', 'AdminOnly'], 'ManageRolesPerms'],
-      detailedDescription: `${'lockdown <role> <durationOrTime>`'}
-You can either specify how long the channel should be locked down, or what time it should be unlocked.
-Possible units for duration are: seconds, minutes, hours, days, weeks, months (30 days), years (365 days).`,
+      detailedDescription: 'lockdown <role> <durationOrTime>`' +
+          '\nYou can either specify how long the channel should be locked down, or what time it should be unlocked.' +
+          '\nPossible units for duration are: seconds, minutes, hours, days, weeks, months (30 days), years (365 days).',
     });
   }
 
@@ -32,8 +31,8 @@ Possible units for duration are: seconds, minutes, hours, days, weeks, months (3
       const embed = new BediEmbed()
           .setColor(colors.ERROR)
           .setTitle('Lockdown Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format 
-          ${surroundStringWithBackTick(settingsData.prefix + 'lockdown <role> <durationORtime:optional>')}`);
+          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
+              settingsData.prefix + 'lockdown <role> <durationORtime:optional>')}`);
       return message.reply({embeds: [embed]});
     }
 
@@ -99,8 +98,8 @@ Possible units for duration are: seconds, minutes, hours, days, weeks, months (3
     const nextRun = job.attrs.nextRunAt;
     const embed = new BediEmbed()
         .setTitle('Lockdown Reply')
-        .setDescription(`Channel has been locked for ${role.value.toString()}
-        Unlock scheduled <t:${Math.round(nextRun!.valueOf() / 1000)}:R>`);
+        .setColor(colors.SUCCESS)
+        .setDescription(`Channel has been locked for ${role.value.toString()}\nUnlock scheduled <t:${Math.round(nextRun!.valueOf() / 1000)}:R>`);
     return message.reply({embeds: [embed]});
   }
 };

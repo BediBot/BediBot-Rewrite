@@ -96,11 +96,13 @@ module.exports = class VerifyCommand extends Command {
 
     const serverReplyEmbed = new BediEmbed()
         .setTitle('Verify Reply')
+        .setColor(colors.SUCCESS)
         .setDescription('Instructions have been sent to you via DM.');
     await message.channel.send({embeds: [serverReplyEmbed]});
 
     const embed = new BediEmbed()
         .setTitle('Verify Reply')
+        .setColor(colors.ACTION)
         .setDescription(
             'Verification Email Sent to `' + emailAddress.value + '`\nCheck your email and run `' + settingsData.prefix +
             'confirm <uniqueKey>` to complete verification.');

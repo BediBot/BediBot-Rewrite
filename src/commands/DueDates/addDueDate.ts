@@ -1,9 +1,8 @@
 import {Args, PieceContext} from '@sapphire/framework';
-import {Message, MessageActionRow, MessageButton, MessageSelectMenu} from 'discord.js';
+import {Formatters, Message, MessageActionRow, MessageButton, MessageSelectMenu} from 'discord.js';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {surroundStringWithBackTick} from '../../utils/discordUtil';
 import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 import moment from 'moment-timezone/moment-timezone-utils';
 import {addDueDate} from '../../database/models/DueDateModel';
@@ -18,10 +17,10 @@ module.exports = class AddDueDateCommand extends Command {
       aliases: ['add', 'adddue', 'adddate'],
       description: 'Adds a due date',
       preconditions: ['GuildOnly', 'DueDatesEnabled', 'DueDatesSetup'],
-      detailedDescription: `${'addDueDate <title> <month> <day> <year> <time:optional>`'}
-The month can be long (January), short (Jan), or number (1).
-You can specify the (optional) time in most common time formats.
-Make sure to run the displayDueDates command somewhere!`,
+      detailedDescription: 'addDueDate <title> <month> <day> <year> <time:optional>`' +
+          '\nThe month can be long (January), short (Jan), or number (1).' +
+          '\nYou can specify the (optional) time in most common time formats.' +
+          '\nMake sure to run the displayDueDates command somewhere!',
     });
   }
 
@@ -129,10 +128,11 @@ Make sure to run the displayDueDates command somewhere!`,
         ]);
 
     const embed = new BediEmbed()
+        .setColor(colors.ACTION)
         .setTitle('Add Due Date Reply');
 
-    if (dateOnly) embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:D>`);
-    else embed.setDescription(`${surroundStringWithBackTick(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:F>`);
+    if (dateOnly) embed.setDescription(`${Formatters.inlineCode(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:D>`);
+    else embed.setDescription(`${Formatters.inlineCode(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:F>`);
     const reply = await message.reply({
       embeds: [embed],
       components: [typeSelect, categorySelect, courseSelect, buttons],
@@ -165,7 +165,6 @@ Make sure to run the displayDueDates command somewhere!`,
 
     selectCollector.on('end', async collected => {
       await reply.edit({
-        embeds: [embed],
         components: [],
       });
     });
@@ -186,8 +185,11 @@ Make sure to run the displayDueDates command somewhere!`,
       }
 
       if (interaction.customId === 'dueDateCancel') {
+        embed.setColor(colors.ERROR)
+             .setDescription('Due Date cancelled.');
+
         await reply.edit({
-          embeds: [embed.setDescription('Due date cancelled.')],
+          embeds: [embed],
           components: [],
         });
         return interaction.deferUpdate();
@@ -216,6 +218,8 @@ Make sure to run the displayDueDates command somewhere!`,
         await jobs[0].run();
       }
 
+      embed.setColor(colors.SUCCESS);
+
       await reply.edit({
         embeds: [embed],
         components: [],
@@ -236,7 +240,7 @@ const invalidSyntaxReply = async (message: Message, settingsData: { prefix: stri
   const embed = new BediEmbed()
       .setColor(colors.ERROR)
       .setTitle('Add Due Date Reply')
-      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${surroundStringWithBackTick(
+      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
           settingsData.prefix + 'addDueDate <title> <month> <day> <year> <time:optional>')}`,
       );
   return message.channel.send({embeds: [embed]});
