@@ -15,16 +15,16 @@ const Mustache = require('mustache');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    type: 'OAuth2',
-    user: process.env.EMAIL_USER,
-    clientId: process.env.EMAIL_CLIENT_ID,
-    clientSecret: process.env.EMAIL_CLIENT_SECRET,
-    refreshToken: process.env.EMAIL_CLIENT_REFRESH,
+	type: 'OAuth2',
+	user: process.env.EMAIL_USER,
+	clientId: process.env.EMAIL_CLIENT_ID,
+	clientSecret: process.env.EMAIL_CLIENT_SECRET,
+	refreshToken: process.env.EMAIL_CLIENT_REFRESH,
   },
 });
 
 const oAuth2Client =
-    new OAuth2(process.env.EMAIL_CLIENT_ID, process.env.EMAIL_CLIENT_SECRET, 'https://developers.google.com/oauthplayground');
+	new OAuth2(process.env.EMAIL_CLIENT_ID, process.env.EMAIL_CLIENT_SECRET, 'https://developers.google.com/oauthplayground');
 oAuth2Client.setCredentials({
   refresh_token: process.env.EMAIL_CLIENT_REFRESH,
 });
@@ -38,25 +38,25 @@ oAuth2Client.setCredentials({
  */
 const sendMail = (toAddress: string, subject: string, text: string, htmlText: string) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: toAddress,
-    subject: subject,
-    text: text,
-    html: htmlText,
-    auth: {
-      accessToken: oAuth2Client.getAccessToken(),
-    },
+	from: process.env.EMAIL_USER,
+	to: toAddress,
+	subject: subject,
+	text: text,
+	html: htmlText,
+	auth: {
+	  accessToken: oAuth2Client.getAccessToken(),
+	},
   };
 
   let response: (Error|null)|SentMessageInfo;
 
   transporter.sendMail(mailOptions, function(error: Error|null, info: SentMessageInfo) {
-    if (error) {
-      logger.error(error);
-      response = error;
-    } else {
-      response = info;
-    }
+	if (error) {
+	  logger.error(error);
+	  response = error;
+	} else {
+	  response = info;
+	}
   });
 
   return response;
@@ -67,9 +67,9 @@ const generateHTMLConfirmationEmail = async (serverName: string, serverPrefix: s
   const response = await fs.readFileSync(filePath);
 
   return Mustache.render(response.toString(), {
-    serverPrefix: serverPrefix,
-    uniqueKey: uniqueKey,
-    serverName: serverName,
+	serverPrefix: serverPrefix,
+	uniqueKey: uniqueKey,
+	serverName: serverName,
   });
 };
 

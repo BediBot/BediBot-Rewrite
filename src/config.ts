@@ -8,15 +8,15 @@ export const DEFAULT_PREFIX = '$';
 
 export const CLIENT_OPTIONS: ClientOptions = {
   intents: [
-    Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS
+	Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES,
+	Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS
   ],
   defaultPrefix: DEFAULT_PREFIX,
   caseInsensitiveCommands: true,
   caseInsensitivePrefixes: true,
   presence: getRandomStatus(),
   logger: {
-    level: LogLevel.None,
+	level: LogLevel.None,
   },
   partials: ['CHANNEL', 'MESSAGE', 'REACTION'],
   fetchPrefix: fetchPrefix,

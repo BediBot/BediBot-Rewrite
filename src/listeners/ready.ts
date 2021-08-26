@@ -5,17 +5,17 @@ import {startAgenda} from '../utils/schedulerUtil';
 
 module.exports = class ReadyListener extends Listener {
   constructor(context: PieceContext) {
-    super(context, {
-      once: true,
-      event: Events.ClientReady,
-    });
+	super(context, {
+	  once: true,
+	  event: Events.ClientReady,
+	});
   }
 
   public async run() {
-    logger.warn('The bot is up and running!');
+	logger.warn('The bot is up and running!');
 
-    await connectDatabase();
+	await connectDatabase();
 
-    await startAgenda();
+	await startAgenda();
   }
 };
