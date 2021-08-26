@@ -7,35 +7,35 @@ import colors from '../utils/colorUtil';
 
 module.exports = class PinReactionListener extends Listener {
   constructor(context: PieceContext) {
-	super(context, {
-	  event: Events.MessageReactionAdd,
-	});
+    super(context, {
+      event: Events.MessageReactionAdd,
+    });
   }
 
   public async run(messageReaction: MessageReaction, user: User) {
-	const {message} = messageReaction;
-	const {guild, guildId} = message;
+    const {message} = messageReaction;
+    const {guild, guildId} = message;
 
-	const settingsData = await getSettings(guildId as string);
+    const settingsData = await getSettings(guildId as string);
 
-	if (!guild || messageReaction.emoji.name != settingsData.pinEmoji) return;
+    if (!guild || messageReaction.emoji.name != settingsData.pinEmoji) return;
 
-	if (!settingsData.pinsEnabled) {
-	  const embed = new BediEmbed()
-						.setColor(colors.ERROR)
-						.setTitle('Pin Reply')
-						.setDescription('Sorry, `' + guild.name + '` does not have reaction pinning enabled');
-	  return user.send({embeds: [embed]});
-	}
+    if (!settingsData.pinsEnabled) {
+      const embed = new BediEmbed()
+			.setColor(colors.ERROR)
+			.setTitle('Pin Reply')
+			.setDescription('Sorry, `' + guild.name + '` does not have reaction pinning enabled');
+      return user.send({embeds: [embed]});
+    }
 
-	if (!guild.me?.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-	  const embed = new BediEmbed()
-						.setTitle('Pin Reply')
-						.setColor(colors.ERROR)
-						.setDescription('BediBot does not have the required permissions: `MANAGE MESSAGES`');
-	  return message.reply({embeds: [embed]});
-	}
+    if (!guild.me?.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+      const embed = new BediEmbed()
+			.setTitle('Pin Reply')
+			.setColor(colors.ERROR)
+			.setDescription('BediBot does not have the required permissions: `MANAGE MESSAGES`');
+      return message.reply({embeds: [embed]});
+    }
 
-	return messageReaction.message.pin();
+    return messageReaction.message.pin();
   }
 };

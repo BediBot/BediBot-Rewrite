@@ -17,8 +17,8 @@ export const addRoleToAuthor = async (message: Message, roleName: string) => {
   const {author, guild} = message;
 
   if (!guild) {
-	logger.warn('addRoleToAuthor called from message without valid guild');
-	return;
+    logger.warn('addRoleToAuthor called from message without valid guild');
+    return;
   }
 
   await addRoleToUser(author.id, guild, roleName);
@@ -33,21 +33,21 @@ export const addRoleToAuthor = async (message: Message, roleName: string) => {
  */
 export const addRoleToUser = async (userId: string, guild: Guild|null, roleName: string) => {
   if (!guild) {
-	logger.warn('addRoleToUser called from message without valid guild ID');
-	return;
+    logger.warn('addRoleToUser called from message without valid guild ID');
+    return;
   }
 
   const role = guild.roles.cache.find(role => role.name === roleName);
 
   if (!role) {
-	logger.warn('Attempted to add role that does not exist');
-	return;
+    logger.warn('Attempted to add role that does not exist');
+    return;
   }
 
   const member = await guild.members.fetch(userId).catch();
 
   try {
-	await member!.roles.add(role as Role);
+    await member!.roles.add(role as Role);
   } catch (error) { logger.error(error); }
 };
 
@@ -74,11 +74,11 @@ export const fetchPrefix = async (message: Message) => {
  */
 export const purgeMessages = async (message: Message, numMessages: number) => {
   if (message.channel.type == 'GUILD_TEXT') {
-	const fetchedMessages = await message.channel.messages.fetch({limit: numMessages, before: message.id});
-	const messagesToDelete = await fetchedMessages.filter(
-		(m: Message) => !m.pinned || m.createdTimestamp < moment().subtract(14, 'd').toDate().valueOf());
-	await message.channel.bulkDelete(messagesToDelete);
-	return messagesToDelete.size;
+    const fetchedMessages = await message.channel.messages.fetch({limit: numMessages, before: message.id});
+    const messagesToDelete = await fetchedMessages.filter(
+	(m: Message) => !m.pinned || m.createdTimestamp < moment().subtract(14, 'd').toDate().valueOf());
+    await message.channel.bulkDelete(messagesToDelete);
+    return messagesToDelete.size;
   }
   return false;
 };
@@ -93,11 +93,11 @@ export const purgeMessages = async (message: Message, numMessages: number) => {
 export const purgeMessagesFromUser = async (message: Message, numMessagesToSearch: number, userId: string) => {
   let numMessagesDeleted = 0;
   if (message.channel.type == 'GUILD_TEXT') {
-	const fetched_messages = await message.channel.messages.fetch({limit: numMessagesToSearch});
-	const messagesToDelete = fetched_messages.filter(
-		(m: Message) => m.author.id == userId || m.createdTimestamp < moment().subtract(14, 'd').toDate().valueOf());
-	await message.channel.bulkDelete(messagesToDelete);
-	numMessagesDeleted = messagesToDelete.size;
+    const fetched_messages = await message.channel.messages.fetch({limit: numMessagesToSearch});
+    const messagesToDelete = fetched_messages.filter(
+	(m: Message) => m.author.id == userId || m.createdTimestamp < moment().subtract(14, 'd').toDate().valueOf());
+    await message.channel.bulkDelete(messagesToDelete);
+    numMessagesDeleted = messagesToDelete.size;
   }
   return numMessagesDeleted;
 };
@@ -118,14 +118,14 @@ export const numUsers = async (client: SapphireClient) => {
   let members = new Collection<string, GuildMember>();
 
   for (const guild of client.guilds.cache) {
-	// Get all members in guild
-	const newMembers = (await guild[1].members.fetch()).filter(member => !member.user.bot);
+    // Get all members in guild
+    const newMembers = (await guild[1].members.fetch()).filter(member => !member.user.bot);
 
-	// Add member to collection of members if they are new (ensures that we dont
-	// double count members if they are in multiple guilds)
-	newMembers.forEach(newMember => {
-	  if (!members.find(oldMember => oldMember.id === newMember.id)) members.set(newMember.id, newMember);
-	});
+    // Add member to collection of members if they are new (ensures that we dont
+    // double count members if they are in multiple guilds)
+    newMembers.forEach(newMember => {
+      if (!members.find(oldMember => oldMember.id === newMember.id)) members.set(newMember.id, newMember);
+    });
   }
 
   return members.size;
@@ -140,10 +140,10 @@ export const getUserFromMention = (mention: string) => {
   if (!mention) return;
 
   if (mention.startsWith('<@') && mention.endsWith('>')) {
-	mention = mention.slice(2, -1);
+    mention = mention.slice(2, -1);
 
-	if (mention.startsWith('!')) { mention = mention.slice(1); }
+    if (mention.startsWith('!')) { mention = mention.slice(1); }
 
-	return container.client.users.fetch(mention);
+    return container.client.users.fetch(mention);
   }
 };

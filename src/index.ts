@@ -10,13 +10,13 @@ const main = async () => {
   if (!validateEnv()) return;
 
   try {
-	logger.warn('Bot is logging in');
-	await client.login(process.env.BOT_TOKEN);
-	logger.warn('Bot has logged in');
+    logger.warn('Bot is logging in');
+    await client.login(process.env.BOT_TOKEN);
+    logger.warn('Bot has logged in');
   } catch (error) {
-	logger.error(error);
-	client.destroy();
-	process.exit(1);
+    logger.error(error);
+    client.destroy();
+    process.exit(1);
   }
 };
 
