@@ -10,6 +10,3 @@ export const hashString = async (string: string) => {
   sha256.update(string);
   return sha256.getHash('HEX');
 };
-
-
-

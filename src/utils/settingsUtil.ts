@@ -1,5 +1,6 @@
-import {capFirstLetterEveryWord} from './stringsUtil';
 import {Formatters} from 'discord.js';
+
+import {capFirstLetterEveryWord} from './stringsUtil';
 
 // Array of settings modules
 const modules = ['verification', 'quotes', 'pins', 'due dates'];

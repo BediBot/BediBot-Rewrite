@@ -39,8 +39,7 @@ export const validateEnv = () => {
     return false;
   }
 
-  if (!process.env.LOG_LEVEL)
-  {
+  if (!process.env.LOG_LEVEL) {
     console.warn('Missing log level');
     return false;
   }

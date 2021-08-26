@@ -1,8 +1,9 @@
 import {CommandDeniedPayload, Events, Listener, PieceContext, UserError} from '@sapphire/framework';
+
 import {BediEmbed} from '../lib/BediEmbed';
 import colors from '../utils/colorUtil';
-import {capFirstLetter} from '../utils/stringsUtil';
 import logger from '../utils/loggerUtil';
+import {capFirstLetter} from '../utils/stringsUtil';
 
 module.exports = class CommandDenied extends Listener {
   constructor(context: PieceContext) {
@@ -11,7 +12,9 @@ module.exports = class CommandDenied extends Listener {
     });
   }
 
-  public async run({context, message: content}: UserError, {message, command}: CommandDeniedPayload) {
+  public async run(
+      {context, message: content}: UserError,
+      {message, command}: CommandDeniedPayload) {
     const commandName = capFirstLetter(command.name);
 
     logger.debug('Command Denied: ' + commandName + ' - ' + content);
@@ -20,9 +23,9 @@ module.exports = class CommandDenied extends Listener {
     if (Reflect.get(Object(context), 'silent')) return;
 
     const embed = new BediEmbed()
-        .setTitle(commandName + ' Reply')
-        .setColor(colors.ERROR)
-        .setDescription(content);
+		      .setTitle(commandName + ' Reply')
+		      .setColor(colors.ERROR)
+		      .setDescription(content);
     return message.reply({embeds: [embed]});
   }
 };
