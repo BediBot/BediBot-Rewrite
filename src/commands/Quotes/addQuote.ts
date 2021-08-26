@@ -88,13 +88,15 @@ module.exports = class AddQuoteCommand extends Command {
 
     const date = moment().toDate();
 
-    if (!quote.includes('<')) quote = surroundStringWithBackTick(quote);
+    // displayQuote will be the string that is displayed, as this will have different formatting depending on quote content
+    let displayQuote = quote;
+    if (!displayQuote.includes('<')) displayQuote = surroundStringWithBackTick(quote);
 
     if (typeof quoteAuthor.value === 'string') {
-      embed.setDescription(`Quote: ${quote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+      embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
           date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By:`);
     } else {
-      embed.setDescription(`Quote: ${quote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
+      embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
           date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By:`);
     }
 
@@ -140,10 +142,10 @@ module.exports = class AddQuoteCommand extends Command {
             .setTitle(`Add Quote Reply - Approvals: ${numApprovals}/${settingsData.quoteApprovalsRequired}`);
 
         if (typeof quoteAuthor.value === 'string') {
-          embed.setDescription(`Quote: ${quote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
               date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         } else {
-          embed.setDescription(`Quote: ${quote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
+          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
               date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         }
 
@@ -153,10 +155,10 @@ module.exports = class AddQuoteCommand extends Command {
             .setTitle('Add Quote Reply - Approved');
 
         if (typeof quoteAuthor.value === 'string') {
-          embed.setDescription(`Quote: ${quote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
+          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${surroundStringWithBackTick(quoteAuthor.value as string)}\nDate: <t:${Math.round(
               date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         } else {
-          embed.setDescription(`Quote: ${quote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
+          embed.setDescription(`Quote: ${displayQuote}\nAuthor: ${quoteAuthor.value}\nDate: <t:${Math.round(
               date.valueOf() / 1000)}:f>\nSubmitted By: ${author}\nApproved By: ${approvedByString}`);
         }
 
