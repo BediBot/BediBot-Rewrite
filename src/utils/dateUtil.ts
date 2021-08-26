@@ -24,9 +24,6 @@ export const isValidMonth = (month: string|number): number|null => {
  * @param origYear
  * @returns {boolean}
  */
-export const didDateChange =
-    (newDate: Date, origDay: number, origMonth: number, origYear: number) => {
-      return !(newDate.getFullYear() === origYear) ||
-	  !(newDate.getMonth() + 1 === origMonth) ||
-	  !(newDate.getDate() == origDay);
-    };
+export const didDateChange = (newDate: Date, origDay: number, origMonth: number, origYear: number) => {
+  return !(newDate.getFullYear() === origYear) || !(newDate.getMonth() + 1 === origMonth) || !(newDate.getDate() == origDay);
+};

@@ -12,9 +12,7 @@ module.exports = class CommandDenied extends Listener {
     });
   }
 
-  public async run(
-      {context, message: content}: UserError,
-      {message, command}: CommandDeniedPayload) {
+  public async run({context, message: content}: UserError, {message, command}: CommandDeniedPayload) {
     const commandName = capFirstLetter(command.name);
 
     logger.debug('Command Denied: ' + commandName + ' - ' + content);
@@ -22,10 +20,7 @@ module.exports = class CommandDenied extends Listener {
     // Does nothing if command has 'silent' flag
     if (Reflect.get(Object(context), 'silent')) return;
 
-    const embed = new BediEmbed()
-		      .setTitle(commandName + ' Reply')
-		      .setColor(colors.ERROR)
-		      .setDescription(content);
+    const embed = new BediEmbed().setTitle(commandName + ' Reply').setColor(colors.ERROR).setDescription(content);
     return message.reply({embeds: [embed]});
   }
 };
