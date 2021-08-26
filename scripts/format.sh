@@ -4,4 +4,4 @@ echo "Running clang-format"
 
 clang-format --version
 
-find src -regex '.*\.\(ts\)' -exec clang-format -style=file -i {} \;
+clang-format -style=file -i src/*.ts src/**/*.ts src/**/**/*.ts
