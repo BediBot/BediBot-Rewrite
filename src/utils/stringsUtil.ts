@@ -4,9 +4,9 @@
  * @param {string} string The input string.
  * @return {string} The string with the first letter capitalized.
  */
-export const capFirstLetter = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
+export const capFirstLetter =
+    (string:
+	 string) => { return string.charAt(0).toUpperCase() + string.slice(1);};
 
 /**
  * Capitalizes the first letter of every word in a string.

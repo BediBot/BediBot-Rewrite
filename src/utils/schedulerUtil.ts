@@ -25,13 +25,12 @@ export const startAgenda = async () => {
   await agenda.start();
   logger.warn('Agenda Started!');
 
-  agenda.on('start', (job) => {
-    logger.verbose(`Job ${job.attrs.name} started`);
-  });
+  agenda.on(
+      'start', (job) => { logger.verbose(`Job ${job.attrs.name} started`); });
 
-  agenda.on('success', (job) => {
-    logger.verbose(`Job ${job.attrs.name} succeeded`);
-  });
+  agenda.on(
+      'success',
+      (job) => { logger.verbose(`Job ${job.attrs.name} succeeded`); });
 
   agenda.on('fail', async (err, job) => {
     logger.error(`Job ${job.attrs.name} failed with error: ${err.nessage}`);

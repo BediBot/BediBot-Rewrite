@@ -113,9 +113,8 @@ export const purgeMessagesFromUser =
  * @param client
  * @returns {number}
  */
-export const numGuilds = (client: SapphireClient) => {
-  return client.guilds.cache.size;
-};
+export const numGuilds =
+    (client: SapphireClient) => { return client.guilds.cache.size;};
 
 /**
  * Gets the number of unique users that the client can see
