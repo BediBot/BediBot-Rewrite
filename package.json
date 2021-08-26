@@ -23,6 +23,7 @@
     "@shelf/jest-mongodb": "^2.0.1",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
+    "clang-format": "^1.5.0",
     "jest": "^27.0.6",
     "jest-junit": "^12.2.0",
     "mongodb": "^3.6.11",
@@ -30,7 +31,7 @@
   },
   "dependencies": {
     "@sapphire/discord.js-utilities": "^3.0.0-next.a35c1cca.0",
-    "@sapphire/framework": "^2.0.0-pr-244.ee400ddf.0",
+    "@sapphire/framework": "^2.0.0-next.2d21b038.0",
     "@types/bcrypt": "^5.0.0",
     "@types/nodemailer": "^6.4.4",
     "agenda": "^4.2.1",
