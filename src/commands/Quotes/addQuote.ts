@@ -88,6 +88,7 @@ module.exports = class AddQuoteCommand extends Command {
 
     const date = moment().toDate();
 
+    // displayQuote will be the string that is displayed, as this will have different formatting depending on quote content
     let displayQuote = quote;
     if (!displayQuote.includes('<')) displayQuote = surroundStringWithBackTick(quote);
 
