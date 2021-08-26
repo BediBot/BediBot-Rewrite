@@ -1,4 +1,4 @@
-name: yEnsures that code is formatted correctl
+name: Test Code Formatting
 
 on:
   pull_request:
