@@ -1,7 +1,8 @@
 import {SapphireClient} from '@sapphire/framework';
+
+import {CLIENT_OPTIONS} from './config';
 import {validateEnv} from './utils/envUtil';
 import logger from './utils/loggerUtil';
-import {CLIENT_OPTIONS} from './config';
 
 const client = new SapphireClient(CLIENT_OPTIONS);
 
