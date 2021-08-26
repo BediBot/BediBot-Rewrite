@@ -1,8 +1,9 @@
 import {Args, PieceContext} from '@sapphire/framework';
 import {Formatters, Message} from 'discord.js';
+
 import {BediEmbed} from '../../lib/BediEmbed';
-import {agenda, BIRTH_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
 import colors from '../../utils/colorUtil';
+import {agenda, BIRTH_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -25,11 +26,11 @@ module.exports = class StopBirthdayAnnouncementCommand extends Command {
       'data.guildId': guildId,
     });
 
-    const embed = new BediEmbed()
-        .setTitle('Stop Birthday Announcement Reply')
-        .setColor(colors.SUCCESS)
-        .setDescription(`Birthday Announcements have been cancelled for ${Formatters.inlineCode(guild?.name as string)}`);
+    const embed =
+	new BediEmbed()
+	    .setTitle('Stop Birthday Announcement Reply')
+	    .setColor(colors.SUCCESS)
+	    .setDescription(`Birthday Announcements have been cancelled for ${Formatters.inlineCode(guild?.name as string)}`);
     return message.reply({embeds: [embed]});
   }
 };
-

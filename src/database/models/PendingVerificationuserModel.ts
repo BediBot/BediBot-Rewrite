@@ -1,22 +1,23 @@
 import {model, Schema} from 'mongoose';
-import {hashString} from '../../utils/hashUtil';
+
 import {reqString} from '../../utils/databaseUtil';
+import {hashString} from '../../utils/hashUtil';
 
 interface PendingVerificationUserI {
-  userId: string,
-  guildId: string,
-  emailHash: string,
-  uniqueKey: string
+  userId: string, guildId: string, emailHash: string, uniqueKey: string
 }
 
-export const PendingVerificationUser = new Schema({
-  userId: reqString,
-  guildId: reqString,
-  emailHash: reqString,
-  uniqueKey: reqString,
-}, {versionKey: false});
+export const PendingVerificationUser = new Schema(
+    {
+      userId: reqString,
+      guildId: reqString,
+      emailHash: reqString,
+      uniqueKey: reqString,
+    },
+    {versionKey: false});
 
-const pendingVerificationUserModel = model<PendingVerificationUserI>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
+const pendingVerificationUserModel =
+    model<PendingVerificationUserI>('PendingVerificationUser', PendingVerificationUser, 'PendingVerificationUsers');
 
 /**
  * Checks if a given email address is already linked to a pending verification user
@@ -93,7 +94,8 @@ export const validUniqueKey = async (userId: string, guildId: string, uniqueKey:
 };
 
 /**
- * Gets the hashed email of a pending verification user. Do not call this function unless you are certain the user exists in the DB.
+ * Gets the hashed email of a pending verification user. Do not call this function unless you are certain the user exists in the
+ * DB.
  * @param userId
  * @param guildId
  * @returns {Promise<any>}

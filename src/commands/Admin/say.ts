@@ -20,30 +20,30 @@ module.exports = class SayCommand extends Command {
     const {guildId} = message;
     const settingsData = await getSettings(guildId as string);
 
-    //Pick the title and content from args, return error if invalid
+    // Pick the title and content from args, return error if invalid
     const sayTitle = await args.pickResult('string');
     const sayContent = await args.pickResult('string');
     if (!sayTitle.success || !sayContent.success) {
       const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Say Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
-              settingsData.prefix + 'say <title> <body> <#channel:optional>')}`);
+			.setColor(colors.ERROR)
+			.setTitle('Say Reply')
+			.setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${
+			    Formatters.inlineCode(settingsData.prefix + 'say <title> <body> <#channel:optional>')}`);
       return message.reply({embeds: [embed]});
     }
 
-    //Parse channel args
+    // Parse channel args
     let channel = message.channel;
     if (!args.finished) {
       const channelArg = await args.pickResult('guildTextChannel');
 
       if (!channelArg.success) {
-        const embed = new BediEmbed()
-            .setColor(colors.ERROR)
-            .setTitle('Say Reply')
-            .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
-                settingsData.prefix + 'say <title> <body> <#channel:optional>')}`);
-        return message.reply({embeds: [embed]});
+	const embed = new BediEmbed()
+			  .setColor(colors.ERROR)
+			  .setTitle('Say Reply')
+			  .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${
+			      Formatters.inlineCode(settingsData.prefix + 'say <title> <body> <#channel:optional>')}`);
+	return message.reply({embeds: [embed]});
       }
       channel = channelArg.value;
     }
@@ -51,17 +51,15 @@ module.exports = class SayCommand extends Command {
     let descriptionToSend = sayContent.value;
     const BOT_OWNERS = process.env.BOT_OWNERS!.split(',');
     if (!BOT_OWNERS.includes(message.author.id)) {
-      //Append the user's @ to the message so that $say messages aren't mistaken for actual bot messages
+      // Append the user's @ to the message so that $say messages aren't mistaken for actual bot messages
       descriptionToSend = descriptionToSend.concat('\n\nMessage created by ' + message.author);
     }
 
-    //Delete the original message
+    // Delete the original message
     await message.delete();
 
-    //Send the say command
-    const embed = new BediEmbed()
-        .setTitle(sayTitle.value)
-        .setDescription(descriptionToSend);
+    // Send the say command
+    const embed = new BediEmbed().setTitle(sayTitle.value).setDescription(descriptionToSend);
     return channel.send({embeds: [embed]});
   }
 };

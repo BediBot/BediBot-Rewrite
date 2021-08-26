@@ -14,17 +14,14 @@ module.exports = class PingCommand extends Command {
   }
 
   async run(message: Message) {
-    const initialEmbed = new BediEmbed()
-        .setTitle('Ping?');
+    const initialEmbed = new BediEmbed().setTitle('Ping?');
 
     const msg = await message.reply({
       embeds: [initialEmbed],
     });
 
-    const editEmbed = new BediEmbed()
-        .setTitle('Pong!')
-        .setDescription(
-            `Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${msg.createdTimestamp - message.createdTimestamp}ms.`);
+    const editEmbed = new BediEmbed().setTitle('Pong!').setDescription(`Bot Latency ${
+	Math.round(this.container.client.ws.ping)}ms. API Latency ${msg.createdTimestamp - message.createdTimestamp}ms.`);
     return msg.edit({embeds: [editEmbed]});
   }
 };

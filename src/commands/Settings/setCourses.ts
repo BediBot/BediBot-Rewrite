@@ -1,8 +1,9 @@
 import {Args, PieceContext} from '@sapphire/framework';
 import {Formatters, Message} from 'discord.js';
+
+import settingsModel, {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import settingsModel, {getSettings} from '../../database/models/SettingsModel';
 
 const {Command} = require('@sapphire/framework');
 
@@ -24,18 +25,18 @@ module.exports = class SetCoursesCommand extends Command {
     const newValues = await args.repeatResult('string');
     if (!newValues.success) {
       const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Set Courses Reply')
-          .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
-              settingsData.prefix + 'setCourses <course> <course:optional> . . .')}`);
+			.setColor(colors.ERROR)
+			.setTitle('Set Courses Reply')
+			.setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${
+			    Formatters.inlineCode(settingsData.prefix + 'setCourses <course> <course:optional> . . .')}`);
       return message.reply({embeds: [embed]});
     }
 
     if (new Set(newValues.value).size != newValues.value.length) {
       const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Set Courses Reply')
-          .setDescription('Duplicate values are not allowed.');
+			.setColor(colors.ERROR)
+			.setTitle('Set Courses Reply')
+			.setDescription('Duplicate values are not allowed.');
       return message.reply({embeds: [embed]});
     }
 
@@ -43,14 +44,9 @@ module.exports = class SetCoursesCommand extends Command {
 
     let description = 'The due date courses have been updated to: ';
 
-    for (const value of newValues.value) {
-      description += `${Formatters.inlineCode(value)} `;
-    }
+    for (const value of newValues.value) { description += `${Formatters.inlineCode(value)} `; }
 
-    const embed = new BediEmbed()
-        .setTitle('Set Courses Reply')
-        .setColor(colors.SUCCESS)
-        .setDescription(description);
+    const embed = new BediEmbed().setTitle('Set Courses Reply').setColor(colors.SUCCESS).setDescription(description);
     return message.reply({embeds: [embed]});
   };
 };

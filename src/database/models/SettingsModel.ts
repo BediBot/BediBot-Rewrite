@@ -2,46 +2,40 @@ import {model, Schema} from 'mongoose';
 import {reqBoolean, reqNumber, reqString, reqStringArray} from '../../utils/databaseUtil';
 
 interface SettingsI {
-  _id: string, // Guild ID
-  prefix: string,
-  timezone: string,
+  _id: string,	// Guild ID
+      prefix: string, timezone: string,
 
-  pinsEnabled: boolean,
-  pinEmoji: string,
+      pinsEnabled: boolean, pinEmoji: string,
 
-  quotesEnabled: boolean,
-  quoteApprovalsRequired: number,
+      quotesEnabled: boolean, quoteApprovalsRequired: number,
 
-  verificationEnabled: boolean,
-  emailDomain: string,
-  verifiedRole: string,
+      verificationEnabled: boolean, emailDomain: string, verifiedRole: string,
 
-  dueDatesEnabled: boolean,
-  types: string[],
-  categories: string[],
-  courses: string[],
+      dueDatesEnabled: boolean, types: string[], categories: string[], courses: string[],
 }
 
-export const Settings = new Schema({
-  _id: reqString, // Guild ID
-  prefix: reqString,
-  timezone: reqString,
+export const Settings = new Schema(
+    {
+      _id: reqString,  // Guild ID
+      prefix: reqString,
+      timezone: reqString,
 
-  pinsEnabled: reqBoolean,
-  pinEmoji: reqString,
+      pinsEnabled: reqBoolean,
+      pinEmoji: reqString,
 
-  quotesEnabled: reqBoolean,
-  quoteApprovalsRequired: reqNumber,
+      quotesEnabled: reqBoolean,
+      quoteApprovalsRequired: reqNumber,
 
-  verificationEnabled: reqBoolean,
-  emailDomain: reqString,
-  verifiedRole: reqString,
+      verificationEnabled: reqBoolean,
+      emailDomain: reqString,
+      verifiedRole: reqString,
 
-  dueDatesEnabled: reqBoolean,
-  types: reqStringArray,
-  categories: reqStringArray,
-  courses: reqStringArray,
-}, {versionKey: false});
+      dueDatesEnabled: reqBoolean,
+      types: reqStringArray,
+      categories: reqStringArray,
+      courses: reqStringArray,
+    },
+    {versionKey: false});
 
 export const defaultSettings = (guildID: string) => {
   return {
@@ -80,4 +74,3 @@ export const getSettings = async (guildId: string) => {
 };
 
 export default settingsModel;
-

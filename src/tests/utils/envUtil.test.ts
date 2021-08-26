@@ -8,9 +8,7 @@ describe('Environment Variables', () => {
     process.env = {...OLD_ENV};
   });
 
-  afterAll(() => {
-    process.env = OLD_ENV;
-  });
+  afterAll(() => { process.env = OLD_ENV; });
 
   test('ENV Set up Correctly', () => {
     process.env.BOT_TOKEN = 'randomString';
@@ -121,7 +119,5 @@ describe('Environment Variables', () => {
     expect(validateEnv()).toBe(false);
   });
 
-  test('ENV Missing All Variables', () => {
-    expect(validateEnv()).toBe(false);
-  });
+  test('ENV Missing All Variables', () => { expect(validateEnv()).toBe(false); });
 });

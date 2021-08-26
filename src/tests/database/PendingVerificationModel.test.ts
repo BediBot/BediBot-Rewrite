@@ -1,10 +1,5 @@
 import mongoose from 'mongoose';
-import pendingVerificationUserModel, {
-  emailAddressLinkedToPendingVerificationUser,
-  emailHashFromPendingUser,
-  userPendingVerification,
-  validUniqueKey,
-} from '../../database/models/PendingVerificationuserModel';
+import pendingVerificationUserModel, {emailAddressLinkedToPendingVerificationUser, emailHashFromPendingUser, userPendingVerification, validUniqueKey,} from '../../database/models/PendingVerificationuserModel';
 import {hashString} from '../../utils/hashUtil';
 
 describe('PendingVerification DB', () => {
@@ -16,13 +11,9 @@ describe('PendingVerification DB', () => {
     });
   });
 
-  afterEach(async () => {
-    await mongoose.connection.db.dropDatabase();
-  });
+  afterEach(async () => { await mongoose.connection.db.dropDatabase(); });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  afterAll(async () => { await mongoose.connection.close(); });
 
   test('emailAddressLinkedToPendingVerificationUser', async () => {
     const email = 'randomString@gmail.com';

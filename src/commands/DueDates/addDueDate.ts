@@ -1,12 +1,13 @@
 import {Args, PieceContext} from '@sapphire/framework';
 import {Formatters, Message, MessageActionRow, MessageButton, MessageSelectMenu} from 'discord.js';
+import moment from 'moment-timezone/moment-timezone-utils';
+
+import {addDueDate} from '../../database/models/DueDateModel';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
-import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
-import moment from 'moment-timezone/moment-timezone-utils';
-import {addDueDate} from '../../database/models/DueDateModel';
 import {didDateChange, isValidMonth} from '../../utils/dateUtil';
+import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -18,9 +19,9 @@ module.exports = class AddDueDateCommand extends Command {
       description: 'Adds a due date',
       preconditions: ['GuildOnly', 'DueDatesEnabled', 'DueDatesSetup'],
       detailedDescription: 'addDueDate <title> <month> <day> <year> <time:optional>`' +
-          '\nThe month can be long (January), short (Jan), or number (1).' +
-          '\nYou can specify the (optional) time in most common time formats.' +
-          '\nMake sure to run the displayDueDates command somewhere!',
+	  '\nThe month can be long (January), short (Jan), or number (1).' +
+	  '\nYou can specify the (optional) time in most common time formats.' +
+	  '\nMake sure to run the displayDueDates command somewhere!',
     });
   }
 
@@ -38,19 +39,18 @@ module.exports = class AddDueDateCommand extends Command {
 
     if (!title.success || !month.success || !day.success || !year.success) return invalidSyntaxReply(message, settingsData);
 
-    // If month is a string, parse it into a date and extract the month number. This works with full month and short forms as well.
+    // If month is a string, parse it into a date and extract the month number. This works with full month and short forms as
+    // well.
     month = isValidMonth(month.value);
 
     if (!month) return invalidSyntaxReply(message, settingsData);
 
     let date = new Date(year.value, month - 1, day.value);
 
-    // Sometimes an invalid date can be created but the date will change e.g Feb 29, 2021 becomes Mar 1, 2021. This doesn't let those cases through
+    // Sometimes an invalid date can be created but the date will change e.g Feb 29, 2021 becomes Mar 1, 2021. This doesn't let
+    // those cases through
     if (didDateChange(date, day.value, month, year.value)) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Add Due Date Reply')
-          .setDescription('That date is invalid!');
+      const embed = new BediEmbed().setColor(colors.ERROR).setTitle('Add Due Date Reply').setDescription('That date is invalid!');
       return message.channel.send({embeds: [embed]});
     }
 
@@ -60,11 +60,9 @@ module.exports = class AddDueDateCommand extends Command {
 
     if (timeString.success) {
       if (!isValidTime(timeString.value)) {
-        const embed = new BediEmbed()
-            .setColor(colors.ERROR)
-            .setTitle('Add Due Date Reply')
-            .setDescription('That is not a valid time.');
-        return message.reply({embeds: [embed]});
+	const embed =
+	    new BediEmbed().setColor(colors.ERROR).setTitle('Add Due Date Reply').setDescription('That is not a valid time.');
+	return message.reply({embeds: [embed]});
       }
 
       const job = await agenda.schedule(timeString.value, 'Dummy Job', {});
@@ -77,9 +75,9 @@ module.exports = class AddDueDateCommand extends Command {
 
     if (dateMoment < moment().subtract(1, 'd') || (!dateOnly && dateMoment < moment())) {
       const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Add Due Date Reply')
-          .setDescription('You can not set a date/time in the past.');
+			.setColor(colors.ERROR)
+			.setTitle('Add Due Date Reply')
+			.setDescription('You can not set a date/time in the past.');
       return message.reply({embeds: [embed]});
     }
 
@@ -87,85 +85,76 @@ module.exports = class AddDueDateCommand extends Command {
 
     const typeSelectMenu = new MessageSelectMenu().setCustomId('typeSelect').setPlaceholder('Select a Type');
     for (const type of settingsData.types) {
-      typeSelectMenu.addOptions([
-        {
-          label: type,
-          value: type,
-        }]);
+      typeSelectMenu.addOptions([{
+	label: type,
+	value: type,
+      }]);
     }
     const typeSelect = new MessageActionRow().addComponents(typeSelectMenu);
 
     const categorySelectMenu = new MessageSelectMenu().setCustomId('categorySelect').setPlaceholder('Select a Category');
     for (const category of settingsData.categories) {
-      categorySelectMenu.addOptions([
-        {
-          label: category,
-          value: category,
-        }]);
+      categorySelectMenu.addOptions([{
+	label: category,
+	value: category,
+      }]);
     }
     const categorySelect = new MessageActionRow().addComponents(categorySelectMenu);
 
     const courseSelectMenu = new MessageSelectMenu().setCustomId('courseSelect').setPlaceholder('Select a Course');
     for (const course of settingsData.courses) {
-      courseSelectMenu.addOptions([
-        {
-          label: course,
-          value: course,
-        }]);
+      courseSelectMenu.addOptions([{
+	label: course,
+	value: course,
+      }]);
     }
     const courseSelect = new MessageActionRow().addComponents(courseSelectMenu);
 
-    const buttons = new MessageActionRow()
-        .addComponents([
-          new MessageButton()
-              .setCustomId('dueDateSubmit')
-              .setLabel('Submit')
-              .setStyle('SUCCESS'),
-          new MessageButton()
-              .setCustomId('dueDateCancel')
-              .setLabel('Cancel')
-              .setStyle('DANGER'),
-        ]);
+    const buttons = new MessageActionRow().addComponents([
+      new MessageButton().setCustomId('dueDateSubmit').setLabel('Submit').setStyle('SUCCESS'),
+      new MessageButton().setCustomId('dueDateCancel').setLabel('Cancel').setStyle('DANGER'),
+    ]);
 
-    const embed = new BediEmbed()
-        .setColor(colors.ACTION)
-        .setTitle('Add Due Date Reply');
+    const embed = new BediEmbed().setColor(colors.ACTION).setTitle('Add Due Date Reply');
 
-    if (dateOnly) embed.setDescription(`${Formatters.inlineCode(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:D>`);
-    else embed.setDescription(`${Formatters.inlineCode(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:F>`);
+    if (dateOnly)
+      embed.setDescription(`${Formatters.inlineCode(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:D>`);
+    else
+      embed.setDescription(`${Formatters.inlineCode(title.value)} to be due <t:${Math.round(date.valueOf() / 1000)}:F>`);
     const reply = await message.reply({
       embeds: [embed],
       components: [typeSelect, categorySelect, courseSelect, buttons],
     });
 
-    let type: string | null = null;
-    let category: string | null = null;
-    let course: string | null = null;
+    let type: string|null = null;
+    let category: string|null = null;
+    let course: string|null = null;
 
     const selectCollector = reply.createMessageComponentCollector({componentType: 'SELECT_MENU', time: 60000});
     selectCollector.on('collect', async interaction => {
       if (!interaction.isSelectMenu()) return;
       if (interaction.user.id != message.author.id) {
-        const embed = new BediEmbed()
-            .setTitle('Add Due Date Reply')
-            .setColor(colors.ERROR)
-            .setDescription('You did not run this command');
+	const embed =
+	    new BediEmbed().setTitle('Add Due Date Reply').setColor(colors.ERROR).setDescription('You did not run this command');
 
-        return interaction.reply({
-          ephemeral: true,
-          embeds: [embed],
-        });
+	return interaction.reply({
+	  ephemeral: true,
+	  embeds: [embed],
+	});
       }
       await interaction.deferUpdate();
 
-      if (interaction.customId === 'typeSelect') type = interaction.values[0];
-      else if (interaction.customId === 'categorySelect') category = interaction.values[0];
-      else course = interaction.values[0];
+      if (interaction.customId === 'typeSelect')
+	type = interaction.values[0];
+      else if (interaction.customId === 'categorySelect')
+	category = interaction.values[0];
+      else
+	course = interaction.values[0];
     });
 
     selectCollector.on('end', async collected => {
       await reply.edit({
-        components: [],
+	components: [],
       });
     });
 
@@ -173,56 +162,50 @@ module.exports = class AddDueDateCommand extends Command {
     buttonCollector.on('collect', async interaction => {
       if (!interaction.isButton()) return;
       if (interaction.user.id != message.author.id) {
-        const embed = new BediEmbed()
-            .setTitle('Add Due Date Reply')
-            .setColor(colors.ERROR)
-            .setDescription('You did not run this command');
+	const embed =
+	    new BediEmbed().setTitle('Add Due Date Reply').setColor(colors.ERROR).setDescription('You did not run this command');
 
-        return interaction.reply({
-          ephemeral: true,
-          embeds: [embed],
-        });
+	return interaction.reply({
+	  ephemeral: true,
+	  embeds: [embed],
+	});
       }
 
       if (interaction.customId === 'dueDateCancel') {
-        embed.setColor(colors.ERROR)
-             .setDescription('Due Date cancelled.');
+	embed.setColor(colors.ERROR).setDescription('Due Date cancelled.');
 
-        await reply.edit({
-          embeds: [embed],
-          components: [],
-        });
-        return interaction.deferUpdate();
+	await reply.edit({
+	  embeds: [embed],
+	  components: [],
+	});
+	return interaction.deferUpdate();
       }
 
       if (!type || !category || !course) {
-        const embed = new BediEmbed()
-            .setTitle('Add Due Date Reply')
-            .setDescription('Please select a due date, category, and course first');
+	const embed =
+	    new BediEmbed().setTitle('Add Due Date Reply').setDescription('Please select a due date, category, and course first');
 
-        return interaction.reply({
-          ephemeral: true,
-          embeds: [embed],
-        });
+	return interaction.reply({
+	  ephemeral: true,
+	  embeds: [embed],
+	});
       }
 
       await addDueDate(guildId as string, title.value, date, type, category, course, dateOnly);
 
       const jobs = await agenda.jobs({
-        name: DUE_DATE_UPDATE_JOB_NAME,
-        'data.guildId': guildId,
-        'data.category': category,
+	name: DUE_DATE_UPDATE_JOB_NAME,
+	'data.guildId': guildId,
+	'data.category': category,
       });
 
-      if (jobs.length != 0) {
-        await jobs[0].run();
-      }
+      if (jobs.length != 0) { await jobs[0].run(); }
 
       embed.setColor(colors.SUCCESS);
 
       await reply.edit({
-        embeds: [embed],
-        components: [],
+	embeds: [embed],
+	components: [],
       });
 
       return interaction.deferUpdate();
@@ -236,12 +219,14 @@ module.exports = class AddDueDateCommand extends Command {
  * @param settingsData
  * @returns {Promise<Message>}
  */
-const invalidSyntaxReply = async (message: Message, settingsData: { prefix: string; }) => {
-  const embed = new BediEmbed()
-      .setColor(colors.ERROR)
-      .setTitle('Add Due Date Reply')
-      .setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(
-          settingsData.prefix + 'addDueDate <title> <month> <day> <year> <time:optional>')}`,
-      );
+const invalidSyntaxReply = async (message: Message, settingsData: {prefix: string;}) => {
+  const embed =
+      new BediEmbed()
+	  .setColor(colors.ERROR)
+	  .setTitle('Add Due Date Reply')
+	  .setDescription(
+	      `Invalid Syntax!\n\nMake sure your command is in the format ${
+		  Formatters.inlineCode(settingsData.prefix + 'addDueDate <title> <month> <day> <year> <time:optional>')}`,
+	  );
   return message.channel.send({embeds: [embed]});
 };

@@ -1,18 +1,20 @@
 import {model, Schema} from 'mongoose';
-import {getSettings} from './SettingsModel';
+
 import {hashString} from '../../utils/hashUtil';
 
+import {getSettings} from './SettingsModel';
+
 interface VerifiedUserI {
-  userId: string,
-  guildId: string,
-  emailHash: string,
+  userId: string, guildId: string, emailHash: string,
 }
 
-export const VerifiedUser = new Schema({
-  userId: String,
-  guildId: String,
-  emailHash: String,
-}, {versionKey: false});
+export const VerifiedUser = new Schema(
+    {
+      userId: String,
+      guildId: String,
+      emailHash: String,
+    },
+    {versionKey: false});
 
 const verifiedUserModel = model<VerifiedUserI>('VerifiedUser', VerifiedUser, 'VerifiedUsers');
 
@@ -41,9 +43,7 @@ export const userVerifiedAnywhereEmailHash = async (userId: string, guildId: str
     const origSettingsData = await getSettings(guildId);
     const otherSettingsData = await getSettings(guildId);
 
-    if (origSettingsData.emailDomain === otherSettingsData.emailDomain) {
-      return doc.emailHash;
-    }
+    if (origSettingsData.emailDomain === otherSettingsData.emailDomain) { return doc.emailHash; }
   }
   return null;
 };

@@ -11,13 +11,9 @@ describe('Birthday DB', () => {
     });
   });
 
-  afterEach(async () => {
-    await mongoose.connection.db.dropDatabase();
-  });
+  afterEach(async () => { await mongoose.connection.db.dropDatabase(); });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  afterAll(async () => { await mongoose.connection.close(); });
 
   test('updateBirthday', async () => {
     const userId = 'randomID';

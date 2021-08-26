@@ -2,18 +2,17 @@ import {model, Schema} from 'mongoose';
 import {reqDate, reqString} from '../../utils/databaseUtil';
 
 interface QuoteI {
-  guildId: string,
-  quote: string,
-  name: string,
-  date: Date,
+  guildId: string, quote: string, name: string, date: Date,
 }
 
-export const Quote = new Schema({
-  guildId: reqString,
-  quote: reqString,
-  name: reqString,
-  date: reqDate,
-}, {versionKey: false});
+export const Quote = new Schema(
+    {
+      guildId: reqString,
+      quote: reqString,
+      name: reqString,
+      date: reqDate,
+    },
+    {versionKey: false});
 
 const quoteModel = model<QuoteI>('Quote', Quote, 'Quotes');
 

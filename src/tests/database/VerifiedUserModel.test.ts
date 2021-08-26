@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
-import {hashString} from '../../utils/hashUtil';
+
 import verifiedUserModel, {emailAddressLinkedToUser} from '../../database/models/VerifiedUserModel';
+import {hashString} from '../../utils/hashUtil';
 
 describe('VerifiedUsers DB', () => {
   beforeAll(async () => {
@@ -11,13 +12,9 @@ describe('VerifiedUsers DB', () => {
     });
   });
 
-  afterEach(async () => {
-    await mongoose.connection.db.dropDatabase();
-  });
+  afterEach(async () => { await mongoose.connection.db.dropDatabase(); });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  afterAll(async () => { await mongoose.connection.close(); });
 
   test('emailAddressLinkedToUser', async () => {
     const emailAddress = 'randomString@gmail.com';

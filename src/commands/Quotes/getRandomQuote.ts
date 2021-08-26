@@ -1,9 +1,10 @@
 import {Args, PieceContext} from '@sapphire/framework';
 import {Formatters, Message} from 'discord.js';
-import {BediEmbed} from '../../lib/BediEmbed';
-import colors from '../../utils/colorUtil';
+
 import {getRandomQuoteFromAuthor, getRandomQuoteInGuild} from '../../database/models/QuoteModel';
 import {getSettings} from '../../database/models/SettingsModel';
+import {BediEmbed} from '../../lib/BediEmbed';
+import colors from '../../utils/colorUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -38,14 +39,10 @@ module.exports = class GetRandomQuoteCommand extends Command {
     }
 
     if (!quoteDoc) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Get Random Quote Reply')
-          .setDescription('No quotes found!');
+      const embed = new BediEmbed().setColor(colors.ERROR).setTitle('Get Random Quote Reply').setDescription('No quotes found!');
       return message.reply({embeds: [embed]});
     }
-    const embed = new BediEmbed()
-        .setTitle('Get Random Quote Reply');
+    const embed = new BediEmbed().setTitle('Get Random Quote Reply');
 
     let quoteText = quoteDoc.quote;
 
@@ -54,16 +51,17 @@ module.exports = class GetRandomQuoteCommand extends Command {
 
     if (quoteDoc.date) {
       if (typeof quoteAuthor === 'string') {
-        embed.setDescription(
-            `Quote: ${quoteText}\nAuthor: ${Formatters.inlineCode(quoteDoc.name)}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
+	embed.setDescription(`Quote: ${quoteText}\nAuthor: ${Formatters.inlineCode(quoteDoc.name)}\nDate: <t:${
+	    Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
       } else {
-        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
+	embed.setDescription(
+	    `Quote: ${quoteText}\nAuthor: ${quoteDoc.name}\nDate: <t:${Math.round(quoteDoc.date.valueOf() / 1000)}:f>`);
       }
     } else {
       if (typeof quoteAuthor === 'string') {
-        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${Formatters.inlineCode(quoteDoc.name)}`);
+	embed.setDescription(`Quote: ${quoteText}\nAuthor: ${Formatters.inlineCode(quoteDoc.name)}`);
       } else {
-        embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}`);
+	embed.setDescription(`Quote: ${quoteText}\nAuthor: ${quoteDoc.name}`);
       }
     }
     return message.reply({embeds: [embed]});

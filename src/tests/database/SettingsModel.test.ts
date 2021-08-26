@@ -1,5 +1,6 @@
-import SettingsModel, {defaultSettings, getSettings} from '../../database/models/SettingsModel';
 import mongoose from 'mongoose';
+
+import SettingsModel, {defaultSettings, getSettings} from '../../database/models/SettingsModel';
 
 describe('Settings DB', () => {
   beforeAll(async () => {
@@ -10,13 +11,9 @@ describe('Settings DB', () => {
     });
   });
 
-  afterEach(async () => {
-    await mongoose.connection.db.dropDatabase();
-  });
+  afterEach(async () => { await mongoose.connection.db.dropDatabase(); });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  afterAll(async () => { await mongoose.connection.close(); });
 
   test('Settings Already Exist', async () => {
     const guildId = 'randomString';

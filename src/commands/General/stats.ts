@@ -16,10 +16,11 @@ module.exports = class StatsCommand extends Command {
   }
 
   async run(message: Message) {
-    const embed = new BediEmbed()
-        .setTitle('Stats Reply')
-        .setDescription(`Guild Count: ${Formatters.inlineCode(String(numGuilds(this.container.client)))}\nMember Count: ${Formatters.inlineCode(
-            String(await numUsers(this.container.client)))}`);
+    const embed =
+	new BediEmbed()
+	    .setTitle('Stats Reply')
+	    .setDescription(`Guild Count: ${Formatters.inlineCode(String(numGuilds(this.container.client)))}\nMember Count: ${
+		Formatters.inlineCode(String(await numUsers(this.container.client)))}`);
     return message.reply({embeds: [embed]});
   }
 };

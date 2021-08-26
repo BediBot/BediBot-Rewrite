@@ -25,20 +25,17 @@ module.exports = class UnlockCommand extends Command {
     const roleString = await args.peekResult('string');
     if (!roleString.success) {
       const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Unlock Reply')
-          .setDescription(
-              `Invalid Syntax!\n\nMake sure your command is in the format ${Formatters.inlineCode(settingsData.prefix + 'unlock <role>')}`);
+			.setColor(colors.ERROR)
+			.setTitle('Unlock Reply')
+			.setDescription(`Invalid Syntax!\n\nMake sure your command is in the format ${
+			    Formatters.inlineCode(settingsData.prefix + 'unlock <role>')}`);
       return message.reply({embeds: [embed]});
     }
 
     // Check if the string is a valid role
     const role = await args.pickResult('role');
     if (!role.success) {
-      const embed = new BediEmbed()
-          .setColor(colors.ERROR)
-          .setTitle('Unlock Reply')
-          .setDescription('That is not a valid role.');
+      const embed = new BediEmbed().setColor(colors.ERROR).setTitle('Unlock Reply').setDescription('That is not a valid role.');
       return message.reply({embeds: [embed]});
     }
 
@@ -56,10 +53,9 @@ module.exports = class UnlockCommand extends Command {
     });
 
     const embed = new BediEmbed()
-        .setTitle('Unlock Reply')
-        .setColor(colors.SUCCESS)
-        .setDescription(`Channel has been unlocked for ${role.value.toString()}`);
+		      .setTitle('Unlock Reply')
+		      .setColor(colors.SUCCESS)
+		      .setDescription(`Channel has been unlocked for ${role.value.toString()}`);
     return message.reply({embeds: [embed]});
   }
 };
-
