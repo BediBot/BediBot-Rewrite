@@ -108,10 +108,10 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
             if (quote?.date) {
                 if (user)
                     description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${quote?.name}\nDate: <t:${
-                        Math.round(quote.date.valueOf() / 1000)}:D>`;
+                        Math.round(quote.date.valueOf() / 1000)}:f>`;
                 else
                     description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${
-                        Formatters.inlineCode(quote?.name as string)}\nDate: <t:${Math.round(quote.date.valueOf() / 1000)}:D>`;
+                        Formatters.inlineCode(quote?.name as string)}\nDate: <t:${Math.round(quote.date.valueOf() / 1000)}:f>`;
             } else {
                 if (user)
                     description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${quote?.name}`;
