@@ -138,8 +138,10 @@ module.exports = class AddQuoteCommand extends Command {
             const settingsData = await getSettings(interaction.guildId as string);
 
             if (numApprovals < settingsData.quoteApprovalsRequired) {
-                const embed = new BediEmbed().setTitle(
-                    `Add Quote Reply - Approvals: ${numApprovals}/${settingsData.quoteApprovalsRequired}`);
+                const embed =
+                    new BediEmbed()
+                        .setColor(colors.ACTION)
+                        .setTitle(`Add Quote Reply - Approvals: ${numApprovals}/${settingsData.quoteApprovalsRequired}`);
 
                 if (typeof quoteAuthor.value === 'string') {
                     embed.setDescription(
