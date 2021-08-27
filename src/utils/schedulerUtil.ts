@@ -158,9 +158,9 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
         const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
         if (channel) {
             const settingsData = await getSettings(guildId);
-            const birthdays = await getBirthdaysToday(settingsData.timezone);
+            let birthdays = await getBirthdaysToday(settingsData.timezone);
             const guildMembers = await guild.members.fetch();
-            birthdays.filter(birthday => guildMembers.has(birthday._id));
+            birthdays = birthdays.filter(birthday => guildMembers.has(birthday._id));
 
             let role = null;
             if (roleId) {
