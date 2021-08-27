@@ -38,9 +38,9 @@ module.exports = class GetBirthdays extends Command {
 
         if (!month) return invalidSyntaxReply(message, settingsData);
 
-        const birthdays = await getBirthdaysFromMonth(month as number);
+        let birthdays = await getBirthdaysFromMonth(month as number);
         const members = await message.guild?.members.fetch();
-        birthdays.filter(birthday => members?.has(birthday._id));
+        birthdays = birthdays.filter(birthday => members?.has(birthday._id));
 
         if (birthdays.length === 0) {
             const embed =
@@ -48,7 +48,7 @@ module.exports = class GetBirthdays extends Command {
             return message.reply({embeds: [embed]});
         }
 
-        const embed = new BediEmbed().setTitle('Get Birthdays Reply').setDescription('Searching for Quotes');
+        const embed = new BediEmbed().setTitle('Get Birthdays Reply').setDescription('Searching for Birthdays');
 
         const response = await message.reply({embeds: [embed]});
 
@@ -66,6 +66,7 @@ module.exports = class GetBirthdays extends Command {
 
             for (let j = 0; j < MAX_BIRTHDAYS_PER_PAGE; j++) {
                 if ((i + j) >= birthdays.length) break;
+
                 embed.addField(
                     `${monthString} ${birthdays[i + j].birthDate.getDate()}`,
                     members?.get(birthdays[i + j]._id)?.toString() as MemberMention, false);
