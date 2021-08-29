@@ -1,5 +1,5 @@
 import {container, SapphireClient} from '@sapphire/framework';
-import {Collection, Guild, GuildMember, Message, Role} from 'discord.js';
+import {Collection, Guild, GuildMember, Message, Role, ThreadChannel} from 'discord.js';
 import moment from 'moment-timezone/moment-timezone-utils';
 
 import {DEFAULT_PREFIX} from '../config';
@@ -75,7 +75,7 @@ export const fetchPrefix = async (message: Message) => {
  * @returns whether the message was actually deleted or not
  */
 export const purgeMessages = async (message: Message, numMessages: number) => {
-    if (message.channel.type == 'GUILD_TEXT') {
+    if (message.channel.type == 'GUILD_TEXT' || message.channel instanceof ThreadChannel) {
         const fetchedMessages = await message.channel.messages.fetch({limit: numMessages, before: message.id});
         const messagesToDelete = await fetchedMessages.filter(
             (m: Message) => !m.pinned || m.createdTimestamp < moment().subtract(14, 'd').toDate().valueOf());
