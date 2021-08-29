@@ -2,7 +2,7 @@ import {PaginatedMessage} from '@sapphire/discord.js-utilities';
 import {Args, PieceContext} from '@sapphire/framework';
 import {Formatters, MemberMention, Message} from 'discord.js';
 
-import {getBirthdaysFromMonth} from '../../database/models/BirthdayModel';
+import {getAllBirthdays, getBirthdaysFromMonth} from '../../database/models/BirthdayModel';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
@@ -32,13 +32,29 @@ module.exports = class GetBirthdays extends Command {
         month = await args.pickResult('integer');
         if (!month.success) month = await args.pickResult('string');
 
-        if (!month.success) return invalidSyntaxReply(message, settingsData);
+        let birthdays;
+        let singleMonth = false;
+        if (!month.success)
+            birthdays = await getAllBirthdays();
+        else {
+            month = isValidMonth(month.value);
 
-        month = isValidMonth(month.value);
+            if (!month) {
+                const embed = new BediEmbed()
+                                  .setColor(colors.ERROR)
+                                  .setTitle('Get Birthdays Reply')
+                                  .setDescription(
+                                      `Invalid Syntax!\n\nMake sure your command is in the format ${
+                                          Formatters.inlineCode(settingsData.prefix + 'getBirthdays <month>')}`,
+                                  );
+                return message.channel.send({embeds: [embed]});
+            }
 
-        if (!month) return invalidSyntaxReply(message, settingsData);
+            birthdays = await getBirthdaysFromMonth(month as number);
 
-        let birthdays = await getBirthdaysFromMonth(month as number);
+            singleMonth = true;
+        }
+
         const members = await message.guild?.members.fetch();
         birthdays = birthdays.filter(birthday => members?.has(birthday._id));
 
@@ -49,11 +65,9 @@ module.exports = class GetBirthdays extends Command {
         }
 
         const embed = new BediEmbed().setTitle('Get Birthdays Reply').setDescription('Searching for Birthdays');
-
         const response = await message.reply({embeds: [embed]});
 
-        const monthString = birthdays[0].birthDate.toLocaleString('default', {month: 'long'});
-        const templateDescription = `Here are the birthdays for the month of ${Formatters.inlineCode(monthString)}`;
+        const templateDescription = `Here are the birthdays for ${Formatters.inlineCode(message.guild?.name as string)}`;
 
         const paginatedMessage = new PaginatedMessage();
 
@@ -64,8 +78,13 @@ module.exports = class GetBirthdays extends Command {
                     .setDescription(templateDescription)
                     .setFooter('  For any concerns, contact a BediBot Dev');  // The spaces before 'For' here are intentional
 
+            if (singleMonth)
+                embed.setTitle('Get Birthdays Reply - ' + birthdays[0].birthDate.toLocaleString('default', {month: 'long'}));
+
             for (let j = 0; j < MAX_BIRTHDAYS_PER_PAGE; j++) {
                 if ((i + j) >= birthdays.length) break;
+
+                const monthString = birthdays[i + j].birthDate.toLocaleString('default', {month: 'long'});
 
                 embed.addField(
                     `${monthString} ${birthdays[i + j].birthDate.getDate()}`,
@@ -75,21 +94,4 @@ module.exports = class GetBirthdays extends Command {
         }
         return paginatedMessage.run(response, message.author);
     }
-};
-
-/**
- * Replies with the invalid syntax message - This function is purely to avoid repeated code
- * @param message
- * @param settingsData
- * @returns {Promise<Message>}
- */
-const invalidSyntaxReply = async (message: Message, settingsData: {prefix: string;}) => {
-    const embed = new BediEmbed()
-                      .setColor(colors.ERROR)
-                      .setTitle('Get Birthdays Reply')
-                      .setDescription(
-                          `Invalid Syntax!\n\nMake sure your command is in the format ${
-                              Formatters.inlineCode(settingsData.prefix + 'getbirthdays <month>')}`,
-                      );
-    return message.channel.send({embeds: [embed]});
 };
