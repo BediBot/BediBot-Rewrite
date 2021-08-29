@@ -6,6 +6,7 @@ import {addQuote} from '../../database/models/QuoteModel';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
+import logger from '../../utils/loggerUtil';
 
 const {Command} = require('@sapphire/framework');
 
@@ -179,10 +180,15 @@ module.exports = class AddQuoteCommand extends Command {
                 const embed = response.embeds[0];
                 embed.setTitle('Add Quote Reply - Timed Out').setColor(colors.ERROR);
 
-                await response.edit({
-                    embeds: [embed],
-                    components: [],
-                });
+                await response
+                    .edit({
+                        embeds: [embed],
+                        components: [],
+                    })
+                    .catch(
+                        () => logger.error(
+                            `Unable to edit Add Quote Response in ${message.guild?.name}.` +
+                            `Usually due to response being deleted by an admin.`));
             }
         });
     }
