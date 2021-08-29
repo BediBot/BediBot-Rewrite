@@ -28,6 +28,8 @@ module.exports = class HelpCommand extends Command {
             const selectMenu = new MessageSelectMenu().setCustomId('helpSelect').setPlaceholder('Select a Category');
 
             for (const category of this.categories) {
+                if (category === 'Owner') continue;
+
                 const embed = new BediEmbed()
                                   .setTitle('Help Reply - ' + category)
                                   .setDescription(`To get more detailed information about a command, type ${
