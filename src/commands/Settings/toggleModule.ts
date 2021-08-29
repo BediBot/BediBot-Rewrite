@@ -82,10 +82,15 @@ module.exports = class SettingsCommand extends Command {
         });
 
         selectCollector.on('end', async collected => {
-            await reply.edit({
-                embeds: [embed],
-                components: [],
-            });
+            await reply
+                .edit({
+                    embeds: [embed],
+                    components: [],
+                })
+                .catch(
+                    () => logger.error(
+                        `Unable to edit Toggle Modules Response in ${message.guild?.name}.` +
+                        `Usually due to response being deleted by an admin.`));
         });
 
         const buttonCollector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 60000});

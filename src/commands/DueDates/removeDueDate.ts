@@ -7,6 +7,7 @@ import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {didDateChange, isValidMonth} from '../../utils/dateUtil';
+import logger from '../../utils/loggerUtil';
 import {agenda, DUE_DATE_UPDATE_JOB_NAME, isValidTime} from '../../utils/schedulerUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -157,10 +158,15 @@ module.exports = class RemoveDueDateCommand extends Command {
         });
 
         selectCollector.on('end', async collected => {
-            await reply.edit({
-                embeds: [embed],
-                components: [],
-            });
+            await reply
+                .edit({
+                    embeds: [embed],
+                    components: [],
+                })
+                .catch(
+                    () => logger.error(
+                        `Unable to edit Remove Due Date Response in ${message.guild?.name}.` +
+                        `Usually due to response being deleted by an admin.`));
         });
 
         const buttonCollector = reply.createMessageComponentCollector({componentType: 'BUTTON', time: 60000});

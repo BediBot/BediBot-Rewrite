@@ -5,6 +5,7 @@ import moment from 'moment-timezone/moment-timezone-utils';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
+import logger from '../../utils/loggerUtil';
 import {agenda, isValidTime, MORN_ANNOUNCE_JOB_NAME} from '../../utils/schedulerUtil';
 
 const {Command} = require('@sapphire/framework');
@@ -120,10 +121,15 @@ module.exports = class MorningAnnouncementCommand extends Command {
                                   .setTitle('Morning Announcement Reply')
                                   .setColor(colors.ERROR)
                                   .setDescription('You took too long to choose. Announcements have not been scheduled.');
-                await reply.edit({
-                    embeds: [embed],
-                    components: [],
-                });
+                await reply
+                    .edit({
+                        embeds: [embed],
+                        components: [],
+                    })
+                    .catch(
+                        () => logger.error(
+                            `Unable to edit Morning Announcement Response in ${message.guild?.name}.` +
+                            `Usually due to response being deleted by an admin.`));
             }
         });
     }
