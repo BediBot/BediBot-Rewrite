@@ -60,4 +60,12 @@ export const getBirthdaysToday = async (timezone: string) => {
     ]);
 };
 
+/**
+ * Gets all the birthdays stored in the database
+ * @returns {Promise<Aggregate<Array<any>>>}
+ */
+export const getAllBirthdays = async () => {
+    return birthdayModel.find().sort({birthDate: 1});
+};
+
 export default birthdayModel;
