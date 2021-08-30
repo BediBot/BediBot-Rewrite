@@ -47,17 +47,23 @@ module.exports = class RemoveQuoteCommand extends Command {
             return message.reply({embeds: [embed]});
         }
 
-        const dateString = response.date.toDateString();
-
         const embed = new BediEmbed().setTitle('Remove Quote Reply');
 
         if (typeof quoteAuthor.value === 'string') {
-            embed.setDescription(`Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${
-                Formatters.inlineCode(quoteAuthor.value as string)}\nDate: <t:${
-                Math.round(response.date.valueOf() / 1000)}:f>\nRemoved By: ${author}`);
+            if (response.date)
+                embed.setDescription(`Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${
+                    Formatters.inlineCode(quoteAuthor.value as string)}\nDate: <t:${
+                    Math.round(response.date.valueOf() / 1000)}:f>\nRemoved By: ${author}`);
+            else
+                embed.setDescription(`Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${
+                    Formatters.inlineCode(quoteAuthor.value as string)}\nRemoved By: ${author}`);
         } else {
-            embed.setDescription(`Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${quoteAuthor.value}\nDate: <t:${
-                Math.round(response.date.valueOf() / 1000)}:f>\nRemoved By: ${author}`);
+            if (response.date)
+                embed.setDescription(`Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${quoteAuthor.value}\nDate: <t:${
+                    Math.round(response.date.valueOf() / 1000)}:f>\nRemoved By: ${author}`);
+            else
+                embed.setDescription(
+                    `Quote: ${Formatters.inlineCode(quote.value)}\nAuthor: ${quoteAuthor.value}\nRemoved By: ${author}`);
         }
 
         return message.reply({embeds: [embed]});
