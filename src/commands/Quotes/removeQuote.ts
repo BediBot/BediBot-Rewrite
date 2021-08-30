@@ -47,8 +47,6 @@ module.exports = class RemoveQuoteCommand extends Command {
             return message.reply({embeds: [embed]});
         }
 
-        const dateString = response.date.toDateString();
-
         const embed = new BediEmbed().setTitle('Remove Quote Reply');
 
         if (typeof quoteAuthor.value === 'string') {
