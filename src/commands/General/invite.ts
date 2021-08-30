@@ -16,10 +16,13 @@ module.exports = class InviteCommand extends Command {
     }
 
     async run(message: Message) {
-        const embed =
-            new BediEmbed().setTitle('Invite Reply').setDescription(`Click the link below to invite BediBot to your own server!\n
-                    Ensure that you have a ${Formatters.inlineCode('SYSTEM MESSAGES CHANNEL')} enabled!\n
-                    This can be found under ${Formatters.inlineCode('Server Settings -> Overview -> System Messages Channel')}`);
+        const embed = new BediEmbed()
+                          .setTitle('Invite Reply')
+                          .setDescription(
+                              `Click the link below to invite BediBot to your own server!` +
+                              `\n\nEnsure that you have a ${Formatters.inlineCode('SYSTEM MESSAGES CHANNEL')} enabled!` +
+                              `\n\nThis can be found under ${
+                                  Formatters.inlineCode('Server Settings -> Overview -> System Messages Channel')}`);
 
         const row = new MessageActionRow().addComponents(
             new MessageButton().setLabel('Invite').setStyle('LINK').setURL(
