@@ -95,6 +95,7 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
     const guildId = job.attrs.data?.guildId;
     const channelId = job.attrs.data?.channelId;
     const autoDelete = job.attrs.data?.autoDelete;
+    const settingsData = await getSettings(guildId);
 
     const guild = client.guilds.cache.get(guildId);
 
@@ -105,20 +106,24 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
             const user = await getUserFromMention(quote?.name as string);
 
             let description: string;
-            if (quote?.date) {
-                if (user)
-                    description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${quote?.name}\nDate: <t:${
-                        Math.round(quote.date.valueOf() / 1000)}:f>`;
-                else
-                    description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${
-                        Formatters.inlineCode(quote?.name as string)}\nDate: <t:${Math.round(quote.date.valueOf() / 1000)}:f>`;
-            } else {
-                if (user)
-                    description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${quote?.name}`;
-                else
-                    description = `Quote: ${Formatters.inlineCode(quote?.quote as string)}\nAuthor: ${
-                        Formatters.inlineCode(quote?.name as string)}`;
-            }
+            if (quote) {
+                if (quote.date) {
+                    if (user)
+                        description = `Quote: ${Formatters.inlineCode(quote.quote as string)}\nAuthor: ${quote.name}\nDate: <t:${
+                            Math.round(quote.date.valueOf() / 1000)}:f>`;
+                    else
+                        description = `Quote: ${Formatters.inlineCode(quote.quote as string)}\nAuthor: ${
+                            Formatters.inlineCode(quote.name as string)}\nDate: <t:${Math.round(quote.date.valueOf() / 1000)}:f>`;
+                } else {
+                    if (user)
+                        description = `Quote: ${Formatters.inlineCode(quote.quote as string)}\nAuthor: ${quote.name}`;
+                    else
+                        description = `Quote: ${Formatters.inlineCode(quote.quote as string)}\nAuthor: ${
+                            Formatters.inlineCode(quote.name as string)}`;
+                }
+            } else
+                description = `There are no quotes in this server yet! Add some with ${
+                    Formatters.inlineCode(settingsData.prefix + 'addQuote')}`;
 
             const embed = new BediEmbed().setTitle('Good Morning!').setDescription(description);
             const newMessage = await channel.send({embeds: [embed]});
