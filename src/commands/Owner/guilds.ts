@@ -17,7 +17,7 @@ module.exports = class StatsCommand extends Command {
         let description = '';
 
         for (const guild of this.container.client.guilds.cache) {
-            description += `${Formatters.inlineCode(guild[1].name)}\n`;
+            description += `${Formatters.inlineCode(guild[1].name)} - ${Formatters.inlineCode(guild[1].id)}\n`;
         }
 
         const embed = new BediEmbed().setTitle('Guilds Reply').setDescription(description);
