@@ -35,6 +35,9 @@ export const startAgenda = async () => {
 
     agenda.on('fail', async (err, job) => {
         logger.error(`Job ${job.attrs.name} failed with error: ${err.nessage}`);
+        logger.error('==== ERROR CONTEXT BEGIN ====');
+        logger.error(JSON.stringify(job));
+        logger.error('==== ERROR CONTEXT END ====');
         await job.remove();
     });
 };
