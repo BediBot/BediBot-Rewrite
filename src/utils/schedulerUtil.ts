@@ -34,11 +34,10 @@ export const startAgenda = async () => {
     });
 
     agenda.on('fail', async (err, job) => {
-        logger.error(`Job ${job.attrs.name} failed with error: ${err.nessage}`);
+        logger.error(`Job ${job.attrs.name} failed with error: ${err.message}`);
         logger.error('==== ERROR CONTEXT BEGIN ====');
         logger.error(JSON.stringify(job));
         logger.error('==== ERROR CONTEXT END ====');
-        await job.remove();
     });
 };
 
@@ -64,7 +63,7 @@ agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
     const roleId = job.attrs.data?.roleId;
     const messageId = job.attrs.data?.messageId;
 
-    const guild = client.guilds.cache.get(guildId);
+    const guild = await client.guilds.fetch(guildId);
 
     if (guild) {
         const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
@@ -84,10 +83,12 @@ agenda.define(UNLOCK_JOB_NAME, async (job: Job) => {
             }
 
         } else {
-            await job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
+            job.fail('Channel or Role not found. This means either the channel or role has been deleted.');
+            await failAndRemoveJob(job);
         }
     } else {
-        await job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        await failAndRemoveJob(job);
     }
     await job.remove();
 });
@@ -100,7 +101,7 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
     const autoDelete = job.attrs.data?.autoDelete;
     const settingsData = await getSettings(guildId);
 
-    const guild = client.guilds.cache.get(guildId);
+    const guild = await client.guilds.fetch(guildId);
 
     if (guild) {
         const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
@@ -145,10 +146,12 @@ agenda.define(MORN_ANNOUNCE_JOB_NAME, async (job: Job) => {
                 await job.save();
             }
         } else {
-            await job.fail('Channel not found. This means that the channel has been deleted.');
+            job.fail('Channel not found. This means that the channel has been deleted.');
+            await failAndRemoveJob(job);
         }
     } else {
-        await job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        await failAndRemoveJob(job);
     }
 });
 
@@ -160,7 +163,7 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
     const roleId = job.attrs.data?.roleId;
     const autoDelete = job.attrs.data?.autoDelete;
 
-    const guild = client.guilds.cache.get(guildId);
+    const guild = await client.guilds.fetch(guildId);
 
     if (guild) {
         const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
@@ -212,10 +215,12 @@ agenda.define(BIRTH_ANNOUNCE_JOB_NAME, async (job: Job) => {
                 await job.save();
             }
         } else {
-            await job.fail('Channel not found. This means that the channel has been deleted.');
+            job.fail('Channel not found. This means that the channel has been deleted.');
+            await failAndRemoveJob(job);
         }
     } else {
-        await job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        await failAndRemoveJob(job);
     }
 });
 
@@ -229,12 +234,12 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
     const messageId = job.attrs.data?.messageId;
     const category = job.attrs.data?.category;
 
-    const guild = client.guilds.cache.get(guildId);
+    const guild = await client.guilds.fetch(guildId);
 
     if (guild) {
         const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
         if (channel) {
-            const message = await channel.messages.fetch(messageId);
+            const message = channel.messages.resolve(messageId);
             if (message) {
                 // This should never return as you should never schedule this job with a
                 // messageID unless the client sent it
@@ -299,12 +304,28 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
                 }
                 await message.edit({embeds: [embed]});
             } else {
-                await job.fail('Message not found. This means either the message has been deleted.');
+                job.fail('Message not found. This means the message has been deleted.');
+                await failAndRemoveJob(job);
             }
         } else {
-            await job.fail('Channel not found. This means that the channel has been deleted.');
+            job.fail('Channel not found. This means that the channel has been deleted.');
+            await failAndRemoveJob(job);
         }
     } else {
-        await job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        job.fail('Guild not found. This means BediBot is no longer in this guild.');
+        await failAndRemoveJob(job);
     }
 });
+
+/**
+ * Removes a failed job and logs the error and context
+ * @param job
+ * @returns {Promise<void>}
+ */
+const failAndRemoveJob = async (job: Job) => {
+    logger.error(`Job ${job.attrs.name} failed with error: ${job.attrs.failReason}`);
+    logger.error('==== ERROR CONTEXT BEGIN ====');
+    logger.error(JSON.stringify(job));
+    logger.error('==== ERROR CONTEXT END ====');
+    await job.remove();
+}
