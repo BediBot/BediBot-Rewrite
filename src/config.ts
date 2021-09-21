@@ -5,6 +5,7 @@ import {fetchPrefix} from './utils/discordUtil';
 import {getRandomStatus} from './utils/statusUtil';
 
 export const DEFAULT_PREFIX = '$';
+export const MAX_QUOTE_LENGTH = 1000;
 
 export const CLIENT_OPTIONS: ClientOptions = {
     intents: [
