@@ -2,13 +2,12 @@ import {PaginatedMessage} from '@sapphire/discord.js-utilities';
 import {Args, PieceContext} from '@sapphire/framework';
 import {Formatters, Message} from 'discord.js';
 
+import {MAX_QUOTE_LENGTH} from '../../config';
 import {getQuotesInGuild} from '../../database/models/QuoteModel';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 import {getUserFromMention} from '../../utils/discordUtil';
-
-import {QUOTE_MAX_LENGTH} from './addQuote';
 
 const {Command} = require('@sapphire/framework');
 
@@ -65,7 +64,7 @@ module.exports = class GetAllQuotesCommand extends Command {
                     title = 'Before Sep 2021';
 
                 let quoteText = quotes[i + j].quote;
-                if (quoteText.length > QUOTE_MAX_LENGTH) quoteText = quoteText.slice(QUOTE_MAX_LENGTH) + '...';
+                if (quoteText.length > MAX_QUOTE_LENGTH) quoteText = quoteText.slice(MAX_QUOTE_LENGTH) + '...';
 
                 // If a quote contains a '<' then it probably contains a mention, so don't surround it with back
                 // ticks

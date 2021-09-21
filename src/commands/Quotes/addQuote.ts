@@ -2,6 +2,7 @@ import {Args, PieceContext, Result, UserError} from '@sapphire/framework';
 import {Formatters, Message, MessageActionRow, MessageButton, Snowflake, User} from 'discord.js';
 import moment from 'moment-timezone/moment-timezone-utils';
 
+import {MAX_QUOTE_LENGTH} from '../../config';
 import {addQuote} from '../../database/models/QuoteModel';
 import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
@@ -10,7 +11,6 @@ import logger from '../../utils/loggerUtil';
 
 const {Command} = require('@sapphire/framework');
 
-const QUOTE_MAX_LENGTH = 1000;
 const TITLE_BEFORE_NUM_APPROVALS = 'Add Quote Reply - Approvals: ';
 
 module.exports = class AddQuoteCommand extends Command {
@@ -78,7 +78,7 @@ module.exports = class AddQuoteCommand extends Command {
             return message.reply({embeds: [embed]});
         }
 
-        if (quote.length > QUOTE_MAX_LENGTH) {
+        if (quote.length > MAX_QUOTE_LENGTH) {
             const embed = new BediEmbed()
                               .setColor(colors.ERROR)
                               .setTitle('Add Quote Reply')
