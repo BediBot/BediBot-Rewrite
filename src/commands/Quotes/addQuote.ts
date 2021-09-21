@@ -10,7 +10,7 @@ import logger from '../../utils/loggerUtil';
 
 const {Command} = require('@sapphire/framework');
 
-export const QUOTE_MAX_LENGTH = 1000;
+const QUOTE_MAX_LENGTH = 1000;
 const TITLE_BEFORE_NUM_APPROVALS = 'Add Quote Reply - Approvals: ';
 
 module.exports = class AddQuoteCommand extends Command {

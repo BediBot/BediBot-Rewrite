@@ -7,11 +7,10 @@ import {getSettings} from '../../database/models/SettingsModel';
 import {BediEmbed} from '../../lib/BediEmbed';
 import colors from '../../utils/colorUtil';
 
-import {QUOTE_MAX_LENGTH} from './addQuote';
-
 const {Command} = require('@sapphire/framework');
 
 const MAX_QUOTES_PER_PAGE = 5;
+const QUOTE_MAX_LENGTH = 1000;
 
 module.exports = class GetQuotesCommand extends Command {
     constructor(context: PieceContext) {
