@@ -239,7 +239,7 @@ agenda.define(DUE_DATE_UPDATE_JOB_NAME, async (job: Job) => {
     if (guild) {
         const channel = await guild.channels.fetch(channelId) as BaseGuildTextChannel;
         if (channel) {
-            const message = channel.messages.resolve(messageId);
+            const message = await channel.messages.fetch(messageId);
             if (message) {
                 // This should never return as you should never schedule this job with a
                 // messageID unless the client sent it
