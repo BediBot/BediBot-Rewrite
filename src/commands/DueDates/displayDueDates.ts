@@ -64,6 +64,6 @@ module.exports = class DisplayDueDatesCommand extends Command {
             category: categoryArg.value,
         });
 
-        await job.repeatEvery('10 seconds').save();
+        await job.repeatEvery('60 seconds').save();
     }
 };
