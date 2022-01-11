@@ -117,7 +117,7 @@ module.exports = class AddQuoteCommand extends Command {
         let numApprovals = 0;
         let approvedByString = '';
 
-        const collector = response.createMessageComponentCollector({componentType: 'BUTTON', time: 1800000});
+        const collector = response.createMessageComponentCollector({componentType: 'BUTTON', time: 7200000});
         collector.on('collect', async interaction => {
             if (!interaction.isButton() || interaction.customId != 'QuoteApprove') return;
 
