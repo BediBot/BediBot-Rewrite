@@ -108,7 +108,8 @@ module.exports = class VerifyCommand extends Command {
                           .setTitle('Verify Reply')
                           .setColor(colors.ACTION)
                           .setDescription(
-                              'Verification Email Sent to `' + emailAddress.value + '`\nCheck your email (and spam folder if it does not show up in your inbox) and run `' +
+                              'Verification Email Sent to `' + emailAddress.value +
+                              '`\nCheck your email (and spam folder if it does not show up in your inbox) and run `' +
                               settingsData.prefix + 'confirm <uniqueKey>` to complete verification.');
         return message.author.send({embeds: [embed]});
     }
